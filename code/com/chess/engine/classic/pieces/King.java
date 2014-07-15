@@ -15,6 +15,7 @@ public final class King extends Piece {
     private boolean isInCheckMate;
     private boolean isInStaleMate;
     private boolean isCastled;
+
     private final static int[] CANDIDATE_MOVE_COORDINATES = { -9, -8, -7, -1, 1, 7, 8, 9 };
 
     public King(final Alliance alliance) {
