@@ -15,8 +15,7 @@ public final class King extends Piece {
     private boolean isInCheckMate;
     private boolean isInStaleMate;
     private boolean isCastled;
-
-    private final static int[] candidateMoveCoordinates = { -9, -8, -7, -1, 1, 7, 8, 9 };
+    private final static int[] CANDIDATE_MOVE_COORDINATES = { -9, -8, -7, -1, 1, 7, 8, 9 };
 
     public King(final Alliance alliance) {
         super(Type.KING, alliance);
@@ -52,7 +51,7 @@ public final class King extends Piece {
         final List<Move> legalMoves = new ArrayList<>();
         int candidateDestinationCoordinate;
 
-        for (final int currentCandidate : candidateMoveCoordinates) {
+        for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             if (Board.FIRST_COLUMN[this.piecePosition]
                     && ((currentCandidate == -9) || (currentCandidate == -1) || (currentCandidate == 7))) {
                 continue;
