@@ -1,0 +1,81 @@
+<project name="DependencyAnalyzer" basedir="." default="jar" >
+    <description >Build file for Shatranj</description >
+    <property name="build.dir" location="build/" />
+    <property name="build.jar.dir" location="${build.dir}/jar" />
+    <property name="build.jar.art.dir" location="${build.jar.dir}/art" />
+    <property name="test.dir" location="tests" />
+    <property name="test.build.dir" location="tests/build" />
+    <property name="lib.dir" location="lib" />
+    <property name="src.dir" location="code/com/chess" />
+    <property name="jar.name" location="Chess" />
+    <property name="art.dir" location="art" />
+
+    <path id="classpath.base" >
+    </path >
+
+    <path id="classpath.test" >
+        <pathelement location="${lib.dir}/tests/junit-4.8.2.jar" />
+        <path refid="classpath.base" />
+    </path >
+
+    <target name="initialize"
+            description="initial directory setup" >
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${build.jar.dir}" />
+        <mkdir dir="${build.jar.art.dir}" />
+        <mkdir dir="${test.dir}" />
+        <mkdir dir="${test.build.dir}" />
+    </target >
+
+    <target name="clean"
+            description="removes all unwanted files" >
+        <delete dir="${build.dir}" />
+        <delete dir="tests" />
+    </target >
+
+    <target name="compile"
+            depends="initialize"
+            description="compiles source files" >
+        <javac srcdir="${src.dir}"
+               destdir="${build.jar.dir}"
+               includeAntRuntime="no"
+               failonerror="true"
+               excludes="tests/*" >
+        </javac >
+    </target >
+
+    <target name="jar"
+            depends="compile"
+            description="builds jar file" >
+        <copydir src="${art.dir}" dest="${build.jar.art.dir}" />
+        <jar destfile="${build.dir}/${jar.name}.jar" basedir="${build.jar.dir}" >
+            <manifest >
+                <attribute name="built-by" value="amir.afghani" />
+            </manifest >
+        </jar >
+    </target >
+
+    <target name="compile-test" depends="initialize" >
+        <javac srcdir="${src.dir}"
+               destdir="${test.build.dir}"
+               classpathref="classpath.test" >
+        </javac >
+    </target >
+
+    <target name="test" depends="compile-test" >
+        <junit failureProperty="test.failure">
+            <classpath>
+                <path refid="classpath.test" />
+                <pathelement location="${test.build.dir}" />
+            </classpath>
+
+
+            <batchtest >
+                <formatter type="plain" usefile="false" />
+                <fileset dir="${test.build.dir}" includes="**/*TestSuite.class" />
+            </batchtest >
+        </junit >
+        <fail message="test failed!" if="test.failure" />
+    </target >
+
+</project >
