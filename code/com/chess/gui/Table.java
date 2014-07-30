@@ -1,20 +1,13 @@
 package com.chess.gui;
 
-import static com.chess.engine.classic.board.Board.MoveStatus;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
@@ -26,9 +19,7 @@ import javax.swing.KeyStroke;
 
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
-import com.chess.engine.classic.board.StandardBoardConfigurator;
-import com.chess.engine.classic.player.Player;
-import com.chess.engine.classic.player.ai.MiniMax;
+import com.chess.engine.classic.player.ai.AlphaBeta;
 import com.chess.engine.classic.player.ai.SimpleBoardEvaluator;
 
 public final class Table {
@@ -52,12 +43,12 @@ public final class Table {
     }
 
     private static void init() {
-        gameFrame = new JFrame("Shatranj2");
+        gameFrame = new JFrame("BlackWidow");
         final JMenuBar tableMenuBar = new JMenuBar();
         populateMenuBar(tableMenuBar);
         gameFrame.setJMenuBar(tableMenuBar);
         gameFrame.setLayout(new BorderLayout());
-        chessBoard = new Board(new StandardBoardConfigurator());
+        chessBoard = Board.createStandardBoard();
         gameHistoryPanel = new GameHistoryPanel();
         chatPanel = new ChatPanel();
         takenPiecesPanel = new TakenPiecesPanel();
@@ -139,13 +130,13 @@ public final class Table {
                 final Thread t = new Thread("Think Tank") {
                     @Override
                     public void run() {
-                        chessBoard.currentPlayer().setMoveStrategy(new MiniMax());
-                        final Move bestMove = chessBoard.currentPlayer().getMoveStrategy().execute(chessBoard, 4);
-                        Player.makeMove(chessBoard, bestMove);
+                        chessBoard.currentPlayer().setMoveStrategy(new AlphaBeta());
+                        final Move bestMove = chessBoard.currentPlayer().getMoveStrategy().execute(chessBoard, 6);
+                        chessBoard = chessBoard.makeMove(bestMove).getTransitionBoard();
                         moveLog.add(bestMove);
                         gameHistoryPanel.redo(moveLog);
                         takenPiecesPanel.redo(moveLog);
-                        boardPanel.drawBoard();
+                        boardPanel.drawBoard(chessBoard);
                     }
                 };
                 t.start();
@@ -294,7 +285,7 @@ public final class Table {
                         "Choose Dark Tile Color", gameFrame.getBackground());
                 if (colorChoice != null) {
                     TilePanel.setDarkTileColor(colorChoice);
-                    boardPanel.drawBoard();
+                    boardPanel.drawBoard(chessBoard);
                 }
             }
         });
@@ -388,50 +379,50 @@ public final class Table {
 
     }
 
-    public static void requestMove(final Board board,
-                                   final Move move,
-                                   final boolean showPopUp) {
-
-        final MoveStatus status = Player.makeMove(board, move);
-        if(status == MoveStatus.DONE) {
-            moveLog.add(move);
-            gameHistoryPanel.redo(moveLog);
-            takenPiecesPanel.redo(moveLog);
-        } else {
-            try {
-                final BufferedImage image = ImageIO.read(new File("art/misc/illegal.png"));
-                if (!(status == MoveStatus.DONE) && showPopUp) {
-                    JOptionPane.showMessageDialog(boardPanel, "Move " +move.getMovedPiece()+ ": " +move+ " is illegal",
-                            "Notification", JOptionPane.WARNING_MESSAGE,
-                            new ImageIcon(image));
-                }
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        boardPanel.drawBoard();
-    }
+//    public static void requestMove(final Board board,
+//                                   final Move move,
+//                                   final boolean showPopUp) {
+//
+//        final MoveStatus status = Player.makeMove(board, move);
+//        if(status == MoveStatus.DONE) {
+//            moveLog.add(move);
+//            gameHistoryPanel.redo(moveLog);
+//            takenPiecesPanel.redo(moveLog);
+//        } else {
+//            try {
+//                final BufferedImage image = ImageIO.read(new File("art/misc/illegal.png"));
+//                if (!(status == MoveStatus.DONE) && showPopUp) {
+//                    JOptionPane.showMessageDialog(boardPanel, "Move " +move.getMovedPiece()+ ": " +move+ " is illegal",
+//                            "Notification", JOptionPane.WARNING_MESSAGE,
+//                            new ImageIcon(image));
+//                }
+//            }
+//            catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        boardPanel.drawBoard();
+//    }
 
     private static void undoAllMoves() {
-
-        for(int i = moveLog.size() - 1; i >= 0; i--) {
-            final Move lastMove = moveLog.remove(moveLog.size() - 1);
-            Player.unMakeMove(chessBoard, lastMove);
-        }
-        moveLog.clear();
-        gameHistoryPanel.redo(moveLog);
-        takenPiecesPanel.redo(moveLog);
-        boardPanel.drawBoard();
+//
+//        for(int i = moveLog.size() - 1; i >= 0; i--) {
+//            final Move lastMove = moveLog.remove(moveLog.size() - 1);
+//            Player.unMakeMove(chessBoard, lastMove);
+//        }
+//        moveLog.clear();
+//        gameHistoryPanel.redo(moveLog);
+//        takenPiecesPanel.redo(moveLog);
+//        boardPanel.drawBoard();
     }
 
     private static void undoLastMove() {
-        final Move lastMove = moveLog.remove(moveLog.size() - 1);
-        Player.unMakeMove(chessBoard, lastMove);
-        moveLog.remove(lastMove);
-        gameHistoryPanel.redo(moveLog);
-        takenPiecesPanel.redo(moveLog);
-        boardPanel.drawBoard();
+//        final Move lastMove = moveLog.remove(moveLog.size() - 1);
+//        Player.unMakeMove(chessBoard, lastMove);
+//        moveLog.remove(lastMove);
+//        gameHistoryPanel.redo(moveLog);
+//        takenPiecesPanel.redo(moveLog);
+//        boardPanel.drawBoard();
     }
 }
 

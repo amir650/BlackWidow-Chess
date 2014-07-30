@@ -1,6 +1,5 @@
 package com.chess.engine.classic.pieces;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
@@ -8,13 +7,20 @@ import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.AttackMove;
 import com.chess.engine.classic.board.Tile;
+import com.google.common.collect.ImmutableList.Builder;
 
 public final class Rook extends Piece {
 
     private final static int[] candidateMoveCoordinates = { -8, -1, 1, 8 };
 
-    public Rook(final Alliance alliance) {
-        super(Type.ROOK, alliance);
+    public Rook(final Alliance alliance,
+                final int piecePosition,
+                final boolean isFirstMove) {
+        super(Type.ROOK, alliance, piecePosition, isFirstMove);
+    }
+
+    public Rook(final Alliance alliance, final int piecePosition) {
+        super(Type.ROOK, alliance, piecePosition, true);
     }
 
     private Rook(final Rook rook) {
@@ -23,7 +29,7 @@ public final class Rook extends Piece {
 
     @Override
     public List<Move> calculateLegalMoves(final Board board) {
-        final List<Move> legalMoves = new ArrayList<>();
+        final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
         for (final int currentCandidate : candidateMoveCoordinates) {
             candidateDestinationCoordinate = this.piecePosition;
@@ -50,7 +56,7 @@ public final class Rook extends Piece {
                 }
             }
         }
-        return legalMoves;
+        return legalMoves.build();
     }
 
     @Override
@@ -66,6 +72,11 @@ public final class Rook extends Piece {
     @Override
     public Rook createCopy() {
         return new Rook(this);
+    }
+
+    @Override
+    public Rook createTransitionedPiece(final Move move) {
+        return new Rook(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
     }
 
     @Override

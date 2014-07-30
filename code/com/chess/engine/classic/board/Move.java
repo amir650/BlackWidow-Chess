@@ -1,12 +1,10 @@
 package com.chess.engine.classic.board;
 
-import com.chess.engine.classic.pieces.King;
+import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.pieces.Pawn;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.pieces.Piece.Type;
-import com.chess.engine.classic.pieces.Queen;
 import com.chess.engine.classic.pieces.Rook;
-import com.chess.engine.classic.player.Player;
 
 public class Move {
 
@@ -77,20 +75,20 @@ public class Move {
         return null;
     }
 
-    public void execute(final Board board, final Player player) {
-        final Tile destinationLocation = board.getTile(this.destinationCoordinate);
-        final Piece movedPiece = board.getTile(this.currentCoordinate).removePiece();
-        destinationLocation.setPiece(movedPiece);
-        movedPiece.setIsFirstMove(false);
-        board.setEnPassantCapture(null);
-    }
+    public Board execute(final Board board) {
 
-    public void undo(final Board board, final Player player) {
-        final Tile startLocation = board.getTile(this.destinationCoordinate);
-        final Tile destinationLocation = board.getTile(this.currentCoordinate);
-        final Piece p = startLocation.removePiece();
-        destinationLocation.setPiece(p);
-        p.setIsFirstMove(this.isFirstMove);
+        final Board.Builder builder = new Builder();
+
+        for(final Piece piece : board.getAllPieces()) {
+            if(!this.movedPiece.equals(piece)) {
+                builder.setPiece(piece.getPiecePosition(), piece);
+            }
+        }
+
+        builder.setPiece(this.destinationCoordinate, this.movedPiece.createTransitionedPiece(this));
+        builder.setMoveMaker(board.currentPlayer().getOpponent().getAlliance());
+
+        return builder.build();
     }
 
     @Override
@@ -123,18 +121,22 @@ public class Move {
         }
 
         @Override
-        public void execute(final Board board, final Player player) {
-            decoratedMove.execute(board, player);
-            final Queen promotion = new Queen(player.getAlliance());
-            board.setPiece(decoratedMove.getDestinationCoordinate(), promotion);
-            player.getActivePieces().add(promotion);
-        }
+        public Board execute(final Board board) {
 
-        @Override
-        public void undo(final Board board, final Player player) {
-            final Piece queen = board.getTile(this.getDestinationCoordinate()).getPiece();
-            player.getActivePieces().remove(queen);
-            decoratedMove.undo(board, player);
+            final Board pawnMovedBoard = this.decoratedMove.execute(board);
+            final Board.Builder builder = new Builder();
+
+            for (final Piece piece : pawnMovedBoard.getAllPieces()) {
+                if (!this.promotedPawn.equals(piece)) {
+                    builder.setPiece(piece.getPiecePosition(), piece);
+                }
+            }
+
+            builder.setPiece(this.destinationCoordinate, this.promotedPawn.getPromotionPiece());
+            builder.setMoveMaker(pawnMovedBoard.currentPlayer().getAlliance());
+
+            return builder.build();
+
         }
 
         @Override
@@ -173,22 +175,8 @@ public class Move {
         }
 
         @Override
-        public void execute(final Board board, final Player player) {
-            final Tile destinationLocation = board.getTile(this.destinationCoordinate);
-            final Piece movedPiece = board.getTile(this.currentCoordinate).removePiece();
-            destinationLocation.setPiece(movedPiece);
-            movedPiece.setIsFirstMove(false);
-            board.setEnPassantCapture((Pawn)movedPiece);
-        }
-
-        @Override
-        public void undo(final Board board, final Player player) {
-            final Tile startLocation = board.getTile(this.destinationCoordinate);
-            final Tile destinationLocation = board.getTile(this.currentCoordinate);
-            final Piece p = startLocation.removePiece();
-            destinationLocation.setPiece(p);
-            p.setIsFirstMove(this.isFirstMove);
-            board.setEnPassantCapture(null);
+        public Board execute(final Board board) {
+            return super.execute(board);
         }
 
     }
@@ -216,24 +204,20 @@ public class Move {
         }
 
         @Override
-        public void execute(final Board board, final Player player) {
-            final Move p1 = new Move(this.currentCoordinate, this.destinationCoordinate, this.movedPiece);
-            p1.execute(board, player);
-            final Move p2 = new Move(this.castleRook.getPiecePosition(), this.castleRookDestination, this.castleRook);
-            p2.execute(board, player);
-            player.getPlayerKing().setIsCastled(true);
-        }
+        public Board execute(final Board board) {
+            final Board.Builder builder = new Builder();
 
-        @Override
-        public void undo(final Board board, final Player player) {
-            final Move p1 = new Move(this.destinationCoordinate, this.currentCoordinate, this.movedPiece);
-            p1.execute(board, player);
-            final Move p2 = new Move(this.castleRookDestination, this.castleRookStart, this.castleRook);
-            p2.execute(board, player);
-            final King king = player.getPlayerKing();
-            king.setIsCastled(false);
-            king.setIsFirstMove(true);
-            this.castleRook.setIsFirstMove(true);
+            for(final Piece piece : board.getAllPieces()) {
+                if(!this.movedPiece.equals(piece) && !this.castleRook.equals(piece)) {
+                    builder.setPiece(piece.getPiecePosition(), piece);
+                }
+            }
+
+            builder.setPiece(this.destinationCoordinate, this.movedPiece.createTransitionedPiece(this));
+            builder.setPiece(this.castleRookDestination, this.castleRook.createTransitionedPiece(this));
+            builder.setMoveMaker(board.currentPlayer().getOpponent().getAlliance());
+
+            return builder.build();
         }
 
         @Override
@@ -268,7 +252,12 @@ public class Move {
                                   final Rook castleRook,
                                   final int castleRookStart,
                                   final int castleRookDestination) {
-            super(currentCoordinate, destinationCoordinate, pieceMoved, castleRook, castleRookStart, castleRookDestination);
+            super(currentCoordinate,
+                  destinationCoordinate,
+                  pieceMoved,
+                  castleRook,
+                  castleRookStart,
+                  castleRookDestination);
         }
 
         @Override
@@ -298,7 +287,12 @@ public class Move {
                                    final Rook castleRook,
                                    final int castleRookStart,
                                    final int rookCastleDestination) {
-            super(currentCoordinate, destinationCoordinate, pieceMoved, castleRook, castleRookStart, rookCastleDestination);
+            super(currentCoordinate,
+                  destinationCoordinate,
+                  pieceMoved,
+                  castleRook,
+                  castleRookStart,
+                  rookCastleDestination);
         }
 
         @Override
@@ -375,23 +369,8 @@ public class Move {
         }
 
         @Override
-        public void execute(final Board board, final Player player) {
-            final Tile destinationLocation = board.getTile(this.destinationCoordinate);
-            final Piece movedPiece = board.getTile(this.currentCoordinate).removePiece();
-            final Piece attackedPiece = destinationLocation.getPiece();
-            destinationLocation.setPiece(movedPiece);
-            player.getOpponent().getActivePieces().remove(attackedPiece);
-            movedPiece.setIsFirstMove(false);
-        }
-
-        @Override
-        public void undo(final Board board, final Player player) {
-            final Tile startLocation = board.getTile(this.destinationCoordinate);
-            final Tile destinationLocation = board.getTile(this.currentCoordinate);
-            destinationLocation.setPiece(this.movedPiece);
-            startLocation.setPiece(this.attackedPiece);
-            player.getOpponent().getActivePieces().add(this.attackedPiece);
-            this.movedPiece.setIsFirstMove(this.isFirstMove);
+        public Board execute(final Board board) {
+            return super.execute(board);
         }
 
     }
@@ -403,13 +382,8 @@ public class Move {
         }
 
         @Override
-        public void execute(final Board board, final Player player) {
+        public Board execute(final Board board) {
             throw new RuntimeException("cannot execute null move!");
-        }
-
-        @Override
-        public void undo(final Board board, final Player player) {
-            throw new RuntimeException("cannot undo null move!");
         }
 
         @Override

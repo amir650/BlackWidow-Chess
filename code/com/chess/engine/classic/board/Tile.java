@@ -4,11 +4,11 @@ import com.chess.engine.classic.pieces.Piece;
 
 public final class Tile {
 
-    private Piece pieceOnTile;
+    private final Piece pieceOnTile;
     private final int tileCoordinate;
 
-    public Tile(final int coordinate) {
-        this.pieceOnTile = null;
+    public Tile(final int coordinate, final Piece pieceOnTile) {
+        this.pieceOnTile = pieceOnTile;
         this.tileCoordinate = coordinate;
     }
 
@@ -27,17 +27,6 @@ public final class Tile {
 
     public int getTileCoordinate() {
         return this.tileCoordinate;
-    }
-
-    public Piece removePiece() {
-        final Piece p = this.pieceOnTile;
-        this.pieceOnTile = null;
-        return p;
-    }
-
-    public void setPiece(final Piece p) {
-        this.pieceOnTile = p;
-        p.setPiecePosition(this.tileCoordinate);
     }
 
     @Override

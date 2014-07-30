@@ -20,11 +20,11 @@ public class Parallel {
                                                final Operation<R,E> operation)
             throws InterruptedException, ExecutionException {
 
-        int threads = Runtime.getRuntime().availableProcessors();
-        ExecutorService service = Executors.newFixedThreadPool(1);
+        final int threads = Runtime.getRuntime().availableProcessors();
+        final ExecutorService service = Executors.newFixedThreadPool(threads);
         final List<Future<R>> futures = Collections.synchronizedList(new ArrayList<Future<R>>());
         for (final E input : inputs) {
-            Callable<R> callable = new Callable<R>() {
+            final Callable<R> callable = new Callable<R>() {
                 public R call() throws Exception {
                     return operation.perform(input);
                 }

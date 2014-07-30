@@ -9,30 +9,26 @@ import org.junit.Test;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.BoardConfigurator;
+import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Queen;
 
 public class TestQueen {
     @Test
-    public void testMiddleRookOnEmptyBoard() {
-        final Board board = new Board(new BoardConfigurator() {
-            @Override
-            public void setBoardPieces(final Board board) {
-                board.clearGameBoard();
-                // Black Layout
-                board.setPiece(4, new King(Alliance.BLACK));
-                // White Layout
-                board.setPiece(36, new Queen(Alliance.WHITE));
-                board.setPiece(60, new King(Alliance.WHITE));
-            }
+    public void testMiddleQueenOnEmptyBoard() {
 
-            @Override
-            public void setCurrentPlayer(final Board board) {
-                board.setCurrentPlayer(board.whitePlayer());
-            }
-        });
+        Board.Builder builder = new Builder();
+
+        // Black Layout
+        builder.setPiece(4, new King(Alliance.BLACK, 4));
+        // White Layout
+        builder.setPiece(36, new Queen(Alliance.WHITE, 36));
+        builder.setPiece(60, new King(Alliance.WHITE, 60));
+
+        builder.setMoveMaker(Alliance.WHITE);
+
+        final Board board = builder.build();
 
         final List<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final List<Move> blackLegals = board.blackPlayer().getLegalMoves();

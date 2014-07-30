@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.BoardConfigurator;
+import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.Bishop;
 import com.chess.engine.classic.pieces.King;
@@ -17,22 +17,19 @@ import com.chess.engine.classic.pieces.King;
 public class TestBishop {
     @Test
     public void testMiddleBishopOnEmptyBoard() {
-        final Board board = new Board(new BoardConfigurator() {
-            @Override
-            public void setBoardPieces(final Board board) {
-                board.clearGameBoard();
-                // Black Layout
-                board.setPiece(4, new King(Alliance.BLACK));
-                // White Layout
-                board.setPiece(35, new Bishop(Alliance.WHITE));
-                board.setPiece(60, new King(Alliance.WHITE));
-            }
 
-            @Override
-            public void setCurrentPlayer(final Board board) {
-                board.setCurrentPlayer(board.whitePlayer());
-            }
-        });
+        Board.Builder builder = new Builder();
+
+        // Black Layout
+        builder.setPiece(4, new King(Alliance.BLACK, 4));
+        // White Layout
+        builder.setPiece(35, new Bishop(Alliance.WHITE, 35));
+        builder.setPiece(60, new King(Alliance.WHITE, 60));
+
+        builder.setMoveMaker(Alliance.WHITE);
+
+        final Board board = builder.build();
+
         final List<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final List<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 18);
@@ -53,22 +50,19 @@ public class TestBishop {
 
     @Test
     public void testTopLeftBishopOnEmptyBoard() {
-        final Board board = new Board(new BoardConfigurator() {
-            @Override
-            public void setBoardPieces(final Board board) {
-                board.clearGameBoard();
-                // Black Layout
-                board.setPiece(4, new King(Alliance.BLACK));
-                // White Layout
-                board.setPiece(0, new Bishop(Alliance.WHITE));
-                board.setPiece(60, new King(Alliance.WHITE));
-            }
 
-            @Override
-            public void setCurrentPlayer(final Board board) {
-                board.setCurrentPlayer(board.whitePlayer());
-            }
-        });
+        Board.Builder builder = new Builder();
+
+        // Black Layout
+        builder.setPiece(4, new King(Alliance.BLACK, 4));
+        // White Layout
+        builder.setPiece(0, new Bishop(Alliance.WHITE, 0));
+        builder.setPiece(60, new King(Alliance.WHITE, 60));
+
+        builder.setMoveMaker(Alliance.WHITE);
+
+        final Board board = builder.build();
+
         final List<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final List<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 12);
@@ -91,22 +85,19 @@ public class TestBishop {
 
     @Test
     public void testTopRightBishopOnEmptyBoard() {
-        final Board board = new Board(new BoardConfigurator() {
-            @Override
-            public void setBoardPieces(final Board board) {
-                board.clearGameBoard();
-                // Black Layout
-                board.setPiece(4, new King(Alliance.BLACK));
-                // White Layout
-                board.setPiece(7, new Bishop(Alliance.WHITE));
-                board.setPiece(60, new King(Alliance.WHITE));
-            }
 
-            @Override
-            public void setCurrentPlayer(final Board board) {
-                board.setCurrentPlayer(board.whitePlayer());
-            }
-        });
+        Board.Builder builder = new Builder();
+
+        // Black Layout
+        builder.setPiece(4, new King(Alliance.BLACK, 4));
+        // White Layout
+        builder.setPiece(7, new Bishop(Alliance.WHITE, 7));
+        builder.setPiece(60, new King(Alliance.WHITE, 60));
+
+        builder.setMoveMaker(Alliance.WHITE);
+
+        final Board board = builder.build();
+
         final List<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final List<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 12);
@@ -129,22 +120,19 @@ public class TestBishop {
 
     @Test
     public void testBottomLeftBishopOnEmptyBoard() {
-        final Board board = new Board(new BoardConfigurator() {
-            @Override
-            public void setBoardPieces(final Board board) {
-                board.clearGameBoard();
-                // Black Layout
-                board.setPiece(4, new King(Alliance.BLACK));
-                // White Layout
-                board.setPiece(56, new Bishop(Alliance.WHITE));
-                board.setPiece(60, new King(Alliance.WHITE));
-            }
 
-            @Override
-            public void setCurrentPlayer(final Board board) {
-                board.setCurrentPlayer(board.whitePlayer());
-            }
-        });
+        Board.Builder builder = new Builder();
+
+        // Black Layout
+        builder.setPiece(4, new King(Alliance.BLACK, 4));
+        // White Layout
+        builder.setPiece(56, new Bishop(Alliance.WHITE, 56));
+        builder.setPiece(60, new King(Alliance.WHITE, 60));
+
+        builder.setMoveMaker(Alliance.WHITE);
+
+        final Board board = builder.build();
+
         final List<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final List<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 12);
@@ -167,22 +155,19 @@ public class TestBishop {
 
     @Test
     public void testBottomRightBishopOnEmptyBoard() {
-        final Board board = new Board(new BoardConfigurator() {
-            @Override
-            public void setBoardPieces(final Board board) {
-                board.clearGameBoard();
-                // Black Layout
-                board.setPiece(4, new King(Alliance.BLACK));
-                // White Layout
-                board.setPiece(63, new Bishop(Alliance.WHITE));
-                board.setPiece(60, new King(Alliance.WHITE));
-            }
 
-            @Override
-            public void setCurrentPlayer(final Board board) {
-                board.setCurrentPlayer(board.whitePlayer());
-            }
-        });
+        Board.Builder builder = new Builder();
+
+        // Black Layout
+        builder.setPiece(4, new King(Alliance.BLACK, 4));
+        // White Layout
+        builder.setPiece(63, new Bishop(Alliance.WHITE, 63));
+        builder.setPiece(60, new King(Alliance.WHITE, 60));
+
+        builder.setMoveMaker(Alliance.WHITE);
+
+        final Board board = builder.build();
+
         final List<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final List<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 12);

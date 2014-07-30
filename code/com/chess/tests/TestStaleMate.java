@@ -7,96 +7,95 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.chess.engine.classic.Alliance;
-import com.chess.engine.classic.board.Board.MoveStatus;
-import com.chess.engine.classic.pieces.Bishop;
 import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.BoardConfigurator;
-import com.chess.engine.classic.pieces.King;
+import com.chess.engine.classic.board.Board.Builder;
+import com.chess.engine.classic.board.Board.MoveStatus;
 import com.chess.engine.classic.board.Move.MoveFactory;
+import com.chess.engine.classic.board.MoveTransition;
+import com.chess.engine.classic.pieces.Bishop;
+import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Pawn;
-import com.chess.engine.classic.player.Player;
 
 public class TestStaleMate {
     @Test
     public void testAnandKramnikStaleMate() {
-        final Board board = new Board(new BoardConfigurator() {
-            @Override
-            public void setBoardPieces(final Board board) {
-                //Black Layout
-                board.setPiece(14, new Pawn(Alliance.BLACK));
-                board.setPiece(21, new Pawn(Alliance.BLACK));
-                board.setPiece(36, new King(Alliance.BLACK));
-                // White Layout
-                board.setPiece(29, new Pawn(Alliance.WHITE));
-                board.setPiece(31, new King(Alliance.WHITE));
-                board.setPiece(39, new Pawn(Alliance.WHITE));
-            }
 
-            @Override
-            public void setCurrentPlayer(final Board board) {
-                board.setCurrentPlayer(board.whitePlayer());
-            }
-        });
-        board.setCurrentPlayer(board.blackPlayer());
+        Board.Builder builder = new Builder();
+
+        // Black Layout
+        builder.setPiece(14, new Pawn(Alliance.BLACK, 14));
+        builder.setPiece(21, new Pawn(Alliance.BLACK, 21));
+        builder.setPiece(36, new King(Alliance.BLACK, 36));
+        // White Layout
+        builder.setPiece(29, new Pawn(Alliance.WHITE, 29));
+        builder.setPiece(31, new King(Alliance.WHITE, 31));
+        builder.setPiece(39, new Pawn(Alliance.WHITE, 39));
+
+        builder.setMoveMaker(Alliance.BLACK);
+
+        final Board board = builder.build();
+
         assertFalse(board.currentPlayer().isInStaleMate());
-        assertEquals(MoveStatus.DONE, Player.makeMove(board,
-                MoveFactory.createMove(board, Board.getCoordinateAtPosition("e4"),
-                        Board.getCoordinateAtPosition("f5"))));
-        assertTrue(board.currentPlayer().isInStaleMate());
-        assertFalse(board.currentPlayer().isInCheck());
-        assertFalse(board.currentPlayer().isInCheckMate());
+
+        MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e4"),
+                Board.getCoordinateAtPosition("f5")));
+
+        assertEquals(MoveStatus.DONE, t1.getMoveStatus());
+        assertTrue(t1.getTransitionBoard().currentPlayer().isInStaleMate());
+        assertFalse(t1.getTransitionBoard().currentPlayer().isInCheck());
+        assertFalse(t1.getTransitionBoard().currentPlayer().isInCheckMate());
     }
 
     @Test
     public void testAnonymousStaleMate() {
-        final Board board = new Board(new BoardConfigurator() {
-            @Override
-            public void setBoardPieces(final Board board) {
-                //Black Layout
-                board.setPiece(2, new King(Alliance.BLACK));
-                // White Layout
-                board.setPiece(10, new Pawn(Alliance.WHITE));
-                board.setPiece(26, new King(Alliance.WHITE));
-            }
 
-            @Override
-            public void setCurrentPlayer(final Board board) {
-                board.setCurrentPlayer(board.whitePlayer());
-            }
-        });
+        Board.Builder builder = new Builder();
+
+        // Black Layout
+        builder.setPiece(2, new King(Alliance.BLACK, 2));
+        // White Layout
+        builder.setPiece(10, new Pawn(Alliance.WHITE, 10));
+        builder.setPiece(26, new King(Alliance.WHITE, 26));
+
+        builder.setMoveMaker(Alliance.WHITE);
+
+        final Board board = builder.build();
+
         assertFalse(board.currentPlayer().isInStaleMate());
-        assertEquals(MoveStatus.DONE, Player.makeMove(board,
-                MoveFactory.createMove(board, Board.getCoordinateAtPosition("c5"),
-                        Board.getCoordinateAtPosition("c6"))));
-        assertTrue(board.currentPlayer().isInStaleMate());
-        assertFalse(board.currentPlayer().isInCheck());
-        assertFalse(board.currentPlayer().isInCheckMate());
+
+        MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("c5"),
+                Board.getCoordinateAtPosition("c6")));
+
+        assertEquals(MoveStatus.DONE, t1.getMoveStatus());
+        assertTrue(t1.getTransitionBoard().currentPlayer().isInStaleMate());
+        assertFalse(t1.getTransitionBoard().currentPlayer().isInCheck());
+        assertFalse(t1.getTransitionBoard().currentPlayer().isInCheckMate());
     }
 
     @Test
     public void testAnonymousStaleMate2() {
-        final Board board = new Board(new BoardConfigurator() {
-            @Override
-            public void setBoardPieces(final Board board) {
-                //Black Layout
-                board.setPiece(0, new King(Alliance.BLACK));
-                // White Layout
-                board.setPiece(16, new Pawn(Alliance.WHITE));
-                board.setPiece(17, new King(Alliance.WHITE));
-                board.setPiece(19, new Bishop(Alliance.WHITE));
-            }
 
-            @Override
-            public void setCurrentPlayer(final Board board) {
-                board.setCurrentPlayer(board.whitePlayer());
-            }
-        });
+        Board.Builder builder = new Builder();
+
+        // Black Layout
+        builder.setPiece(0, new King(Alliance.BLACK, 0));
+        // White Layout
+        builder.setPiece(16, new Pawn(Alliance.WHITE, 16));
+        builder.setPiece(17, new King(Alliance.WHITE, 17));
+        builder.setPiece(19, new Bishop(Alliance.WHITE, 19));
+
+        builder.setMoveMaker(Alliance.WHITE);
+
+        final Board board = builder.build();
+
         assertFalse(board.currentPlayer().isInStaleMate());
-        assertEquals(MoveStatus.DONE, Player.makeMove(board,
-                MoveFactory.createMove(board, Board.getCoordinateAtPosition("a6"),
-                        Board.getCoordinateAtPosition("a7"))));
-        assertTrue(board.currentPlayer().isInStaleMate());
-        assertFalse(board.currentPlayer().isInCheck());
-        assertFalse(board.currentPlayer().isInCheckMate());
+
+        MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("a6"),
+                Board.getCoordinateAtPosition("a7")));
+
+        assertEquals(MoveStatus.DONE, t1.getMoveStatus());
+        assertTrue(t1.getTransitionBoard().currentPlayer().isInStaleMate());
+        assertFalse(t1.getTransitionBoard().currentPlayer().isInCheck());
+        assertFalse(t1.getTransitionBoard().currentPlayer().isInCheckMate());
     }
 }

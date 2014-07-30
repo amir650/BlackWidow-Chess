@@ -68,7 +68,7 @@ public abstract class NetworkEntity extends Thread {
                 //gameFrame.repaint();
             } else if (receivedMessage instanceof Board) {
                 final Board b = (Board) receivedMessage;
-                b.printCurrentBoardState();
+                //b.printCurrentBoardState();
                 //gameFrame.repaint();
             } else if (receivedMessage instanceof String) {
                 //chatPanel.writeToDisplay((String) receivedMessage);

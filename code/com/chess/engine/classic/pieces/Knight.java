@@ -1,6 +1,5 @@
 package com.chess.engine.classic.pieces;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
@@ -8,14 +7,21 @@ import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.AttackMove;
 import com.chess.engine.classic.board.Tile;
+import com.google.common.collect.ImmutableList.Builder;
 
 public final class Knight extends Piece {
 
     private final static int[] candidateMoveCoordinates = { -17, -15, -10, -6,
         6, 10, 15, 17 };
 
-    public Knight(final Alliance alliance) {
-        super(Type.KNIGHT, alliance);
+    public Knight(final Alliance alliance,
+                  final int piecePosition,
+                  final boolean isFirstMove) {
+        super(Type.KNIGHT, alliance, piecePosition, isFirstMove);
+    }
+
+    public Knight(final Alliance alliance, final int piecePosition) {
+        super(Type.KNIGHT, alliance, piecePosition, true);
     }
 
     private Knight(final Knight knight) {
@@ -25,7 +31,7 @@ public final class Knight extends Piece {
     @Override
     public List<Move> calculateLegalMoves(final Board board) {
 
-        final List<Move> legalMoves = new ArrayList<>();
+        final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
 
         for (final int currentCandidate : candidateMoveCoordinates) {
@@ -50,7 +56,7 @@ public final class Knight extends Piece {
                 }
             }
         }
-        return legalMoves;
+        return legalMoves.build();
     }
 
     @Override
@@ -66,6 +72,11 @@ public final class Knight extends Piece {
     @Override
     public Knight createCopy() {
         return new Knight(this);
+    }
+
+    @Override
+    public Knight createTransitionedPiece( final Move move) {
+        return new Knight(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
     }
 
     @Override

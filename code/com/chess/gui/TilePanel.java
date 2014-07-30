@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
-import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.board.Tile;
 import com.chess.engine.classic.pieces.Piece;
 
@@ -44,18 +43,18 @@ class TilePanel extends JPanel {
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(final MouseEvent event) {
-                if(sourceTile == null) {
-                    sourceTile = chessBoard.getTile(tileId);
-                    movedPiece = sourceTile.getPiece();
-                } else {
-                    destinationTile = chessBoard.getTile(tileId);
-                    Table.requestMove(chessBoard, MoveFactory.createMove(chessBoard,
-                            sourceTile.getTileCoordinate(), destinationTile.getTileCoordinate()), true);
-                    sourceTile = null;
-                    destinationTile = null;
-                    movedPiece = null;
-                }
-                boardPanel.drawBoard();
+//                if(sourceTile == null) {
+//                    sourceTile = chessBoard.getTile(tileId);
+//                    movedPiece = sourceTile.getPiece();
+//                } else {
+//                    destinationTile = chessBoard.getTile(tileId);
+//                    Table.requestMove(chessBoard, MoveFactory.createMove(chessBoard,
+//                            sourceTile.getTileCoordinate(), destinationTile.getTileCoordinate()), true);
+//                    sourceTile = null;
+//                    destinationTile = null;
+//                    movedPiece = null;
+//                }
+//                boardPanel.drawBoard();
             }
 
             @Override

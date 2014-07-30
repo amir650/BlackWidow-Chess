@@ -8,15 +8,19 @@ import com.chess.engine.classic.board.Move;
 
 public abstract class Piece {
 
-    private final Type pieceType;
+    protected final Type pieceType;
     protected final Alliance pieceAlliance;
-    protected int piecePosition;
+    protected final int piecePosition;
     protected boolean isFirstMove;
 
-    Piece(final Type type, final Alliance alliance) {
+    Piece(final Type type,
+          final Alliance alliance,
+          final int piecePosition,
+          final boolean isFirstMove) {
         this.pieceType = type;
+        this.piecePosition = piecePosition;
         this.pieceAlliance = alliance;
-        this.isFirstMove = true;
+        this.isFirstMove = isFirstMove;
     }
 
     Piece(final Piece p) {
@@ -48,16 +52,10 @@ public abstract class Piece {
 
     public abstract Piece createCopy();
 
+    public abstract Piece createTransitionedPiece(Move move);
+
     public boolean isKing() {
         return this.pieceType == Type.KING;
-    }
-
-    public void setPiecePosition(final int piece_position) {
-        this.piecePosition = piece_position;
-    }
-
-    public void setIsFirstMove(final boolean firstMove) {
-        this.isFirstMove = firstMove;
     }
 
     @Override

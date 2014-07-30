@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.BoardConfigurator;
+import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Knight;
@@ -17,23 +17,15 @@ import com.chess.engine.classic.pieces.Knight;
 public class TestKnight {
     @Test
     public void testLegalMoveAllAvailable() {
-        final Board board = new Board(new BoardConfigurator() {
-            @Override
-            public void setBoardPieces(final Board board) {
-                board.clearGameBoard();
-                // Black Layout
-                board.setPiece(4, new King(Alliance.BLACK));
-                board.setPiece(28, new Knight(Alliance.BLACK));
-                // White Layout
-                board.setPiece(36, new Knight(Alliance.WHITE));
-                board.setPiece(60, new King(Alliance.WHITE));
-            }
 
-            @Override
-            public void setCurrentPlayer(final Board board) {
-                board.setCurrentPlayer(board.whitePlayer());
-            }
-        });
+        final Builder boardBuilder = new Builder();
+        boardBuilder.setPiece(4, new King(Alliance.BLACK, 4));
+        boardBuilder.setPiece(28, new Knight(Alliance.BLACK, 28));
+        boardBuilder.setPiece(36, new Knight(Alliance.WHITE, 36));
+        boardBuilder.setPiece(60, new King(Alliance.WHITE, 60));
+        boardBuilder.setMoveMaker(Alliance.WHITE);
+
+        final Board board = boardBuilder.build();
 
         final List<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final List<Move> blackLegals = board.blackPlayer().getLegalMoves();
@@ -97,23 +89,15 @@ public class TestKnight {
 
     @Test
     public void testKnightInCorners() {
-        final Board board = new Board(new BoardConfigurator() {
-            @Override
-            public void setBoardPieces(final Board board) {
-                board.clearGameBoard();
-                // Black Layout
-                board.setPiece(4, new King(Alliance.BLACK));
-                board.setPiece(0, new Knight(Alliance.BLACK));
-                // White Layout
-                board.setPiece(56, new Knight(Alliance.WHITE));
-                board.setPiece(60, new King(Alliance.WHITE));
-            }
 
-            @Override
-            public void setCurrentPlayer(final Board board) {
-                board.setCurrentPlayer(board.whitePlayer());
-            }
-        });
+        final Builder boardBuilder = new Builder();
+        boardBuilder.setPiece(4, new King(Alliance.BLACK, 4));
+        boardBuilder.setPiece(0, new Knight(Alliance.BLACK, 0));
+        boardBuilder.setPiece(56, new Knight(Alliance.WHITE, 56));
+        boardBuilder.setPiece(60, new King(Alliance.WHITE, 60));
+        boardBuilder.setMoveMaker(Alliance.WHITE);
+
+        final Board board = boardBuilder.build();
 
         final List<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final List<Move> blackLegals = board.blackPlayer().getLegalMoves();

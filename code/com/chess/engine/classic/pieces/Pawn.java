@@ -1,6 +1,5 @@
 package com.chess.engine.classic.pieces;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
@@ -10,14 +9,15 @@ import com.chess.engine.classic.board.Move.AttackMove;
 import com.chess.engine.classic.board.Move.PawnJump;
 import com.chess.engine.classic.board.Move.PawnPromotion;
 import com.chess.engine.classic.board.Tile;
+import com.google.common.collect.ImmutableList.Builder;
 
 public final class Pawn
         extends Piece {
 
     private final static int[] candidateMoveCoordinates = {8, 16, 7, 9};
 
-    public Pawn(final Alliance allegiance) {
-        super(Type.PAWN, allegiance);
+    public Pawn(final Alliance allegiance, final int piecePosition) {
+        super(Type.PAWN, allegiance, piecePosition, true);
     }
 
     private Pawn(final Pawn pawn) {
@@ -32,7 +32,7 @@ public final class Pawn
     @Override
     public List<Move> calculateLegalMoves(final Board board) {
 
-        final List<Move> legalMoves = new ArrayList<>();
+        final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
 
         for (final int currentCandidate : candidateMoveCoordinates) {
@@ -99,7 +99,7 @@ public final class Pawn
                 }
             }
         }
-        return legalMoves;
+        return legalMoves.build();
     }
 
     @Override
@@ -115,6 +115,15 @@ public final class Pawn
     @Override
     public Pawn createCopy() {
         return new Pawn(this);
+    }
+
+    @Override
+    public Pawn createTransitionedPiece(final Move move) {
+        return new Pawn(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    }
+
+    public Piece getPromotionPiece() {
+        return new Queen(this.pieceAlliance, this.piecePosition, false);
     }
 
 }

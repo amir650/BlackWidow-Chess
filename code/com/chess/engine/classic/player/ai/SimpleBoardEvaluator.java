@@ -20,7 +20,7 @@ public class SimpleBoardEvaluator
         if(player.getOpponent().isInCheckMate()) {
             score += 10000;
         }
-        if(player.getPlayerKing().isCastled()) {
+        if(player.isCastled()) {
             score += 50;
         }
         return score;

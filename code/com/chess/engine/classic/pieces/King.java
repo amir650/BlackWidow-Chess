@@ -1,55 +1,57 @@
 package com.chess.engine.classic.pieces;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
+import com.chess.engine.classic.board.Board.MoveStatus;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.AttackMove;
+import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.board.Tile;
+import com.chess.engine.classic.player.Player;
+import com.google.common.collect.ImmutableList.Builder;
 
 public final class King extends Piece {
 
-    private boolean isInCheck;
-    private boolean isInCheckMate;
-    private boolean isInStaleMate;
-    private boolean isCastled;
-
     private final static int[] CANDIDATE_MOVE_COORDINATES = { -9, -8, -7, -1, 1, 7, 8, 9 };
 
-    public King(final Alliance alliance) {
-        super(Type.KING, alliance);
+    public King(final Alliance alliance,
+                final int piecePosition,
+                final boolean isFirstMove) {
+        super(Type.KING, alliance, piecePosition, isFirstMove);
+    }
+
+    public King(final Alliance alliance, final int piecePosition) {
+        super(Type.KING, alliance, piecePosition, true);
     }
 
     private King(final King king) {
         super(king);
-        this.isInCheck = king.isInCheck();
-        this.isInStaleMate = king.isInCheckMate();
-        this.isInStaleMate = king.isInStaleMate();
-        this.isCastled = king.isCastled();
     }
 
-    public boolean isInCheck() {
-        return this.isInCheck;
+    public boolean isInCheck(final List<Move> enemyMoves) {
+        return !Player.calculateAttacksOnTile(this.piecePosition, enemyMoves).isEmpty();
     }
 
-    public boolean isInCheckMate() {
-        return this.isInCheckMate;
+    public boolean isInCheckMate(final Board board) {
+        return !Player.calculateAttacksOnTile(this.piecePosition, board.currentPlayer().getOpponent().getLegalMoves())
+                .isEmpty() && !(hasEscapeMoves(board));
     }
 
-    public boolean isInStaleMate() {
-        return this.isInStaleMate;
+    public boolean isInStaleMate(final Board board) {
+        return Player.calculateAttacksOnTile(this.piecePosition, board.currentPlayer().getOpponent().getLegalMoves())
+                .isEmpty() && !hasEscapeMoves(board);
     }
 
-    public boolean isCastled() {
-        return this.isCastled;
+    public boolean isCastled(final Board board) {
+        return true;
     }
 
     @Override
     public List<Move> calculateLegalMoves(final Board board) {
 
-        final List<Move> legalMoves = new ArrayList<>();
+        final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
 
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
@@ -82,7 +84,7 @@ public final class King extends Piece {
                 }
             }
         }
-        return legalMoves;
+        return legalMoves.build();
     }
 
     @Override
@@ -105,19 +107,19 @@ public final class King extends Piece {
         return new King(this);
     }
 
-    public void setInStaleMate(final boolean inStaleMate) {
-        this.isInStaleMate = inStaleMate;
+    @Override
+    public King createTransitionedPiece(final Move move) {
+        return new King(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
     }
 
-    public void setInCheckMate(final boolean inCheckMate) {
-        this.isInCheckMate = inCheckMate;
+    private boolean hasEscapeMoves(final Board board) {
+        for(final Move move : board.currentPlayer().getLegalMoves()) {
+            final MoveTransition transition = board.makeMove(move);
+            if (transition.getMoveStatus() == MoveStatus.DONE) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void setInCheck(final boolean inCheck) {
-        this.isInCheck = inCheck;
-    }
-
-    public void setIsCastled(final boolean isCastled) {
-        this.isCastled = isCastled;
-    }
 }

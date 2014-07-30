@@ -1,6 +1,5 @@
 package com.chess.engine.classic.player.ai;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -8,7 +7,9 @@ import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.MoveStatus;
 import com.chess.engine.classic.board.Move;
+import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.player.Player;
+import com.google.common.collect.Ordering;
 
 public class AlphaBeta implements MoveStrategy {
 
@@ -24,8 +25,7 @@ public class AlphaBeta implements MoveStrategy {
         SORT {
             @Override
             List<Move> sort(final List<Move> moves) {
-                Collections.sort(moves, ATTACKS_SORT);
-                return moves;
+                return Ordering.from(ATTACKS_SORT).immutableSortedCopy(moves);
             }
         },
         EMPTY {
@@ -74,13 +74,12 @@ public class AlphaBeta implements MoveStrategy {
         int currentValue;
         System.out.println(board.currentPlayer() + " THINKING with depth = " + depth);
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
-            final Board imaginary = board.createCopy();
-            final MoveStatus status = Player.makeMove(imaginary, move);
+            final MoveTransition moveTransition = board.makeMove(move);
             this.quiescenceCount = 0;
-            if (status == MoveStatus.DONE) {
+            if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 currentValue = alliance.isWhite() ?
-                        min(imaginary, depth - 1, highestSeenValue, lowestSeenValue) :
-                        max(imaginary, depth - 1, highestSeenValue, lowestSeenValue);
+                        min(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue) :
+                        max(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue);
                 System.out.println("\t" + getName() + " move " + move + " scores " + currentValue + " quiescenceCount = " +this.quiescenceCount);
                 if (alliance.isWhite() && currentValue > highestSeenValue) {
                     highestSeenValue = currentValue;
@@ -111,10 +110,9 @@ public class AlphaBeta implements MoveStrategy {
         }
         int currentHighest = highest;
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
-            final Board imaginary = board.createCopy();
-            final MoveStatus status = Player.makeMove(imaginary, move);
-            if (status == MoveStatus.DONE) {
-                currentHighest = Math.max(currentHighest, min(imaginary, calculateQuiescenceDepth(move, depth), currentHighest, lowest));
+            final MoveTransition moveTransition = board.makeMove(move);
+            if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
+                currentHighest = Math.max(currentHighest, min(moveTransition.getTransitionBoard(), calculateQuiescenceDepth(move, depth), currentHighest, lowest));
                 if (currentHighest >= lowest) {
                     return lowest;
                 }
@@ -135,10 +133,9 @@ public class AlphaBeta implements MoveStrategy {
         }
         int currentLowest = lowest;
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
-            final Board imaginary = board.createCopy();
-            final MoveStatus status = Player.makeMove(imaginary, move);
-            if (status == MoveStatus.DONE) {
-                currentLowest = Math.min(currentLowest, max(imaginary, calculateQuiescenceDepth(move, depth), highest, currentLowest));
+            final MoveTransition moveTransition = board.makeMove(move);
+            if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
+                currentLowest = Math.min(currentLowest, max(moveTransition.getTransitionBoard(), calculateQuiescenceDepth(move, depth), highest, currentLowest));
                 if (currentLowest <= highest) {
                     return highest;
                 }

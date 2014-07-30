@@ -5,21 +5,27 @@ import java.util.List;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Board.MoveStatus;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.ai.MoveStrategy;
+import com.google.common.collect.ImmutableList;
 
 public abstract class Player {
 
     protected final Board board;
+    protected final King playerKing;
     protected final List<Move> legalMoves;
     private MoveStrategy strategy;
 
-    Player(final Board board) {
+    Player(final Board board,
+           final List<Move> playerLegals,
+           final List<Move> opponentLegals) {
         this.board = board;
-        this.legalMoves = new ArrayList<>();
+        this.playerKing = findKing();
+        this.legalMoves = new ImmutableList.Builder<Move>().addAll(playerLegals)
+                .addAll(calculateKingCastles(playerLegals, opponentLegals))
+                .build();
     }
 
     public boolean isMoveLegal(final Move move) {
@@ -27,93 +33,38 @@ public abstract class Player {
     }
 
     public boolean isInCheck() {
-        return getPlayerKing().isInCheck();
+        return this.playerKing.isInCheck(getOpponent().getLegalMoves());
     }
 
     public boolean isInCheckMate() {
-       return getPlayerKing().isInCheckMate();
+       return this.playerKing.isInCheckMate(this.board);
     }
 
     public boolean isInStaleMate() {
-        return getPlayerKing().isInStaleMate();
+        return this.playerKing.isInStaleMate(this.board);
+    }
+
+    public boolean isCastled() {
+        return this.playerKing.isCastled(this.board);
     }
 
     public MoveStrategy getMoveStrategy() {
         return this.strategy;
     }
 
-    public static MoveStatus makeMove(final Board board,
-                                      final Move move) {
-        if(!board.currentPlayer().isMoveLegal(move)) {
-            return MoveStatus.ILLEGAL_NOT_IN_MOVES_LIST;
-        }
-        final Player currentPlayer = board.currentPlayer();
-        final Player opponent = currentPlayer.getOpponent();
-        move.execute(board, currentPlayer);
-        currentPlayer.calculateLegalMoves();
-        opponent.calculateLegalMoves();
-        final List<Move> kingAttacks = currentPlayer.calculateAttacksOnTile(currentPlayer.getPlayerKing().getPiecePosition());
-        if (!kingAttacks.isEmpty()) {
-            move.undo(board, currentPlayer);
-            currentPlayer.calculateLegalMoves();
-            opponent.calculateLegalMoves();
-            return MoveStatus.ILLEGAL_LEAVES_PLAYER_IN_CHECK;
-        }
-        opponent.calculateCheckStatus(board);
-        opponent.calculateLegalMoves();
-        currentPlayer.switchPlayer();
-        return MoveStatus.DONE;
-    }
-
-    public static MoveStatus unMakeMove(final Board board,
-                                        final Move move) {
-        final Player currentPlayer = board.currentPlayer();
-        final Player opponent = currentPlayer.getOpponent();
-        move.undo(board, opponent);
-        currentPlayer.calculateLegalMoves();
-        opponent.calculateLegalMoves();
-        opponent.calculateCheckStatus(board);
-        currentPlayer.calculateLegalMoves();
-        currentPlayer.switchPlayer();
-        return MoveStatus.UNDONE;
-    }
-
-    private void calculateCheckStatus(final Board board) {
-        final King playerKing = getPlayerKing();
-        if(!calculateAttacksOnTile(getPlayerKing().getPiecePosition()).isEmpty()) {
-            playerKing.setInCheck(true);
-            playerKing.setInCheckMate(!(hasEscapeMoves(board)));
-            playerKing.setInStaleMate(false);
-        } else {
-            playerKing.setInCheck(false);
-            playerKing.setInCheckMate(false);
-            playerKing.setInStaleMate(!hasEscapeMoves(board));
-        }
+    public King getPlayerKing() {
+        return this.playerKing;
     }
 
     public String playerInfo() {
         return ("Player is: " +this.getAlliance() + "\nlegal moves =" + getLegalMoves() + "\ninCheck = " +
-               getPlayerKing().isInCheck() + "\nisInCheckMate = " +getPlayerKing().isInCheckMate() +
-                "\nisCastled = " +getPlayerKing().isCastled())+ "\n";
+                isInCheck() + "\nisInCheckMate = " +isInCheckMate() +
+                "\nisCastled = " +isCastled())+ "\n";
     }
 
-    private boolean hasEscapeMoves(final Board board) {
-        for(final Move move : this.legalMoves) {
-            move.execute(board, this);
-            getOpponent().calculateLegalMoves();
-            if(calculateAttacksOnTile(getPlayerKing().getPiecePosition()).isEmpty()) {
-                move.undo(board, this);
-                return true;
-            }
-            move.undo(board, this);
-        }
-        return false;
-    }
-
-    protected List <Move> calculateAttacksOnTile(final int tile) {
-        final Player opponent = getOpponent();
+    public List <Move> calculateAttacksOnTile(final int tile) {
         final List <Move> moves = new ArrayList<>();
-        for (final Move move : opponent.getLegalMoves()) {
+        for (final Move move : getLegalMoves()) {
             if (tile == move.getDestinationCoordinate()) {
                 moves.add(move);
             }
@@ -129,12 +80,22 @@ public abstract class Player {
         this.strategy = strategy;
     }
 
+    public static List<Move> calculateAttacksOnTile(final int tile,
+                                                    final List<Move> moves) {
+        final List<Move> attackMoves = new ArrayList<>();
+        for (final Move move : moves) {
+            if (tile == move.getDestinationCoordinate()) {
+                attackMoves.add(move);
+            }
+        }
+        return (attackMoves);
+    }
+
+
     public abstract List<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
-    public abstract King getPlayerKing();
-    public abstract void calculateLegalMoves();
-    public abstract void calculateKingCastles();
-    public abstract void switchPlayer();
-
+    public abstract List<Move> calculateLegalMoves();
+    public abstract List<Move> calculateKingCastles(List<Move> playerLegals, List<Move> opponentLegals);
+    protected abstract King findKing();
 }

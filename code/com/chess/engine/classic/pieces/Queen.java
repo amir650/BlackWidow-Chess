@@ -1,6 +1,5 @@
 package com.chess.engine.classic.pieces;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
@@ -8,14 +7,21 @@ import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.AttackMove;
 import com.chess.engine.classic.board.Tile;
+import com.google.common.collect.ImmutableList.Builder;
 
 public final class Queen extends Piece {
 
     private final static int[] candidateMoveCoordinates = { -9, -8, -7, -1, 1,
         7, 8, 9 };
 
-    public Queen(final Alliance alliance) {
-        super(Type.QUEEN, alliance);
+    public Queen(final Alliance alliance,
+                 final int piecePosition,
+                 final boolean isFirstMove) {
+        super(Type.QUEEN, alliance, piecePosition, isFirstMove);
+    }
+
+    public Queen(final Alliance alliance, final int piecePosition) {
+        super(Type.QUEEN, alliance, piecePosition, true);
     }
 
     private Queen(final Queen queen) {
@@ -24,7 +30,7 @@ public final class Queen extends Piece {
 
     @Override
     public List<Move> calculateLegalMoves(final Board b) {
-        final List<Move> legalMoves = new ArrayList<>();
+        final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
         for (final int currentCandidate : candidateMoveCoordinates) {
             candidateDestinationCoordinate = this.piecePosition;
@@ -52,7 +58,7 @@ public final class Queen extends Piece {
                 }
             }
         }
-        return legalMoves;
+        return legalMoves.build();
     }
 
     @Override
@@ -68,6 +74,11 @@ public final class Queen extends Piece {
     @Override
     public Queen createCopy() {
         return new Queen(this);
+    }
+
+    @Override
+    public Queen createTransitionedPiece(final Move move) {
+        return new Queen(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
     }
 
     @Override

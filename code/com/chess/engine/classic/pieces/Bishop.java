@@ -1,6 +1,5 @@
 package com.chess.engine.classic.pieces;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
@@ -8,14 +7,22 @@ import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.AttackMove;
 import com.chess.engine.classic.board.Tile;
+import com.google.common.collect.ImmutableList.Builder;
 
 public final class Bishop
         extends Piece {
 
     private final static int[] candidateMoveCoordinates = {-9, -7, 7, 9};
 
-    public Bishop(final Alliance alliance) {
-        super(Type.BISHOP, alliance);
+    public Bishop(final Alliance alliance,
+                  final int piecePosition) {
+         super(Type.BISHOP, alliance, piecePosition, true);
+    }
+
+    public Bishop(final Alliance alliance,
+                  final int piecePosition,
+                  final boolean isFirstMove) {
+        super(Type.BISHOP, alliance, piecePosition, isFirstMove);
     }
 
     private Bishop(final Bishop b) {
@@ -24,7 +31,7 @@ public final class Bishop
 
     @Override
     public List<Move> calculateLegalMoves(final Board board) {
-        final List<Move> legalMoves = new ArrayList<>();
+        final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
         for (final int currentCandidate : candidateMoveCoordinates) {
             candidateDestinationCoordinate = this.piecePosition;
@@ -53,7 +60,7 @@ public final class Bishop
                 }
             }
         }
-        return legalMoves;
+        return legalMoves.build();
     }
 
     @Override
@@ -72,11 +79,17 @@ public final class Bishop
     }
 
     @Override
+    public Bishop createTransitionedPiece(final Move move) {
+        return new Bishop(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
+    }
+
+    @Override
     public String toString() {
         return Type.BISHOP.toString();
     }
 
-    private static boolean isDiagonalExclusion(final int currentCandidate, final int candidateDestinationCoordinate) {
+    private static boolean isDiagonalExclusion(final int currentCandidate,
+                                               final int candidateDestinationCoordinate) {
         return (Board.FIRST_COLUMN[candidateDestinationCoordinate] &&
                 ((currentCandidate == -9) || (currentCandidate == 7))) ||
                 (Board.EIGHTH_COLUMN[candidateDestinationCoordinate] &&
