@@ -45,7 +45,7 @@ public abstract class Player {
     }
 
     public boolean isCastled() {
-        return this.playerKing.isCastled(this.board);
+        return this.playerKing.isCastled();
     }
 
     public MoveStrategy getMoveStrategy() {

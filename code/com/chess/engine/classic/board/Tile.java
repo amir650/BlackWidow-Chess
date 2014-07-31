@@ -1,37 +1,87 @@
 package com.chess.engine.classic.board;
 
+import com.chess.engine.classic.Copyable;
 import com.chess.engine.classic.pieces.Piece;
 
-public final class Tile {
+abstract public class Tile {
 
-    private final Piece pieceOnTile;
-    private final int tileCoordinate;
+    protected final int tileCoordinate;
 
-    public Tile(final int coordinate, final Piece pieceOnTile) {
-        this.pieceOnTile = pieceOnTile;
+    private Tile(final int coordinate) {
         this.tileCoordinate = coordinate;
     }
 
-    public Tile(final Tile tile) {
-        this.tileCoordinate = tile.getTileCoordinate();
-        this.pieceOnTile = tile.getPiece() != null ? tile.getPiece().createCopy() : null ;
-    }
+    public abstract boolean isTileOccupied();
 
-    public boolean isTileOccupied() {
-        return this.pieceOnTile != null;
-    }
+    public abstract Piece getPiece();
 
-    public Piece getPiece() {
-        return this.pieceOnTile;
+    public static Tile createTile(final int coordinate,
+                                  final Piece piece) {
+        if(piece != null) {
+            return new OccupiedTile(coordinate, piece);
+        }
+        return new EmptyTile(coordinate);
     }
 
     public int getTileCoordinate() {
         return this.tileCoordinate;
     }
 
-    @Override
-    public String toString() {
-        return isTileOccupied() ? this.pieceOnTile.toString() : "-";
+    public static final class EmptyTile extends Tile implements Copyable<EmptyTile> {
+
+        EmptyTile(final int coordinate) {
+            super(coordinate);
+        }
+
+        @Override
+        public EmptyTile createCopy() {
+            return new EmptyTile(this.tileCoordinate);
+        }
+
+        @Override
+        public String toString() {
+            return "-";
+        }
+
+        @Override
+        public boolean isTileOccupied() {
+            return false;
+        }
+
+        public Piece getPiece() {
+            throw new RuntimeException("should not reach here!");
+        }
+
+    }
+
+    public static final class OccupiedTile extends Tile implements Copyable<OccupiedTile> {
+
+        private final Piece pieceOnTile;
+
+        OccupiedTile(final int coordinate, final Piece pieceOnTile) {
+            super(coordinate);
+            this.pieceOnTile = pieceOnTile;
+        }
+
+        @Override
+        public OccupiedTile createCopy() {
+            return new OccupiedTile(tileCoordinate, pieceOnTile.createCopy());
+        }
+
+        @Override
+        public String toString() {
+            return this.pieceOnTile.toString();
+        }
+
+        @Override
+        public boolean isTileOccupied() {
+            return true;
+        }
+
+        @Override
+        public Piece getPiece() {
+            return pieceOnTile;
+        }
     }
 
 }

@@ -131,7 +131,7 @@ public final class Table {
                     @Override
                     public void run() {
                         chessBoard.currentPlayer().setMoveStrategy(new AlphaBeta());
-                        final Move bestMove = chessBoard.currentPlayer().getMoveStrategy().execute(chessBoard, 6);
+                        final Move bestMove = chessBoard.currentPlayer().getMoveStrategy().execute(chessBoard, 4);
                         chessBoard = chessBoard.makeMove(bestMove).getTransitionBoard();
                         moveLog.add(bestMove);
                         gameHistoryPanel.redo(moveLog);

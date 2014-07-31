@@ -20,6 +20,12 @@ public final class Pawn
         super(Type.PAWN, allegiance, piecePosition, true);
     }
 
+    public Pawn(final Alliance alliance,
+                  final int piecePosition,
+                  final boolean isFirstMove) {
+        super(Type.PAWN, alliance, piecePosition, isFirstMove);
+    }
+
     private Pawn(final Pawn pawn) {
         super(pawn);
     }
@@ -119,7 +125,7 @@ public final class Pawn
 
     @Override
     public Pawn createTransitionedPiece(final Move move) {
-        return new Pawn(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+        return new Pawn(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
     }
 
     public Piece getPromotionPiece() {

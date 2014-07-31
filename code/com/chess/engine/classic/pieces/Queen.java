@@ -14,14 +14,14 @@ public final class Queen extends Piece {
     private final static int[] candidateMoveCoordinates = { -9, -8, -7, -1, 1,
         7, 8, 9 };
 
+    public Queen(final Alliance alliance, final int piecePosition) {
+        super(Type.QUEEN, alliance, piecePosition, true);
+    }
+
     public Queen(final Alliance alliance,
                  final int piecePosition,
                  final boolean isFirstMove) {
         super(Type.QUEEN, alliance, piecePosition, isFirstMove);
-    }
-
-    public Queen(final Alliance alliance, final int piecePosition) {
-        super(Type.QUEEN, alliance, piecePosition, true);
     }
 
     private Queen(final Queen queen) {

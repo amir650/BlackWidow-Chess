@@ -3,10 +3,11 @@ package com.chess.engine.classic.pieces;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
+import com.chess.engine.classic.Copyable;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
 
-public abstract class Piece {
+public abstract class Piece implements Copyable<Piece>{
 
     protected final Type pieceType;
     protected final Alliance pieceAlliance;
@@ -49,8 +50,6 @@ public abstract class Piece {
     public abstract int getPieceValue();
 
     public abstract int locationBonus();
-
-    public abstract Piece createCopy();
 
     public abstract Piece createTransitionedPiece(Move move);
 

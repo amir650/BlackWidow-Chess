@@ -13,14 +13,14 @@ public final class Rook extends Piece {
 
     private final static int[] candidateMoveCoordinates = { -8, -1, 1, 8 };
 
+    public Rook(final Alliance alliance, final int piecePosition) {
+        super(Type.ROOK, alliance, piecePosition, true);
+    }
+
     public Rook(final Alliance alliance,
                 final int piecePosition,
                 final boolean isFirstMove) {
         super(Type.ROOK, alliance, piecePosition, isFirstMove);
-    }
-
-    public Rook(final Alliance alliance, final int piecePosition) {
-        super(Type.ROOK, alliance, piecePosition, true);
     }
 
     private Rook(final Rook rook) {

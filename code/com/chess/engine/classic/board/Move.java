@@ -71,6 +71,10 @@ public class Move {
         return false;
     }
 
+    public boolean isCastle() {
+        return false;
+    }
+
     public Piece getAttackedPiece() {
         return null;
     }
@@ -201,6 +205,11 @@ public class Move {
 
         public Rook getCastleRook() {
             return this.castleRook;
+        }
+
+        @Override
+        public boolean isCastle() {
+            return true;
         }
 
         @Override

@@ -49,7 +49,7 @@ public final class Board {
         this.gameBoard = new Tile[NUM_TILES];
         this.boardOrientation = 0;
         for (int i = 0; i < NUM_TILES; i++) {
-            this.gameBoard[i] = new Tile(i, boardBuilder.boardConfig.get(i));
+            this.gameBoard[i] = Tile.createTile(i, boardBuilder.boardConfig.get(i));
         }
 
         this.whitePieces = calculateWhiteActives();

@@ -14,14 +14,14 @@ public final class Knight extends Piece {
     private final static int[] candidateMoveCoordinates = { -17, -15, -10, -6,
         6, 10, 15, 17 };
 
+    public Knight(final Alliance alliance, final int piecePosition) {
+        super(Type.KNIGHT, alliance, piecePosition, true);
+    }
+
     public Knight(final Alliance alliance,
                   final int piecePosition,
                   final boolean isFirstMove) {
         super(Type.KNIGHT, alliance, piecePosition, isFirstMove);
-    }
-
-    public Knight(final Alliance alliance, final int piecePosition) {
-        super(Type.KNIGHT, alliance, piecePosition, true);
     }
 
     private Knight(final Knight knight) {

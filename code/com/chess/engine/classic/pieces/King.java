@@ -15,19 +15,24 @@ import com.google.common.collect.ImmutableList.Builder;
 public final class King extends Piece {
 
     private final static int[] CANDIDATE_MOVE_COORDINATES = { -9, -8, -7, -1, 1, 7, 8, 9 };
-
-    public King(final Alliance alliance,
-                final int piecePosition,
-                final boolean isFirstMove) {
-        super(Type.KING, alliance, piecePosition, isFirstMove);
-    }
+    private final boolean isCastled;
 
     public King(final Alliance alliance, final int piecePosition) {
         super(Type.KING, alliance, piecePosition, true);
+        this.isCastled = false;
+    }
+
+    public King(final Alliance alliance,
+                final int piecePosition,
+                final boolean isFirstMove,
+                final boolean isCastled) {
+        super(Type.KING, alliance, piecePosition, isFirstMove);
+        this.isCastled = isCastled;
     }
 
     private King(final King king) {
         super(king);
+        this.isCastled = king.isCastled();
     }
 
     public boolean isInCheck(final List<Move> enemyMoves) {
@@ -44,8 +49,8 @@ public final class King extends Piece {
                 .isEmpty() && !hasEscapeMoves(board);
     }
 
-    public boolean isCastled(final Board board) {
-        return true;
+    public boolean isCastled() {
+        return this.isCastled;
     }
 
     @Override
@@ -109,7 +114,7 @@ public final class King extends Piece {
 
     @Override
     public King createTransitionedPiece(final Move move) {
-        return new King(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
+        return new King(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false, move.isCastle());
     }
 
     private boolean hasEscapeMoves(final Board board) {
