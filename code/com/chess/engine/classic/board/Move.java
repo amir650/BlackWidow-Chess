@@ -22,7 +22,8 @@ public class Move {
         this.isFirstMove = pieceMoved.isFirstMove();
     }
 
-    public Move(final int currentCoordinate, final int destinationCoordinate) {
+    public Move(final int currentCoordinate,
+                final int destinationCoordinate) {
         this.currentCoordinate = currentCoordinate;
         this.destinationCoordinate = destinationCoordinate;
         this.movedPiece = null;
@@ -89,7 +90,7 @@ public class Move {
             }
         }
 
-        builder.setPiece(this.destinationCoordinate, this.movedPiece.createTransitionedPiece(this));
+        builder.setPiece(this.destinationCoordinate, this.movedPiece.movePiece(this));
         builder.setMoveMaker(board.currentPlayer().getOpponent().getAlliance());
 
         return builder.build();
@@ -222,8 +223,8 @@ public class Move {
                 }
             }
 
-            builder.setPiece(this.destinationCoordinate, this.movedPiece.createTransitionedPiece(this));
-            builder.setPiece(this.castleRookDestination, this.castleRook.createTransitionedPiece(this));
+            builder.setPiece(this.destinationCoordinate, this.movedPiece.movePiece(this));
+            builder.setPiece(this.castleRookDestination, this.castleRook.movePiece(this));
             builder.setMoveMaker(board.currentPlayer().getOpponent().getAlliance());
 
             return builder.build();

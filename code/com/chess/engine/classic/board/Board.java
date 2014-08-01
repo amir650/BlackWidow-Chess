@@ -27,10 +27,10 @@ public final class Board {
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
-    private final int boardOrientation;
 
     private static final String[] ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
     private static final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
+
     public static final int NUM_TILES = 64;
     public static final boolean[] FIRST_COLUMN = initColumn(0);
     public static final boolean[] SECOND_COLUMN = initColumn(1);
@@ -47,7 +47,6 @@ public final class Board {
 
     public Board(final Builder boardBuilder) {
         this.gameBoard = new Tile[NUM_TILES];
-        this.boardOrientation = 0;
         for (int i = 0; i < NUM_TILES; i++) {
             this.gameBoard[i] = Tile.createTile(i, boardBuilder.boardConfig.get(i));
         }
@@ -55,8 +54,8 @@ public final class Board {
         this.whitePieces = calculateWhiteActives();
         this.blackPieces = calculateBlackActives();
 
-        final List<Move> whiteStandardMoves = initializeStandardLegalMoves(this.whitePieces);
-        final List<Move> blackStandardMoves = initializeStandardLegalMoves(this.blackPieces);
+        final List<Move> whiteStandardMoves = calculateLegalMoves(this.whitePieces);
+        final List<Move> blackStandardMoves = calculateLegalMoves(this.blackPieces);
 
         this.whitePlayer = new WhitePlayer(this, whiteStandardMoves, blackStandardMoves);
         this.blackPlayer = new BlackPlayer(this, whiteStandardMoves, blackStandardMoves);
@@ -164,11 +163,14 @@ public final class Board {
         return builder.build();
     }
 
-    private List<Move> initializeStandardLegalMoves(final List<Piece> pieces) {
+    private List<Move> calculateLegalMoves(final List<Piece> pieces) {
+
         final ImmutableList.Builder<Move> builder = new ImmutableList.Builder<>();
+
         for(final Piece p : pieces) {
             builder.addAll(p.calculateLegalMoves(this));
         }
+
         return builder.build();
     }
 
@@ -242,12 +244,12 @@ public final class Board {
         return coordinate >= 0 && coordinate < Board.NUM_TILES;
     }
 
-    public static int getCoordinateAtPosition(final String pos) {
-        return POSITION_TO_COORDINATE.get(pos);
+    public static int getCoordinateAtPosition(final String position) {
+        return POSITION_TO_COORDINATE.get(position);
     }
 
-    public static String getPositionAtCoordinate(final int c) {
-        return ALGEBRAIC_NOTATION[c];
+    public static String getPositionAtCoordinate(final int coordinate) {
+        return ALGEBRAIC_NOTATION[coordinate];
     }
 
     public enum MoveStatus {
@@ -265,12 +267,12 @@ public final class Board {
             this.boardConfig = new HashMap<>();
         }
 
-        public Builder setPiece(int i, Piece piece) {
+        public Builder setPiece(final int i, final Piece piece) {
             this.boardConfig.put(i, piece);
             return this;
         }
 
-        public Builder setMoveMaker(Alliance nextMoveMaker) {
+        public Builder setMoveMaker(final Alliance nextMoveMaker) {
             this.nextMoveMaker = nextMoveMaker;
             return this;
         }

@@ -51,7 +51,7 @@ public abstract class Piece implements Copyable<Piece>{
 
     public abstract int locationBonus();
 
-    public abstract Piece createTransitionedPiece(Move move);
+    public abstract Piece movePiece(Move move);
 
     public boolean isKing() {
         return this.pieceType == Type.KING;
@@ -61,7 +61,7 @@ public abstract class Piece implements Copyable<Piece>{
     public int hashCode() {
         int hash = 1;
         hash = hash * 31 + this.pieceType.hashCode() + this.pieceAlliance.hashCode()
-                + this.piecePosition;
+                + this.piecePosition + Boolean.valueOf(this.isFirstMove).hashCode();
         return hash;
     }
 
@@ -71,6 +71,7 @@ public abstract class Piece implements Copyable<Piece>{
         if (this == other) {
             return true;
         }
+
         if (!(other instanceof Piece)) {
             return false;
         }
@@ -79,7 +80,8 @@ public abstract class Piece implements Copyable<Piece>{
 
         return (this.pieceType == otherPiece.getPieceType())
                 && (this.pieceAlliance == otherPiece.getPieceAllegiance())
-                && (this.piecePosition == otherPiece.getPiecePosition());
+                && (this.piecePosition == otherPiece.getPiecePosition()
+                && (this.isFirstMove == otherPiece.isFirstMove()));
 
     }
 

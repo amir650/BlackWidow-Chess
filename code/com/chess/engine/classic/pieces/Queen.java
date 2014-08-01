@@ -77,7 +77,7 @@ public final class Queen extends Piece {
     }
 
     @Override
-    public Queen createTransitionedPiece(final Move move) {
+    public Queen movePiece(final Move move) {
         return new Queen(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
     }
 

@@ -23,15 +23,6 @@ public class BlackPlayer extends Player {
     }
 
     @Override
-    public List<Move> calculateLegalMoves() {
-        final ImmutableList.Builder<Move> builder = new Builder<>();
-        for(final Piece p : this.board.getBlackPieces()) {
-            builder.addAll(p.calculateLegalMoves(this.board));
-        }
-        return builder.build();
-    }
-
-    @Override
     public List<Move> calculateKingCastles(final List<Move> playerLegals,
                                            final List<Move> opponentLegals) {
 

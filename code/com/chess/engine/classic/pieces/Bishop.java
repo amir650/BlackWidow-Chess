@@ -9,8 +9,7 @@ import com.chess.engine.classic.board.Move.AttackMove;
 import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList.Builder;
 
-public final class Bishop
-        extends Piece {
+public final class Bishop extends Piece {
 
     private final static int[] candidateMoveCoordinates = {-9, -7, 7, 9};
 
@@ -79,7 +78,7 @@ public final class Bishop
     }
 
     @Override
-    public Bishop createTransitionedPiece(final Move move) {
+    public Bishop movePiece(final Move move) {
         return new Bishop(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
     }
 

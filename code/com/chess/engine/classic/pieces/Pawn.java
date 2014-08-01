@@ -11,8 +11,7 @@ import com.chess.engine.classic.board.Move.PawnPromotion;
 import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList.Builder;
 
-public final class Pawn
-        extends Piece {
+public final class Pawn extends Piece {
 
     private final static int[] candidateMoveCoordinates = {8, 16, 7, 9};
 
@@ -37,10 +36,8 @@ public final class Pawn
 
     @Override
     public List<Move> calculateLegalMoves(final Board board) {
-
         final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
-
         for (final int currentCandidate : candidateMoveCoordinates) {
             candidateDestinationCoordinate =
                     this.piecePosition + (this.pieceAlliance.getDirection() * currentCandidate * -1);
@@ -124,7 +121,7 @@ public final class Pawn
     }
 
     @Override
-    public Pawn createTransitionedPiece(final Move move) {
+    public Pawn movePiece(final Move move) {
         return new Pawn(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
     }
 

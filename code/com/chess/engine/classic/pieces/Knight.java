@@ -30,10 +30,8 @@ public final class Knight extends Piece {
 
     @Override
     public List<Move> calculateLegalMoves(final Board board) {
-
         final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
-
         for (final int currentCandidate : candidateMoveCoordinates) {
             if(isFirstColumnExclusion(this.piecePosition, currentCandidate) ||
                isSecondColumnExclusion(this.piecePosition, currentCandidate) ||
@@ -75,7 +73,7 @@ public final class Knight extends Piece {
     }
 
     @Override
-    public Knight createTransitionedPiece( final Move move) {
+    public Knight movePiece(final Move move) {
         return new Knight(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
     }
 

@@ -95,7 +95,6 @@ public abstract class Player {
     public abstract List<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
-    public abstract List<Move> calculateLegalMoves();
     public abstract List<Move> calculateKingCastles(List<Move> playerLegals, List<Move> opponentLegals);
     protected abstract King findKing();
 }

@@ -55,10 +55,8 @@ public final class King extends Piece {
 
     @Override
     public List<Move> calculateLegalMoves(final Board board) {
-
         final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
-
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             if (Board.FIRST_COLUMN[this.piecePosition]
                     && ((currentCandidate == -9) || (currentCandidate == -1) || (currentCandidate == 7))) {
@@ -113,7 +111,7 @@ public final class King extends Piece {
     }
 
     @Override
-    public King createTransitionedPiece(final Move move) {
+    public King movePiece(final Move move) {
         return new King(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false, move.isCastle());
     }
 

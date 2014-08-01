@@ -75,7 +75,7 @@ public final class Rook extends Piece {
     }
 
     @Override
-    public Rook createTransitionedPiece(final Move move) {
+    public Rook movePiece(final Move move) {
         return new Rook(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
     }
 
