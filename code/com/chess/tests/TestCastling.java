@@ -214,7 +214,7 @@ public class TestCastling {
         assertEquals(MoveStatus.DONE, t6.getMoveStatus());
 
         final MoveTransition t7 = t6.getTransitionBoard().makeMove( Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("c1"), Board.getCoordinateAtPosition("d2")));
+                .createMove(t6.getTransitionBoard(), Board.getCoordinateAtPosition("c1"), Board.getCoordinateAtPosition("d2")));
 
         assertEquals(MoveStatus.DONE, t7.getMoveStatus());
 

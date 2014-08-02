@@ -4,7 +4,6 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.chess.engine.classic.Alliance;
@@ -32,26 +31,6 @@ public class TestBoard {
         assertEquals(board.currentPlayer(), board.whitePlayer());
         assertEquals(board.currentPlayer().getOpponent(), board.blackPlayer());
         assertEquals(new SimpleBoardEvaluator().evaluate(board), 0);
-    }
-
-    @Ignore
-    @Test
-    public void testPlainKnightMove() {
-    }
-
-    @Ignore
-    @Test
-    public void testPlainBishopMove() {
-    }
-
-    @Ignore
-    @Test
-    public void testPlainRookMove() {
-    }
-
-    @Ignore
-    @Test
-    public void testPlainQueenMove() {
     }
 
     @Test

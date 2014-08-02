@@ -2,7 +2,6 @@ package com.chess.tests;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.chess.engine.classic.Alliance;
@@ -34,7 +33,6 @@ public class TestAlphaBeta {
                 .createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
     }
 
-    @Ignore
     @Test
     public void testOpeningDepth2() {
         final Board board = Board.createStandardBoard();
@@ -43,7 +41,7 @@ public class TestAlphaBeta {
         currentPlayer.setMoveStrategy(alphaBeta);
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 2);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("d2"), Board.getCoordinateAtPosition("d4")));
+                .createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
     }
 
     @Test
