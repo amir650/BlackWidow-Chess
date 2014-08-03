@@ -5,6 +5,7 @@ import com.chess.engine.classic.pieces.Pawn;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.pieces.Piece.Type;
 import com.chess.engine.classic.pieces.Rook;
+import com.google.common.collect.Iterables;
 
 public class Move {
 
@@ -415,12 +416,7 @@ public class Move {
         public static Move createMove(final Board board,
                                       final int currentCoordinate,
                                       final int destinationCoordinate) {
-            for(final Move m : board.whitePlayer().getLegalMoves()) {
-                if(m.getCurrentCoordinate() == currentCoordinate && m.getDestinationCoordinate() == destinationCoordinate) {
-                    return m;
-                }
-            }
-            for(final Move m : board.blackPlayer().getLegalMoves()) {
+            for(final Move m : Iterables.concat(board.whitePlayer().getLegalMoves(), board.blackPlayer().getLegalMoves())) {
                 if(m.getCurrentCoordinate() == currentCoordinate && m.getDestinationCoordinate() == destinationCoordinate) {
                     return m;
                 }
