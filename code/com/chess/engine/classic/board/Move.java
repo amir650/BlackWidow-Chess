@@ -224,7 +224,9 @@ public class Move {
             }
 
             builder.setPiece(this.destinationCoordinate, this.movedPiece.movePiece(this));
-            builder.setPiece(this.castleRookDestination, this.castleRook.movePiece(this));
+            //calling movePiece here doesn't work, we need to explicitly create a new Rook
+            builder.setPiece(this.castleRookDestination,
+                    new Rook(this.castleRook.getPieceAllegiance(), this.castleRookDestination, false));
             builder.setMoveMaker(board.currentPlayer().getOpponent().getAlliance());
 
             return builder.build();

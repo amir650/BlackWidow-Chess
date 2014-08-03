@@ -24,7 +24,6 @@ import com.chess.engine.classic.player.ai.SimpleBoardEvaluator;
 
 public final class Table {
 
-    private static final long serialVersionUID = 1L;
     private static JFrame gameFrame;
     private static JCheckBoxMenuItem cbLegalMoveHighlighter = new JCheckBoxMenuItem(
             "Highlight Legal Moves", true);
@@ -131,7 +130,7 @@ public final class Table {
                     @Override
                     public void run() {
                         chessBoard.currentPlayer().setMoveStrategy(new AlphaBeta());
-                        final Move bestMove = chessBoard.currentPlayer().getMoveStrategy().execute(chessBoard, 4);
+                        final Move bestMove = chessBoard.currentPlayer().getMoveStrategy().execute(chessBoard, 6);
                         chessBoard = chessBoard.makeMove(bestMove).getTransitionBoard();
                         moveLog.add(bestMove);
                         gameHistoryPanel.redo(moveLog);

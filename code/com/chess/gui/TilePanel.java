@@ -55,6 +55,7 @@ class TilePanel extends JPanel {
 //                    movedPiece = null;
 //                }
 //                boardPanel.drawBoard();
+                System.out.println("bleep tile id = " +tileId);
             }
 
             @Override
