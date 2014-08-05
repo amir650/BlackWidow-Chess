@@ -60,10 +60,11 @@ public class MiniMax implements MoveStrategy {
         return best_move;
     }
 
-    public int min(final Board board, final int depth) {
+    public int min(final Board board,
+                   final int depth) {
         if (depth == 0 ||
-                board.currentPlayer().isInCheckMate() ||
-                board.currentPlayer().getOpponent().isInCheckMate()) {
+            board.currentPlayer().isInCheckMate() ||
+            board.currentPlayer().getOpponent().isInCheckMate()) {
             this.boardsEvaluated++;
             return this.evaluator.evaluate(board);
         }
@@ -80,10 +81,11 @@ public class MiniMax implements MoveStrategy {
         return lowest_seen_value;
     }
 
-    public int max(final Board board, final int depth) {
+    public int max(final Board board,
+                   final int depth) {
         if (depth == 0 ||
-                board.currentPlayer().isInCheckMate() ||
-                board.currentPlayer().getOpponent().isInCheckMate()) {
+            board.currentPlayer().isInCheckMate() ||
+            board.currentPlayer().getOpponent().isInCheckMate()) {
             this.boardsEvaluated++;
             return this.evaluator.evaluate(board);
         }

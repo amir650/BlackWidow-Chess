@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList.Builder;
 
 public final class Rook extends Piece {
 
-    private final static int[] candidateMoveCoordinates = { -8, -1, 1, 8 };
+    private final static int[] CANDIDATE_MOVE_COORDINATES = { -8, -1, 1, 8 };
 
     public Rook(final Alliance alliance, final int piecePosition) {
         super(Type.ROOK, alliance, piecePosition, true);
@@ -31,7 +31,7 @@ public final class Rook extends Piece {
     public List<Move> calculateLegalMoves(final Board board) {
         final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
-        for (final int currentCandidate : candidateMoveCoordinates) {
+        for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             candidateDestinationCoordinate = this.piecePosition;
             while (true) {
                 if (isColumnExclusion(currentCandidate, candidateDestinationCoordinate)) {

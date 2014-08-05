@@ -13,7 +13,7 @@ import com.google.common.collect.ImmutableList.Builder;
 
 public final class Pawn extends Piece {
 
-    private final static int[] candidateMoveCoordinates = {8, 16, 7, 9};
+    private final static int[] CANDIDATE_MOVE_COORDINATES = {8, 16, 7, 9};
 
     public Pawn(final Alliance allegiance, final int piecePosition) {
         super(Type.PAWN, allegiance, piecePosition, true);
@@ -38,7 +38,7 @@ public final class Pawn extends Piece {
     public List<Move> calculateLegalMoves(final Board board) {
         final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
-        for (final int currentCandidate : candidateMoveCoordinates) {
+        for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             candidateDestinationCoordinate =
                     this.piecePosition + (this.pieceAlliance.getDirection() * currentCandidate * -1);
             if (!Board.isValidTileCoordinate(candidateDestinationCoordinate)) {

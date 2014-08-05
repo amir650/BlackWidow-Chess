@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList.Builder;
 
 public final class Bishop extends Piece {
 
-    private final static int[] candidateMoveCoordinates = {-9, -7, 7, 9};
+    private final static int[] CANDIDATE_MOVE_COORDINATES = {-9, -7, 7, 9};
 
     public Bishop(final Alliance alliance,
                   final int piecePosition) {
@@ -32,7 +32,7 @@ public final class Bishop extends Piece {
     public List<Move> calculateLegalMoves(final Board board) {
         final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
-        for (final int currentCandidate : candidateMoveCoordinates) {
+        for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             candidateDestinationCoordinate = this.piecePosition;
             while (true) {
                 if (isDiagonalExclusion(currentCandidate, candidateDestinationCoordinate)) {

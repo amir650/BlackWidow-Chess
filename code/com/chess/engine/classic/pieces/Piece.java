@@ -12,7 +12,7 @@ public abstract class Piece implements Copyable<Piece>{
     protected final Type pieceType;
     protected final Alliance pieceAlliance;
     protected final int piecePosition;
-    protected boolean isFirstMove;
+    protected final boolean isFirstMove;
 
     Piece(final Type type,
           final Alliance alliance,
@@ -85,7 +85,7 @@ public abstract class Piece implements Copyable<Piece>{
 
     }
 
-    public abstract List<Move> calculateLegalMoves(final Board b);
+    public abstract List<Move> calculateLegalMoves(final Board board);
 
     public enum Type {
 

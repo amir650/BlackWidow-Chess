@@ -41,10 +41,6 @@ public final class Board {
     public static final boolean[] SEVENTH_ROW = initRow(48);
     public static final boolean[] EIGHTH_ROW = initRow(56);
 
-    static {
-        initializePositionToCoordinateMap();
-    }
-
     public Board(final Builder boardBuilder) {
         this.gameBoard = new Tile[NUM_TILES];
         for (int i = 0; i < NUM_TILES; i++) {

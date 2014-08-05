@@ -58,32 +58,23 @@ public final class King extends Piece {
         final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
-            if (Board.FIRST_COLUMN[this.piecePosition]
-                    && ((currentCandidate == -9) || (currentCandidate == -1) || (currentCandidate == 7))) {
+            if (isFirstColumnExclusion(this.piecePosition, currentCandidate) ||
+                isEighthColumnExclusion(this.piecePosition, currentCandidate)) {
                 continue;
             }
-            if (Board.EIGHTH_COLUMN[this.piecePosition]
-                    && ((currentCandidate == -7) || (currentCandidate == 1) || (currentCandidate == 9))) {
-                continue;
-            }
-            candidateDestinationCoordinate = this.piecePosition
-                    + currentCandidate;
-            if (!(candidateDestinationCoordinate >= 0 && candidateDestinationCoordinate < Board.NUM_TILES)) {
-                continue;
-            }
-            final Tile candidateDestinationTile = board
-                    .getTile(candidateDestinationCoordinate);
-            if (!candidateDestinationTile.isTileOccupied()) {
-                legalMoves.add(new Move(this.piecePosition, candidateDestinationCoordinate, this));
-            } else {
-                final Piece pieceAtDestination = candidateDestinationTile
-                        .getPiece();
-                final Alliance pieceAtDestinationAllegiance = pieceAtDestination
-                        .getPieceAllegiance();
-
-                if (this.pieceAlliance != pieceAtDestinationAllegiance) {
-                    legalMoves.add(new AttackMove(this.piecePosition, candidateDestinationCoordinate, this,
-                            pieceAtDestination));
+            candidateDestinationCoordinate = this.piecePosition + currentCandidate;
+            if (Board.isValidTileCoordinate(candidateDestinationCoordinate)) {
+                final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
+                if (!candidateDestinationTile.isTileOccupied()) {
+                    legalMoves.add(new Move(this.piecePosition, candidateDestinationCoordinate, this));
+                }
+                else {
+                    final Piece pieceAtDestination = candidateDestinationTile.getPiece();
+                    final Alliance pieceAtDestinationAllegiance = pieceAtDestination.getPieceAllegiance();
+                    if (this.pieceAlliance != pieceAtDestinationAllegiance) {
+                        legalMoves.add(new AttackMove(this.piecePosition, candidateDestinationCoordinate, this,
+                                pieceAtDestination));
+                    }
                 }
             }
         }
@@ -125,4 +116,17 @@ public final class King extends Piece {
         return false;
     }
 
+    private static boolean isFirstColumnExclusion(final int currentCandidate,
+                                                  final int candidateDestinationCoordinate) {
+        return Board.FIRST_COLUMN[currentCandidate]
+                && ((candidateDestinationCoordinate == -9) || (candidateDestinationCoordinate == -1) ||
+                   (candidateDestinationCoordinate == 7));
+    }
+
+    private static boolean isEighthColumnExclusion(final int currentCandidate,
+                                                   final int candidateDestinationCoordinate) {
+        return Board.EIGHTH_COLUMN[currentCandidate]
+                && ((candidateDestinationCoordinate == -7) || (candidateDestinationCoordinate == 1) ||
+                   (candidateDestinationCoordinate == 9));
+    }
 }

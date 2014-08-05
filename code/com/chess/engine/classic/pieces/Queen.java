@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList.Builder;
 
 public final class Queen extends Piece {
 
-    private final static int[] candidateMoveCoordinates = { -9, -8, -7, -1, 1,
+    private final static int[] CANDIDATE_MOVE_COORDINATES = { -9, -8, -7, -1, 1,
         7, 8, 9 };
 
     public Queen(final Alliance alliance, final int piecePosition) {
@@ -29,10 +29,10 @@ public final class Queen extends Piece {
     }
 
     @Override
-    public List<Move> calculateLegalMoves(final Board b) {
+    public List<Move> calculateLegalMoves(final Board board) {
         final Builder<Move> legalMoves = new Builder<>();
         int candidateDestinationCoordinate;
-        for (final int currentCandidate : candidateMoveCoordinates) {
+        for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             candidateDestinationCoordinate = this.piecePosition;
             while (true) {
                 if (isFirstColumnExclusion(currentCandidate, candidateDestinationCoordinate) ||
@@ -43,7 +43,7 @@ public final class Queen extends Piece {
                 if (!Board.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     break;
                 } else {
-                    final Tile candidateDestinationTile = b.getTile(candidateDestinationCoordinate);
+                    final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                     if (!candidateDestinationTile.isTileOccupied()) {
                         legalMoves.add(new Move(this.piecePosition, candidateDestinationCoordinate, this));
                     } else {
@@ -86,12 +86,14 @@ public final class Queen extends Piece {
         return Type.QUEEN.toString();
     }
 
-    private static boolean isFirstColumnExclusion(final int currentPosition, final int candidatePosition) {
+    private static boolean isFirstColumnExclusion(final int currentPosition,
+                                                  final int candidatePosition) {
         return Board.FIRST_COLUMN[candidatePosition] && ((currentPosition == -9)
                 || (currentPosition == -1) || (currentPosition == 7));
     }
 
-    private static boolean isEightColumnExclusion(final int currentPosition, final int candidatePosition) {
+    private static boolean isEightColumnExclusion(final int currentPosition,
+                                                  final int candidatePosition) {
         return Board.EIGHTH_COLUMN[candidatePosition] && ((currentPosition == -7)
                 || (currentPosition == 1) || (currentPosition == 9));
     }
