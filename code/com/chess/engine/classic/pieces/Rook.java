@@ -43,12 +43,12 @@ public final class Rook extends Piece {
                 } else {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                     if (!candidateDestinationTile.isTileOccupied()) {
-                        legalMoves.add(new Move(this.piecePosition, candidateDestinationCoordinate, this));
+                        legalMoves.add(new Move(board, this.piecePosition, candidateDestinationCoordinate, this));
                     } else {
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance pieceAtDestinationAllegiance = pieceAtDestination.getPieceAllegiance();
                         if (this.pieceAlliance != pieceAtDestinationAllegiance) {
-                            legalMoves.add(new AttackMove(this.piecePosition, candidateDestinationCoordinate, this,
+                            legalMoves.add(new AttackMove(board, this.piecePosition, candidateDestinationCoordinate, this,
                                     pieceAtDestination));
                         }
                         break;
@@ -76,7 +76,7 @@ public final class Rook extends Piece {
 
     @Override
     public Rook movePiece(final Move move) {
-        return new Rook(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
+        return new Rook(this.pieceAlliance, move.getDestinationCoordinate(), false);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.chess.engine.classic.board;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,10 @@ public final class Board {
     public static final boolean[] EIGHTH_COLUMN = initColumn(7);
     public static final boolean[] FIRST_ROW = initRow(0);
     public static final boolean[] SECOND_ROW = initRow(8);
+    public static final boolean[] THIRD_ROW = initRow(16);
+    public static final boolean[] FOURTH_ROW = initRow(24);
+    public static final boolean[] FIFTH_ROW = initRow(32);
+    public static final boolean[] SIXTH_ROW = initRow(40);
     public static final boolean[] SEVENTH_ROW = initRow(48);
     public static final boolean[] EIGHTH_ROW = initRow(56);
 
@@ -47,8 +52,8 @@ public final class Board {
             this.gameBoard[i] = Tile.createTile(i, boardBuilder.boardConfig.get(i));
         }
 
-        this.whitePieces = calculateWhiteActives();
-        this.blackPieces = calculateBlackActives();
+        this.whitePieces = ImmutableList.copyOf(calculateActivePieces(Alliance.WHITE));
+        this.blackPieces = ImmutableList.copyOf(calculateActivePieces(Alliance.BLACK));
 
         final List<Move> whiteStandardMoves = calculateLegalMoves(this.whitePieces);
         final List<Move> blackStandardMoves = calculateLegalMoves(this.blackPieces);
@@ -78,8 +83,8 @@ public final class Board {
         return this.whitePieces;
     }
 
-    public List<Piece> getAllPieces() {
-        return ImmutableList.copyOf(Iterables.concat(this.whitePieces, this.blackPieces));
+    public Iterable<Piece> getAllPieces() {
+        return Iterables.concat(this.whitePieces, this.blackPieces);
     }
 
     public WhitePlayer whitePlayer() {
@@ -106,12 +111,17 @@ public final class Board {
         if(!this.currentPlayer.isMoveLegal(move)) {
             return new MoveTransition(this, MoveStatus.ILLEGAL_NOT_IN_MOVES_LIST);
         }
-        final Board transitionedBoard = move.execute(this);
+        final Board transitionedBoard = move.execute();
         final List<Move> kingAttacks = transitionedBoard.currentPlayer().calculateAttacksOnTile(
                 transitionedBoard.currentPlayer().getOpponent().getPlayerKing().getPiecePosition());
         if (!kingAttacks.isEmpty()) {
             return new MoveTransition(this, MoveStatus.ILLEGAL_LEAVES_PLAYER_IN_CHECK);
         }
+        return new MoveTransition(transitionedBoard, MoveStatus.DONE);
+    }
+
+    public MoveTransition unMakeMove(final Move move) {
+        final Board transitionedBoard = move.undo();
         return new MoveTransition(transitionedBoard, MoveStatus.DONE);
     }
 
@@ -160,41 +170,24 @@ public final class Board {
     }
 
     private List<Move> calculateLegalMoves(final List<Piece> pieces) {
-
-        final ImmutableList.Builder<Move> builder = new ImmutableList.Builder<>();
-
+        final List<Move> legalMoves = new ArrayList<>();
         for(final Piece p : pieces) {
-            builder.addAll(p.calculateLegalMoves(this));
+            legalMoves.addAll(p.calculateLegalMoves(this));
         }
-
-        return builder.build();
+        return legalMoves;
     }
 
-    private List<Piece> calculateWhiteActives() {
-        final ImmutableList.Builder<Piece> builder = new ImmutableList.Builder<>();
+    private List<Piece> calculateActivePieces(final Alliance alliance) {
+        final List<Piece> activePieces = new ArrayList<>();
         for (final Tile t : this.gameBoard) {
             if (t.isTileOccupied()) {
                 final Piece p = t.getPiece();
-                if (p.getPieceAllegiance().isWhite()) {
-                    builder.add(p);
-
+                if (p.getPieceAllegiance().equals(alliance)) {
+                    activePieces.add(p);
                 }
             }
         }
-        return builder.build();
-    }
-
-    private List<Piece> calculateBlackActives() {
-        final ImmutableList.Builder<Piece> builder = new ImmutableList.Builder<>();
-        for (final Tile t : this.gameBoard) {
-            if (t.isTileOccupied()) {
-                final Piece p = t.getPiece();
-                if (p.getPieceAllegiance().isBlack()) {
-                    builder.add(p);
-                }
-            }
-        }
-        return builder.build();
+        return activePieces;
     }
 
     private static Map<String, Integer> initializePositionToCoordinateMap() {

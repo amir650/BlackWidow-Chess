@@ -42,13 +42,13 @@ public final class Bishop extends Piece {
                 if (Board.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                     if (!candidateDestinationTile.isTileOccupied()) {
-                        legalMoves.add(new Move(this.piecePosition, candidateDestinationCoordinate, this));
+                        legalMoves.add(new Move(board, this.piecePosition, candidateDestinationCoordinate, this));
                     }
                     else {
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance piece_at_destination_allegiance = pieceAtDestination.getPieceAllegiance();
                         if (this.pieceAlliance != piece_at_destination_allegiance) {
-                            legalMoves.add(new AttackMove(this.piecePosition, candidateDestinationCoordinate, this,
+                            legalMoves.add(new AttackMove(board, this.piecePosition, candidateDestinationCoordinate, this,
                                     pieceAtDestination));
                         }
                         break;
@@ -79,7 +79,7 @@ public final class Bishop extends Piece {
 
     @Override
     public Bishop movePiece(final Move move) {
-        return new Bishop(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
+        return new Bishop(this.pieceAlliance, move.getDestinationCoordinate(), false);
     }
 
     @Override

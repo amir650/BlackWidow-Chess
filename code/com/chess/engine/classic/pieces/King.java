@@ -66,13 +66,13 @@ public final class King extends Piece {
             if (Board.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                 if (!candidateDestinationTile.isTileOccupied()) {
-                    legalMoves.add(new Move(this.piecePosition, candidateDestinationCoordinate, this));
+                    legalMoves.add(new Move(board, this.piecePosition, candidateDestinationCoordinate, this));
                 }
                 else {
                     final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                     final Alliance pieceAtDestinationAllegiance = pieceAtDestination.getPieceAllegiance();
                     if (this.pieceAlliance != pieceAtDestinationAllegiance) {
-                        legalMoves.add(new AttackMove(this.piecePosition, candidateDestinationCoordinate, this,
+                        legalMoves.add(new AttackMove(board, this.piecePosition, candidateDestinationCoordinate, this,
                                 pieceAtDestination));
                     }
                 }
@@ -103,7 +103,7 @@ public final class King extends Piece {
 
     @Override
     public King movePiece(final Move move) {
-        return new King(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false, move.isCastle());
+        return new King(this.pieceAlliance, move.getDestinationCoordinate(), false, move.isCastle());
     }
 
     private boolean hasEscapeMoves(final Board board) {

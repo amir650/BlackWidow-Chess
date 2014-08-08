@@ -43,12 +43,12 @@ public final class Knight extends Piece {
             if (Board.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                 if (!candidateDestinationTile.isTileOccupied()) {
-                    legalMoves.add(new Move(this.piecePosition, candidateDestinationCoordinate, this));
+                    legalMoves.add(new Move(board, this.piecePosition, candidateDestinationCoordinate, this));
                 } else {
                     final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                     final Alliance pieceAtDestinationAllegiance = pieceAtDestination.getPieceAllegiance();
                     if (this.pieceAlliance != pieceAtDestinationAllegiance) {
-                        legalMoves.add(new AttackMove(this.piecePosition, candidateDestinationCoordinate, this,
+                        legalMoves.add(new AttackMove(board, this.piecePosition, candidateDestinationCoordinate, this,
                                 pieceAtDestination));
                     }
                 }
@@ -74,7 +74,7 @@ public final class Knight extends Piece {
 
     @Override
     public Knight movePiece(final Move move) {
-        return new Knight(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), false);
+        return new Knight(this.pieceAlliance, move.getDestinationCoordinate(), false);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class MiniMax implements MoveStrategy {
     }
 
     @Override
-    public String getName() {
+    public String toString() {
         return "MiniMax";
     }
 
@@ -42,7 +42,7 @@ public class MiniMax implements MoveStrategy {
             final MoveTransition moveTransition = board.makeMove(move);
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 current_value = alliance.isWhite() ? min(moveTransition.getTransitionBoard(), depth - 1) : max(moveTransition.getTransitionBoard(), depth - 1);
-                System.out.println("\t" + getName() + " move " + move + " scores " + current_value);
+                System.out.println("\t" + toString() + " move " + move + " scores " + current_value);
                 if (alliance.isWhite() &&
                         current_value >= highest_seen_value) {
                     highest_seen_value = current_value;

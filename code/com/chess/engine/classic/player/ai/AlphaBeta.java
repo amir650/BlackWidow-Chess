@@ -53,7 +53,7 @@ public class AlphaBeta implements MoveStrategy {
     }
 
     @Override
-    public String getName() {
+    public String toString() {
         return "AlphaBeta";
     }
 
@@ -80,7 +80,7 @@ public class AlphaBeta implements MoveStrategy {
                 currentValue = alliance.isWhite() ?
                         min(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue) :
                         max(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue);
-                System.out.println("\t" + getName() + " move " + move + " scores " + currentValue + " quiescenceCount = " +this.quiescenceCount);
+                System.out.println("\t" + toString() + " move " + move + " scores " + currentValue + " quiescenceCount = " +this.quiescenceCount);
                 if (alliance.isWhite() && currentValue > highestSeenValue) {
                     highestSeenValue = currentValue;
                     bestMove = move;

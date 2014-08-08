@@ -10,6 +10,7 @@ import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.ai.MoveStrategy;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 public abstract class Player {
 
@@ -23,9 +24,7 @@ public abstract class Player {
            final List<Move> opponentLegals) {
         this.board = board;
         this.playerKing = findKing();
-        this.legalMoves = new ImmutableList.Builder<Move>().addAll(playerLegals)
-                .addAll(calculateKingCastles(playerLegals, opponentLegals))
-                .build();
+        this.legalMoves = ImmutableList.copyOf(Iterables.concat(playerLegals, calculateKingCastles(playerLegals, opponentLegals)));
     }
 
     public boolean isMoveLegal(final Move move) {
@@ -64,7 +63,7 @@ public abstract class Player {
 
     public List <Move> calculateAttacksOnTile(final int tile) {
         final List <Move> moves = new ArrayList<>();
-        for (final Move move : getLegalMoves()) {
+        for (final Move move : this.legalMoves) {
             if (tile == move.getDestinationCoordinate()) {
                 moves.add(move);
             }
@@ -95,6 +94,6 @@ public abstract class Player {
     public abstract List<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
-    public abstract List<Move> calculateKingCastles(List<Move> playerLegals, List<Move> opponentLegals);
+    protected abstract List<Move> calculateKingCastles(List<Move> playerLegals, List<Move> opponentLegals);
     protected abstract King findKing();
 }

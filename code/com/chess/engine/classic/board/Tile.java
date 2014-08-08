@@ -49,7 +49,7 @@ abstract public class Tile {
         }
 
         public Piece getPiece() {
-            throw new RuntimeException("should not reach here!");
+            return null;
         }
 
     }

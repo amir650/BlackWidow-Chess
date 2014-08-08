@@ -5,8 +5,6 @@ import com.chess.engine.classic.board.Move;
 
 public interface MoveStrategy {
 
-    public String getName();
-
     public long getNumBoardsEvaluated();
 
     public Move execute(Board board, int depth);
