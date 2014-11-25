@@ -64,17 +64,4 @@ public class TestMiniMax {
                 .createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
     }
 
-//    @Test
-//    public void testOpeningDepth4BlackMovesFirst() {
-//        final Board board = Board.createStandardBoard();
-//        board.setCurrentPlayer(board.blackPlayer());
-//        final Player currentPlayer = board.currentPlayer();
-//        final MoveStrategy minMax = new MiniMax();
-//        currentPlayer.setMoveStrategy(minMax);
-//        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 4);
-//        final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-//        assertEquals(numBoardsEvaluated, 197281L);
-//        assertEquals(bestMove, Move.MoveFactory
-//                .createMove(board, Board.getCoordinateAtPosition("e7"), Board.getCoordinateAtPosition("e5")));
-//    }
 }

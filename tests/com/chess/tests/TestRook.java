@@ -12,18 +12,18 @@ import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.King;
-import com.chess.engine.classic.pieces.Queen;
+import com.chess.engine.classic.pieces.Rook;
 
-public class TestQueen {
+public class TestRook {
     @Test
-    public void testMiddleQueenOnEmptyBoard() {
+    public void testMiddleRookOnEmptyBoard() {
 
-        Board.Builder builder = new Builder();
+        final Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(4, new King(Alliance.BLACK, 4));
         // White Layout
-        builder.setPiece(36, new Queen(Alliance.WHITE, 36));
+        builder.setPiece(36, new Rook(Alliance.WHITE, 36));
         builder.setPiece(60, new King(Alliance.WHITE, 60));
 
         builder.setMoveMaker(Alliance.WHITE);
@@ -33,7 +33,7 @@ public class TestQueen {
         final List<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final List<Move> blackLegals = board.blackPlayer().getLegalMoves();
 
-        assertEquals(whiteLegals.size(), 31);
+        assertEquals(whiteLegals.size(), 18);
         assertEquals(blackLegals.size(), 5);
         assertTrue(whiteLegals.contains(Move.MoveFactory
                 .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("e8"))));
@@ -61,6 +61,6 @@ public class TestQueen {
                 .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("g4"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
                 .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("h4"))));
+
     }
 }
-

@@ -1,5 +1,6 @@
 package com.chess.engine.classic.pieces;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
@@ -9,7 +10,6 @@ import com.chess.engine.classic.board.Move.AttackMove;
 import com.chess.engine.classic.board.Move.PawnJump;
 import com.chess.engine.classic.board.Move.PawnPromotion;
 import com.chess.engine.classic.board.Tile;
-import com.google.common.collect.ImmutableList.Builder;
 
 public final class Pawn extends Piece {
 
@@ -36,7 +36,7 @@ public final class Pawn extends Piece {
 
     @Override
     public List<Move> calculateLegalMoves(final Board board) {
-        final Builder<Move> legalMoves = new Builder<>();
+        final List<Move> legalMoves = new ArrayList<>();
         int candidateDestinationCoordinate;
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             candidateDestinationCoordinate =
@@ -107,7 +107,7 @@ public final class Pawn extends Piece {
                 }
             }
         }
-        return legalMoves.build();
+        return legalMoves;
     }
 
     @Override

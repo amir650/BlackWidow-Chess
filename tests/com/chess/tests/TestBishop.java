@@ -18,7 +18,7 @@ public class TestBishop {
     @Test
     public void testMiddleBishopOnEmptyBoard() {
 
-        Board.Builder builder = new Builder();
+        final Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(4, new King(Alliance.BLACK, 4));
@@ -51,7 +51,7 @@ public class TestBishop {
     @Test
     public void testTopLeftBishopOnEmptyBoard() {
 
-        Board.Builder builder = new Builder();
+        Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(4, new King(Alliance.BLACK, 4));
@@ -86,7 +86,7 @@ public class TestBishop {
     @Test
     public void testTopRightBishopOnEmptyBoard() {
 
-        Board.Builder builder = new Builder();
+        Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(4, new King(Alliance.BLACK, 4));
@@ -121,7 +121,7 @@ public class TestBishop {
     @Test
     public void testBottomLeftBishopOnEmptyBoard() {
 
-        Board.Builder builder = new Builder();
+        Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(4, new King(Alliance.BLACK, 4));
@@ -156,7 +156,7 @@ public class TestBishop {
     @Test
     public void testBottomRightBishopOnEmptyBoard() {
 
-        Board.Builder builder = new Builder();
+        Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(4, new King(Alliance.BLACK, 4));

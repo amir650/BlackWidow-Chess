@@ -20,7 +20,7 @@ public class TestStaleMate {
     @Test
     public void testAnandKramnikStaleMate() {
 
-        Board.Builder builder = new Builder();
+        final Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(14, new Pawn(Alliance.BLACK, 14));
@@ -37,7 +37,7 @@ public class TestStaleMate {
 
         assertFalse(board.currentPlayer().isInStaleMate());
 
-        MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e4"),
+        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e4"),
                 Board.getCoordinateAtPosition("f5")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
@@ -49,7 +49,7 @@ public class TestStaleMate {
     @Test
     public void testAnonymousStaleMate() {
 
-        Board.Builder builder = new Builder();
+        final Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(2, new King(Alliance.BLACK, 2));
@@ -63,7 +63,7 @@ public class TestStaleMate {
 
         assertFalse(board.currentPlayer().isInStaleMate());
 
-        MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("c5"),
+        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("c5"),
                 Board.getCoordinateAtPosition("c6")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
@@ -75,7 +75,7 @@ public class TestStaleMate {
     @Test
     public void testAnonymousStaleMate2() {
 
-        Board.Builder builder = new Builder();
+        final Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(0, new King(Alliance.BLACK, 0));
@@ -90,7 +90,7 @@ public class TestStaleMate {
 
         assertFalse(board.currentPlayer().isInStaleMate());
 
-        MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("a6"),
+        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("a6"),
                 Board.getCoordinateAtPosition("a7")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());

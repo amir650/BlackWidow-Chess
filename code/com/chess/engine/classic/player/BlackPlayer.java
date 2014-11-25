@@ -11,6 +11,7 @@ import com.chess.engine.classic.board.Move.QueenSideCastleMove;
 import com.chess.engine.classic.board.Tile;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Piece;
+import com.chess.engine.classic.pieces.Piece.Type;
 import com.chess.engine.classic.pieces.Rook;
 
 public class BlackPlayer extends Player {
@@ -34,7 +35,7 @@ public class BlackPlayer extends Player {
                 if(rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove() &&
                    Player.calculateAttacksOnTile(5, opponentLegals).isEmpty() &&
                    Player.calculateAttacksOnTile(6, opponentLegals).isEmpty() &&
-                   rookTile.getPiece() instanceof Rook) {
+                   rookTile.getPiece().getPieceType() == Type.ROOK) {
                     kingCastles.add(
                             new KingSideCastleMove(this.board, this.playerKing.getPiecePosition(), 6, this.playerKing,
                                     (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 5));
@@ -47,7 +48,8 @@ public class BlackPlayer extends Player {
                 if(rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove() &&
                    Player.calculateAttacksOnTile(1, opponentLegals).isEmpty() &&
                    Player.calculateAttacksOnTile(2, opponentLegals).isEmpty() &&
-                   Player.calculateAttacksOnTile(3, opponentLegals).isEmpty() && rookTile.getPiece() instanceof Rook) {
+                   Player.calculateAttacksOnTile(3, opponentLegals).isEmpty() &&
+                   rookTile.getPiece().getPieceType() == Type.ROOK) {
                     kingCastles.add(
                             new QueenSideCastleMove(this.board, this.playerKing.getPiecePosition(), 2, this.playerKing,
                                     (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 3));

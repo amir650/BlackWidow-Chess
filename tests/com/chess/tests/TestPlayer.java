@@ -38,6 +38,7 @@ public class TestPlayer {
 
     @Test
     public void testBug() {
+
         final Board board = Board.createStandardBoard();
 
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("c2"),
@@ -59,12 +60,13 @@ public class TestPlayer {
                 Board.getCoordinateAtPosition("d6")));
 
         assertEquals(MoveStatus.ILLEGAL_LEAVES_PLAYER_IN_CHECK, t4.getMoveStatus());
+
     }
 
     @Test
     public void testDiscoveredCheck() {
 
-        Board.Builder builder = new Builder();
+        final Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(4, new King(Alliance.BLACK, 4));

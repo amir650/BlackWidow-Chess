@@ -148,7 +148,7 @@ public class AlphaBeta implements MoveStrategy {
                                          final int depth) {
         if(move.isAttack() && depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
             this.quiescenceCount++;
-            return depth + 1;
+            return 2;
         }
         return depth - 1;
     }

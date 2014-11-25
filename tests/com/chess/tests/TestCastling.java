@@ -17,7 +17,6 @@ public class TestCastling {
     public void testWhiteKingSideCastle() {
 
         final Board board = Board.createStandardBoard();
-
         final MoveTransition t1 = board.makeMove(Move.MoveFactory
                 .createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
 
@@ -56,7 +55,6 @@ public class TestCastling {
         final MoveTransition t7 = t6.getTransitionBoard().makeMove(wm1);
 
         assertEquals(MoveStatus.DONE, t7.getMoveStatus());
-
         assertTrue(t7.getTransitionBoard().whitePlayer().isCastled());
 
     }
@@ -65,7 +63,6 @@ public class TestCastling {
     public void testWhiteQueenSideCastle() {
 
         final Board board = Board.createStandardBoard();
-
         final MoveTransition t1 = board.makeMove( Move.MoveFactory
                 .createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
 

@@ -1,5 +1,6 @@
 package com.chess.engine.classic.pieces;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
@@ -7,7 +8,6 @@ import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.AttackMove;
 import com.chess.engine.classic.board.Tile;
-import com.google.common.collect.ImmutableList.Builder;
 
 public final class Queen extends Piece {
 
@@ -30,7 +30,7 @@ public final class Queen extends Piece {
 
     @Override
     public List<Move> calculateLegalMoves(final Board board) {
-        final Builder<Move> legalMoves = new Builder<>();
+        final List<Move> legalMoves = new ArrayList<>();
         int candidateDestinationCoordinate;
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             candidateDestinationCoordinate = this.piecePosition;
@@ -58,7 +58,7 @@ public final class Queen extends Piece {
                 }
             }
         }
-        return legalMoves.build();
+        return legalMoves;
     }
 
     @Override

@@ -90,7 +90,6 @@ public abstract class Player {
         return (attackMoves);
     }
 
-
     public abstract List<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();

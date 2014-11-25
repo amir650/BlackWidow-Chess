@@ -22,8 +22,8 @@ public class TestCheckmate {
 
     @Test
     public void testFoolsMate() {
-        final Board board = Board.createStandardBoard();
 
+        final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("f2"),
                 Board.getCoordinateAtPosition("f3")));
 
@@ -45,12 +45,13 @@ public class TestCheckmate {
         assertEquals(MoveStatus.DONE, t4.getMoveStatus());
 
         assertTrue(t4.getTransitionBoard().currentPlayer().isInCheckMate());
+
     }
 
     @Test
     public void testScholarsMate() {
-        final Board board = Board.createStandardBoard();
 
+        final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e2"),
                 Board.getCoordinateAtPosition("e4")));
 
@@ -86,12 +87,13 @@ public class TestCheckmate {
 
         assertEquals(MoveStatus.DONE, t7.getMoveStatus());
         assertTrue(t7.getTransitionBoard().currentPlayer().isInCheckMate());
+
     }
 
     @Test
     public void testLegalsMate() {
-        final Board board = Board.createStandardBoard();
 
+        final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e2"),
                 Board.getCoordinateAtPosition("e4")));
 
@@ -156,14 +158,14 @@ public class TestCheckmate {
                 Board.getCoordinateAtPosition("d5")));
 
         assertEquals(MoveStatus.DONE, t13.getMoveStatus());
-
         assertTrue(t13.getTransitionBoard().currentPlayer().isInCheckMate());
+
     }
 
     @Test
     public void testSevenMoveMate() {
-        final Board board = Board.createStandardBoard();
 
+        final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e2"),
                 Board.getCoordinateAtPosition("e4")));
 
@@ -228,14 +230,14 @@ public class TestCheckmate {
                 Board.getCoordinateAtPosition("d8")));
 
         assertEquals(MoveStatus.DONE, t13.getMoveStatus());
-
         assertTrue(t13.getTransitionBoard().currentPlayer().isInCheckMate());
+
     }
 
     @Test
     public void testGrecoGame() {
-        final Board board = Board.createStandardBoard();
 
+        final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("d2"),
                 Board.getCoordinateAtPosition("d4")));
 
@@ -296,14 +298,14 @@ public class TestCheckmate {
                 Board.getCoordinateAtPosition("g3")));
 
         assertEquals(MoveStatus.DONE, t12.getMoveStatus());
-
         assertTrue(t12.getTransitionBoard().currentPlayer().isInCheckMate());
+
     }
 
     @Test
     public void testOlympicGame() {
-        final Board board = Board.createStandardBoard();
 
+        final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e2"),
                 Board.getCoordinateAtPosition("e4")));
 
@@ -358,14 +360,14 @@ public class TestCheckmate {
                 Board.getCoordinateAtPosition("d6")));
 
         assertEquals(MoveStatus.DONE, t11.getMoveStatus());
-
         assertTrue(t11.getTransitionBoard().currentPlayer().isInCheckMate());
+
     }
 
     @Test
     public void testAnotherGame() {
-        final Board board = Board.createStandardBoard();
 
+        final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
@@ -434,14 +436,14 @@ public class TestCheckmate {
                 Board.getCoordinateAtPosition("f3")));
 
         assertEquals(MoveStatus.DONE, t14.getMoveStatus());
-
         assertTrue(t14.getTransitionBoard().currentPlayer().isInCheckMate());
+
     }
 
     @Test
     public void testSmotheredMate() {
-        final Board board = Board.createStandardBoard();
 
+        final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
@@ -480,14 +482,14 @@ public class TestCheckmate {
                 Board.getCoordinateAtPosition("f3")));
 
         assertEquals(MoveStatus.DONE, t8.getMoveStatus());
-
         assertTrue(t8.getTransitionBoard().currentPlayer().isInCheckMate());
+
     }
 
     @Test
     public void testHippopotamusMate() {
-        final Board board = Board.createStandardBoard();
 
+        final Board board = Board.createStandardBoard();
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
@@ -547,12 +549,13 @@ public class TestCheckmate {
                 Board.getCoordinateAtPosition("f3")));
 
         assertEquals(MoveStatus.DONE, t12.getMoveStatus());
-
         assertTrue(t12.getTransitionBoard().currentPlayer().isInCheckMate());
+
     }
 
     @Test
     public void testBlackburneShillingMate() {
+
         final Board board = Board.createStandardBoard();
 
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
@@ -623,14 +626,14 @@ public class TestCheckmate {
                 Board.getCoordinateAtPosition("f3")));
 
         assertEquals(MoveStatus.DONE, t14.getMoveStatus());
-
         assertTrue(t14.getTransitionBoard().currentPlayer().isInCheckMate());
+
     }
 
     @Test
     public void testAnastasiaMate() {
 
-        Board.Builder builder = new Builder();
+        final Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(0, new Rook(Alliance.BLACK, 0));
@@ -654,7 +657,6 @@ public class TestCheckmate {
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();
-
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("d5"), Board.getCoordinateAtPosition("h5")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
@@ -663,7 +665,8 @@ public class TestCheckmate {
 
     @Test
     public void testTwoBishopMate() {
-        Board.Builder builder = new Builder();
+
+        final Builder builder = new Builder();
 
         builder.setPiece(7, new King(Alliance.BLACK, 7));
         builder.setPiece(8, new Pawn(Alliance.BLACK, 8));
@@ -678,17 +681,16 @@ public class TestCheckmate {
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();
-
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("a3"), Board.getCoordinateAtPosition("b2")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
-
         assertTrue(t1.getTransitionBoard().currentPlayer().isInCheckMate());
     }
 
     @Test
     public void testQueenRookMate() {
-        Board.Builder builder = new Builder();
+
+        final Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(5, new King(Alliance.BLACK, 5));
@@ -700,17 +702,17 @@ public class TestCheckmate {
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();
-
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("a6"), Board.getCoordinateAtPosition("a8")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
-
         assertTrue(t1.getTransitionBoard().currentPlayer().isInCheckMate());
+
     }
 
     @Test
     public void testQueenKnightMate() {
-        Board.Builder builder = new Builder();
+
+        final Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(4, new King(Alliance.BLACK, 4));
@@ -723,17 +725,17 @@ public class TestCheckmate {
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();
-
         final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("h7"), Board.getCoordinateAtPosition("e7")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
-
         assertTrue(t1.getTransitionBoard().currentPlayer().isInCheckMate());
+
     }
 
     @Test
     public void testBackRankMate() {
-        Board.Builder builder = new Builder();
+
+        final Builder builder = new Builder();
 
         // Black Layout
         builder.setPiece(4, new King(Alliance.BLACK, 4));
@@ -754,34 +756,7 @@ public class TestCheckmate {
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
         assertTrue(t1.getTransitionBoard().currentPlayer().isInCheckMate());
+
     }
-//
-//    @Test
-//    public void testSeaCadetMate() {
-//        //        final Board board = new Board(new StandardBoardConfigurator());
-//        //
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("e7"), Board.getCoordinateAtPosition("e5")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("g1"), Board.getCoordinateAtPosition("f3")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("b8"), Board.getCoordinateAtPosition("c6")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("d2"), Board.getCoordinateAtPosition("d4")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("e5"), Board.getCoordinateAtPosition("d4")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("c2"), Board.getCoordinateAtPosition("c3")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("d4"), Board.getCoordinateAtPosition("c3")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("b1"), Board.getCoordinateAtPosition("c3")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("d7"), Board.getCoordinateAtPosition("d6")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("f1"), Board.getCoordinateAtPosition("c4")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("c8"), Board.getCoordinateAtPosition("g4")));
-//        //
-//        //
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("c4"), Board.getCoordinateAtPosition("e2")));
-//        //
-//        //
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("c4"), Board.getCoordinateAtPosition("e2")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("c4"), Board.getCoordinateAtPosition("e2")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("c4"), Board.getCoordinateAtPosition("e2")));
-//        //        Player.makeMove(board, MoveFactory.createMove(board, Board.getCoordinateAtPosition("d4"), Board.getCoordinateAtPosition("f3")));
-//        //        assertTrue(board.currentPlayer().isInCheckMate());
-//    }
 
 }

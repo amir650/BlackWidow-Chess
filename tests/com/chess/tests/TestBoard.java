@@ -36,7 +36,7 @@ public class TestBoard {
     @Test
     public void testPlainKingMove() {
 
-        final Board.Builder builder = new Builder();
+        final Builder builder = new Builder();
         // Black Layout
         builder.setPiece(4, new King(Alliance.BLACK, 4));
         builder.setPiece(12, new Pawn(Alliance.BLACK, 12));
@@ -74,38 +74,38 @@ public class TestBoard {
         final MoveTransition t2 = t1.getTransitionBoard().makeMove(MoveFactory.createMove(t1.getTransitionBoard(), Board.getCoordinateAtPosition("e7"),
                 Board.getCoordinateAtPosition("e5")));
 
-        final MoveTransition t3 = t2.getTransitionBoard().makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("g1"),
+        final MoveTransition t3 = t2.getTransitionBoard().makeMove(MoveFactory.createMove(t2.getTransitionBoard(), Board.getCoordinateAtPosition("g1"),
                 Board.getCoordinateAtPosition("f3")));
-        final MoveTransition t4 = t3.getTransitionBoard().makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("d7"),
+        final MoveTransition t4 = t3.getTransitionBoard().makeMove(MoveFactory.createMove(t3.getTransitionBoard(), Board.getCoordinateAtPosition("d7"),
                 Board.getCoordinateAtPosition("d5")));
 
-        final MoveTransition t5 = t4.getTransitionBoard().makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e4"),
+        final MoveTransition t5 = t4.getTransitionBoard().makeMove(MoveFactory.createMove(t4.getTransitionBoard(), Board.getCoordinateAtPosition("e4"),
                 Board.getCoordinateAtPosition("d5")));
-        final MoveTransition t6 = t5.getTransitionBoard().makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("d8"),
+        final MoveTransition t6 = t5.getTransitionBoard().makeMove(MoveFactory.createMove(t5.getTransitionBoard(), Board.getCoordinateAtPosition("d8"),
                 Board.getCoordinateAtPosition("d5")));
 
-        final MoveTransition t7 = t6.getTransitionBoard().makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("f3"),
+        final MoveTransition t7 = t6.getTransitionBoard().makeMove(MoveFactory.createMove(t6.getTransitionBoard(), Board.getCoordinateAtPosition("f3"),
                 Board.getCoordinateAtPosition("g5")));
-        final MoveTransition t8 = t7.getTransitionBoard().makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("f7"),
+        final MoveTransition t8 = t7.getTransitionBoard().makeMove(MoveFactory.createMove(t7.getTransitionBoard(), Board.getCoordinateAtPosition("f7"),
                 Board.getCoordinateAtPosition("f6")));
 
-        final MoveTransition t9 = t8.getTransitionBoard().makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("d1"),
+        final MoveTransition t9 = t8.getTransitionBoard().makeMove(MoveFactory.createMove(t8.getTransitionBoard(), Board.getCoordinateAtPosition("d1"),
                 Board.getCoordinateAtPosition("h5")));
-        final MoveTransition t10 = t9.getTransitionBoard().makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("g7"),
+        final MoveTransition t10 = t9.getTransitionBoard().makeMove(MoveFactory.createMove(t9.getTransitionBoard(), Board.getCoordinateAtPosition("g7"),
                 Board.getCoordinateAtPosition("g6")));
 
-        final MoveTransition t11 = t10.getTransitionBoard().makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("h5"),
+        final MoveTransition t11 = t10.getTransitionBoard().makeMove(MoveFactory.createMove(t10.getTransitionBoard(), Board.getCoordinateAtPosition("h5"),
                 Board.getCoordinateAtPosition("h4")));
-        final MoveTransition t12 = t11.getTransitionBoard().makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("f6"),
+        final MoveTransition t12 = t11.getTransitionBoard().makeMove(MoveFactory.createMove(t11.getTransitionBoard(), Board.getCoordinateAtPosition("f6"),
                 Board.getCoordinateAtPosition("g5")));
 
-        final MoveTransition t13 = t12.getTransitionBoard().makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("h4"),
+        final MoveTransition t13 = t12.getTransitionBoard().makeMove(MoveFactory.createMove(t12.getTransitionBoard(), Board.getCoordinateAtPosition("h4"),
                 Board.getCoordinateAtPosition("g5")));
-        final MoveTransition t14 = t13.getTransitionBoard().makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("d5"),
+        final MoveTransition t14 = t13.getTransitionBoard().makeMove(MoveFactory.createMove(t13.getTransitionBoard(), Board.getCoordinateAtPosition("d5"),
                 Board.getCoordinateAtPosition("e4")));
 
-        assertTrue(t14.getTransitionBoard().whitePlayer().getActivePieces().size() == calculatedActivesFor(board, Alliance.WHITE));
-        assertTrue(t14.getTransitionBoard().blackPlayer().getActivePieces().size() == calculatedActivesFor(board, Alliance.BLACK));
+        assertTrue(t14.getTransitionBoard().whitePlayer().getActivePieces().size() == calculatedActivesFor(t14.getTransitionBoard(), Alliance.WHITE));
+        assertTrue(t14.getTransitionBoard().blackPlayer().getActivePieces().size() == calculatedActivesFor(t14.getTransitionBoard(), Alliance.BLACK));
 
     }
 

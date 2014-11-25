@@ -28,6 +28,7 @@ public final class Board {
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
+    private final Piece enPassantPawn;
 
     private static final String[] ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
     private static final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
@@ -54,6 +55,7 @@ public final class Board {
 
         this.whitePieces = ImmutableList.copyOf(calculateActivePieces(Alliance.WHITE));
         this.blackPieces = ImmutableList.copyOf(calculateActivePieces(Alliance.BLACK));
+        this.enPassantPawn = boardBuilder.enPassantPawn;
 
         final List<Move> whiteStandardMoves = calculateLegalMoves(this.whitePieces);
         final List<Move> blackStandardMoves = calculateLegalMoves(this.blackPieces);
@@ -83,6 +85,10 @@ public final class Board {
         return this.whitePieces;
     }
 
+    public Piece getEnPassantPawn() {
+        return this.enPassantPawn;
+    }
+
     public Iterable<Piece> getAllPieces() {
         return Iterables.concat(this.whitePieces, this.blackPieces);
     }
@@ -101,6 +107,10 @@ public final class Board {
 
     public Tile getTile(final int coordinate) {
         return this.gameBoard[coordinate];
+    }
+
+    public Tile[] getTiles() {
+        return this.gameBoard;
     }
 
     public Tile[] getGameBoard() {
@@ -251,6 +261,7 @@ public final class Board {
 
         Map<Integer, Piece> boardConfig;
         Alliance nextMoveMaker;
+        Piece enPassantPawn;
 
         public Builder() {
             this.boardConfig = new HashMap<>();
@@ -263,6 +274,11 @@ public final class Board {
 
         public Builder setMoveMaker(final Alliance nextMoveMaker) {
             this.nextMoveMaker = nextMoveMaker;
+            return this;
+        }
+
+        public Builder setEnPassantPawn(final Piece enPassantPawn) {
+            this.enPassantPawn = enPassantPawn;
             return this;
         }
 
