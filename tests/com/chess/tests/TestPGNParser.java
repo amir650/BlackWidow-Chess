@@ -61,11 +61,6 @@ public class TestPGNParser {
     }
 
     @Test
-    public void testBigPGN() throws IOException {
-        //doTest("com/chess/tests/pgn/bigTest.pgn", 0);
-    }
-
-    @Test
     public void test10() throws IOException {
         doTest("com/chess/tests/pgn/t10.pgn");
     }
