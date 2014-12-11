@@ -1,22 +1,15 @@
 package com.chess.com.chess.pgn;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import com.google.common.collect.ImmutableList;
-
 public class GameFactory {
 
-    private static AtomicInteger GAME_COUNTER = new AtomicInteger();
-
-    public static Game createGame(final Map<String, String> tags,
-                                      final String gameText) {
+    public static Game createGame(final PGNGameTags tags,
+                                  final String gameText,
+                                  final String outcome) {
 
         try {
-            return new ValidGame(GAME_COUNTER.incrementAndGet(), tags, ImmutableList.copyOf(PGNUtilities.processMoveText(gameText)));
+            return new ValidGame(tags, PGNUtilities.processMoveText(gameText), outcome);
         } catch(final ParsePGNException e) {
-            return new InvalidGame(GAME_COUNTER.incrementAndGet(), tags, Collections.<String>emptyList());
+            return new InvalidGame(tags, null, outcome);
         }
     }
 }

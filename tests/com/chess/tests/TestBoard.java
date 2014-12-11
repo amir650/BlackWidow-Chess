@@ -44,7 +44,7 @@ public class TestBoard {
         builder.setPiece(52, new Pawn(Alliance.WHITE, 52));
         builder.setPiece(60, new King(Alliance.WHITE, 60));
         builder.setMoveMaker(Alliance.WHITE);
-
+        // Set the current player
         final Board board = builder.build();
 
         assertEquals(board.whitePlayer().getLegalMoves().size(), 6);

@@ -19,10 +19,13 @@ public class TestKnight {
     public void testLegalMoveAllAvailable() {
 
         final Builder boardBuilder = new Builder();
+        // Black Layout
         boardBuilder.setPiece(4, new King(Alliance.BLACK, 4));
         boardBuilder.setPiece(28, new Knight(Alliance.BLACK, 28));
+        // White Layout
         boardBuilder.setPiece(36, new Knight(Alliance.WHITE, 36));
         boardBuilder.setPiece(60, new King(Alliance.WHITE, 60));
+        // Set the current player
         boardBuilder.setMoveMaker(Alliance.WHITE);
 
         final Board board = boardBuilder.build();

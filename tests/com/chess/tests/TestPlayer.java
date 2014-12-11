@@ -75,7 +75,7 @@ public class TestPlayer {
         builder.setPiece(44, new Bishop(Alliance.WHITE, 44));
         builder.setPiece(52, new Rook(Alliance.WHITE, 52));
         builder.setPiece(58, new King(Alliance.WHITE, 58));
-
+        // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();

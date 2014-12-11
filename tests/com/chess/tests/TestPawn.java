@@ -27,7 +27,7 @@ public class TestPawn {
         // White Layout
         builder.setPiece(15, new Pawn(Alliance.WHITE, 15));
         builder.setPiece(52, new King(Alliance.WHITE, 52));
-
+        // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();

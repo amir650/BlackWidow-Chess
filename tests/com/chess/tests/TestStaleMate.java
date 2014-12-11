@@ -21,7 +21,6 @@ public class TestStaleMate {
     public void testAnandKramnikStaleMate() {
 
         final Builder builder = new Builder();
-
         // Black Layout
         builder.setPiece(14, new Pawn(Alliance.BLACK, 14));
         builder.setPiece(21, new Pawn(Alliance.BLACK, 21));
@@ -30,7 +29,7 @@ public class TestStaleMate {
         builder.setPiece(29, new Pawn(Alliance.WHITE, 29));
         builder.setPiece(31, new King(Alliance.WHITE, 31));
         builder.setPiece(39, new Pawn(Alliance.WHITE, 39));
-
+        // Set the current player
         builder.setMoveMaker(Alliance.BLACK);
 
         final Board board = builder.build();
@@ -50,13 +49,12 @@ public class TestStaleMate {
     public void testAnonymousStaleMate() {
 
         final Builder builder = new Builder();
-
         // Black Layout
         builder.setPiece(2, new King(Alliance.BLACK, 2));
         // White Layout
         builder.setPiece(10, new Pawn(Alliance.WHITE, 10));
         builder.setPiece(26, new King(Alliance.WHITE, 26));
-
+        // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();
@@ -76,14 +74,13 @@ public class TestStaleMate {
     public void testAnonymousStaleMate2() {
 
         final Builder builder = new Builder();
-
         // Black Layout
         builder.setPiece(0, new King(Alliance.BLACK, 0));
         // White Layout
         builder.setPiece(16, new Pawn(Alliance.WHITE, 16));
         builder.setPiece(17, new King(Alliance.WHITE, 17));
         builder.setPiece(19, new Bishop(Alliance.WHITE, 19));
-
+        // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();

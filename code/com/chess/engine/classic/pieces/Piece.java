@@ -9,12 +9,12 @@ import com.chess.engine.classic.board.Move;
 
 public abstract class Piece implements Copyable<Piece>{
 
-    protected final Type pieceType;
+    protected final PieceType pieceType;
     protected final Alliance pieceAlliance;
     protected final int piecePosition;
     protected final boolean isFirstMove;
 
-    Piece(final Type type,
+    Piece(final PieceType type,
           final Alliance alliance,
           final int piecePosition,
           final boolean isFirstMove) {
@@ -31,7 +31,7 @@ public abstract class Piece implements Copyable<Piece>{
         this.isFirstMove = p.isFirstMove();
     }
 
-    public Type getPieceType() {
+    public PieceType getPieceType() {
         return this.pieceType;
     }
 
@@ -54,7 +54,7 @@ public abstract class Piece implements Copyable<Piece>{
     public abstract Piece movePiece(Move move);
 
     public boolean isKing() {
-        return this.pieceType == Type.KING;
+        return this.pieceType == PieceType.KING;
     }
 
     @Override
@@ -87,7 +87,7 @@ public abstract class Piece implements Copyable<Piece>{
 
     public abstract List<Move> calculateLegalMoves(final Board board);
 
-    public enum Type {
+    public enum PieceType {
 
         PAWN(100, "P"),
         KNIGHT(300, "N"),
@@ -108,7 +108,7 @@ public abstract class Piece implements Copyable<Piece>{
             return this.pieceName;
         }
 
-        Type(final int val, final String pieceName) {
+        PieceType(final int val, final String pieceName) {
             this.value = val;
             this.pieceName = pieceName;
         }

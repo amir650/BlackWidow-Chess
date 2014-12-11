@@ -1,32 +1,45 @@
 package com.chess.com.chess.pgn;
 
 import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 public abstract class Game implements Playable {
 
-    protected final Map<String, String> tags;
+    protected final PGNGameTags tags;
     protected final List<String> moves;
-    protected final int gameId;
+    protected final String winner;
 
-    Game(final int gameId,
-         final Map<String, String> tags,
-         final List<String> moves) {
-        this.gameId = gameId;
-        this.tags = ImmutableMap.copyOf(tags);
-        this.moves = ImmutableList.copyOf(moves);
+    Game(final PGNGameTags tags,
+         final List<String> moves,
+         final String outcome) {
+        this.tags = tags;
+        this.moves = moves;
+        this.winner = calculateWinner(outcome);
+    }
+
+    @Override
+    public String toString() {
+        return this.tags.toString();
     }
 
     public List<String> getMoves() {
         return this.moves;
     }
 
-    public enum GameStatus {
-        PLAYED_SUCCESSFULLY,
-        PLAYED_WITH_ERRORS
+    public String getWinner() {
+        return this.winner;
+    }
+
+    private static String calculateWinner(final String gameOutcome) {
+        if(gameOutcome.equals("1-0")) {
+            return "White";
+        }
+        if(gameOutcome.equals("0-1")) {
+            return "Black";
+        }
+        if(gameOutcome.equals("1/2-1/2")) {
+            return "Tie";
+        }
+        return "None";
     }
 
 }

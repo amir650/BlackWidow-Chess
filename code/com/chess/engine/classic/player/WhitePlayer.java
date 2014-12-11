@@ -1,6 +1,5 @@
 package com.chess.engine.classic.player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
@@ -11,8 +10,9 @@ import com.chess.engine.classic.board.Move.QueenSideCastleMove;
 import com.chess.engine.classic.board.Tile;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Piece;
-import com.chess.engine.classic.pieces.Piece.Type;
+import com.chess.engine.classic.pieces.Piece.PieceType;
 import com.chess.engine.classic.pieces.Rook;
+import com.google.common.collect.ImmutableList;
 
 public class WhitePlayer extends Player {
 
@@ -24,9 +24,9 @@ public class WhitePlayer extends Player {
 
     @Override
     protected List<Move> calculateKingCastles(final List<Move> playerLegals,
-                                           final List<Move> opponentLegals) {
+                                              final List<Move> opponentLegals) {
 
-        final List<Move> kingCastles = new ArrayList<>();
+        final ImmutableList.Builder<Move> kingCastles = ImmutableList.builder();
 
         if(this.playerKing.isFirstMove() && !this.playerKing.isInCheck(opponentLegals)) {
             //whites king side castle
@@ -34,7 +34,7 @@ public class WhitePlayer extends Player {
                 final Tile rookTile = this.board.getTile(63);
                 if(rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove()) {
                     if(Player.calculateAttacksOnTile(61, opponentLegals).isEmpty() && Player.calculateAttacksOnTile(62, opponentLegals).isEmpty() &&
-                       rookTile.getPiece().getPieceType() == Type.ROOK) {
+                       rookTile.getPiece().getPieceType() == PieceType.ROOK) {
                         kingCastles.add(new KingSideCastleMove(this.board, this.playerKing.getPiecePosition(), 62,
                                 this.playerKing, (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 61));
                     }
@@ -46,14 +46,14 @@ public class WhitePlayer extends Player {
                 final Tile rookTile = this.board.getTile(56);
                 if(rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove()) {
                     if(Player.calculateAttacksOnTile(57, opponentLegals).isEmpty() && Player.calculateAttacksOnTile(58, opponentLegals).isEmpty() &&
-                       Player.calculateAttacksOnTile(59, opponentLegals).isEmpty() && rookTile.getPiece().getPieceType() == Type.ROOK) {
+                       Player.calculateAttacksOnTile(59, opponentLegals).isEmpty() && rookTile.getPiece().getPieceType() == PieceType.ROOK) {
                         kingCastles.add(new QueenSideCastleMove(this.board, this.playerKing.getPiecePosition(), 58,
                                 this.playerKing, (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 59));
                     }
                 }
             }
         }
-        return kingCastles;
+        return kingCastles.build();
     }
 
     @Override
@@ -78,9 +78,9 @@ public class WhitePlayer extends Player {
 
     @Override
     protected King findKing() {
-        for(final Piece p : this.board.getWhitePieces()) {
-            if(p.isKing()) {
-                return (King) p;
+        for(final Piece piece : this.board.getWhitePieces()) {
+            if(piece.isKing()) {
+                return (King) piece;
             }
         }
         throw new RuntimeException("Should not reach here! Black King could not be established!");

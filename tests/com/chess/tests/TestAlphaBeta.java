@@ -105,8 +105,7 @@ public class TestAlphaBeta {
         builder.setPiece(61, new Bishop(Alliance.WHITE, 61));
         builder.setPiece(62, new Knight(Alliance.WHITE, 62));
         builder.setPiece(63, new Rook(Alliance.WHITE, 63));
-
-        //black to move
+        // Set the current player
         builder.setMoveMaker(Alliance.BLACK);
 
         final Board board = builder.build();
@@ -135,8 +134,7 @@ public class TestAlphaBeta {
         builder.setPiece(39, new Pawn(Alliance.WHITE, 39));
         builder.setPiece(42, new King(Alliance.WHITE, 42));
         builder.setPiece(46, new Pawn(Alliance.WHITE, 46));
-
-        //white to move
+        // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();

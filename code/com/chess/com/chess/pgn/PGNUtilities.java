@@ -7,16 +7,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.chess.com.chess.pgn.Book.Builder;
+import com.chess.com.chess.pgn.PGNGameTags.TagsBuilder;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 
 public class PGNUtilities {
 
@@ -30,37 +30,33 @@ public class PGNUtilities {
     private static final Pattern PLAIN_PAWN_PROMOTION_MOVE = Pattern.compile("(.*?)=(.*?)");
     private static final Pattern ATTACK_PAWN_PROMOTION_MOVE = Pattern.compile("(.*?)x(.*?)=(.*?)");
 
-    public static Book parsePGNFile(final File pgnFile) throws IOException {
-        final Builder bookBuilder = new Builder();
+    public static void persistPGNFile(final File pgnFile) throws IOException {
         try (final BufferedReader br = new BufferedReader(new FileReader(pgnFile))) {
             String line;
-            Map<String, String> tags = new HashMap<>();
+            TagsBuilder tagsBuilder = new TagsBuilder();
             StringBuilder gameTextBuilder = new StringBuilder();
             while((line = br.readLine()) != null) {
                 if (!line.isEmpty()) {
                     if (isTag(line)) {
                         final Matcher matcher = PGN_PATTERN.matcher(line);
                         if (matcher.find()) {
-                            final String tagKey = matcher.group(1);
-                            final String tagValue = matcher.group(2);
-                            if(isImportantTag(tagKey)) {
-                                tags.put(tagKey, tagValue);
-                            }
+                            tagsBuilder.addTag(matcher.group(1), matcher.group(2));
                         }
                     }
                     else if (isEndOfGame(line)) {
                         final String[] ending = line.split(" ");
                         final String outcome = ending[ending.length - 1];
                         gameTextBuilder.append(line.replace(outcome, "")).append(" ");
-                        final Game game = GameFactory.createGame(tags, gameTextBuilder.toString());
-                        System.out.println("Finished parsing " +game);
-                        if(game.isValid()) {
-                            bookBuilder.addGame(game);
-                        } else {
-                            System.out.println("Skipping invalid game!");
+                        final String gameText = gameTextBuilder.toString().trim();
+                        if(!gameText.isEmpty() && gameText.length() > 80) {
+                            final Game game = GameFactory.createGame(tagsBuilder.build(), gameText, outcome);
+                            System.out.println("Finished parsing " +game);
+                            if(game.isValid()) {
+                                PGNDataStore.get().persistGame(game);
+                            }
                         }
                         gameTextBuilder = new StringBuilder();
-                        tags = new HashMap<>();
+                        tagsBuilder = new TagsBuilder();
                     }
                     else {
                         gameTextBuilder.append(line).append(" ");
@@ -69,43 +65,51 @@ public class PGNUtilities {
             }
             br.readLine();
         }
-        return bookBuilder.build();
-    }
-
-    private static boolean isImportantTag(final String tagKey) {
-        return tagKey.startsWith("White") || tagKey.startsWith("Black") ||
-                tagKey.startsWith("Result") || tagKey.startsWith("PlyCount");
+        System.out.println("Finished building book " +pgnFile);
     }
 
     public static List<String> processMoveText(final String gameText) throws ParsePGNException {
-        return gameText.isEmpty() ? Collections.emptyList() : createRowsFromGameText(gameText.trim());
+        return gameText.isEmpty() ? Collections.emptyList() : createMovesFromPGN(gameText);
     }
 
-    private static List<String> createRowsFromGameText(final String gameText) {
-        final List<String> partiallyProcessedData = new LinkedList<>(Arrays.asList(
-                removeParenthesis(gameText).replaceAll(Pattern.quote("$") + "[0-9]+", "").replaceAll("[0-9]+\\s*\\.\\.\\.", "")
-                        .split("\\s*[0-9]+" + Pattern.quote("."))));
-        final List<String> processedData = new ArrayList<>();
-        for(final String d : partiallyProcessedData) {
-            if(!d.isEmpty()) {
-                processedData.add(d);
-            }
+    private static List<String> createMovesFromPGN(final String pgnText) {
+
+        if(!pgnText.startsWith("1.")) {
+            return Collections.emptyList();
         }
+        final List<String> sanitizedMoves = new LinkedList<>(Arrays.asList(
+                removeParenthesis(pgnText).replaceAll(Pattern.quote("$") + "[0-9]+", "").replaceAll("[0-9]+\\s*\\.\\.\\.", "")
+                        .split("\\s*[0-9]+" + Pattern.quote("."))));
+        final List<String> processedData = removeEmptyText(sanitizedMoves);
         final String[] moveRows = processedData.toArray(new String[processedData.size()]);
-        final List<String> moves = new ArrayList<>();
+        final ImmutableList.Builder<String> moves = new Builder<>();
         for(final String row : moveRows) {
-            final String[] moveContent = row.trim().replaceAll("\\s+", " ").split(" ");
+            final String[] moveContent = removeWhiteSpace(row).split(" ");
             if(moveContent.length == 1) {
                 moves.add(moveContent[0]);
             } else if(moveContent.length == 2) {
-                moves.add(moveContent[0].intern());
-                moves.add(moveContent[1].intern());
+                moves.add(moveContent[0]);
+                moves.add(moveContent[1]);
             } else {
-                System.out.println("problem reading: " +gameText+ " skipping!");
+                System.out.println("problem reading: " +pgnText+ " skipping!");
                 return Collections.emptyList();
             }
         }
-        return moves;
+        return moves.build();
+    }
+
+    private static List<String> removeEmptyText(final List<String> moves) {
+        final List<String> result = new ArrayList<>();
+        for(final String moveText : moves) {
+            if(!moveText.isEmpty()) {
+                result.add(moveText);
+            }
+        }
+        return result;
+    }
+
+    private static String removeWhiteSpace(final String row) {
+        return row.trim().replaceAll("\\s+", " ");
     }
 
     private static boolean isTag(final String gameText) {
@@ -195,9 +199,9 @@ public class PGNUtilities {
 
     private static Move extractCastleMove(final Board board,
                                           final String castleMove) {
-        for (final Move m : board.currentPlayer().getLegalMoves()) {
-            if (m.isCastle() && m.toString().equals(castleMove)) {
-                return m;
+        for (final Move move : board.currentPlayer().getLegalMoves()) {
+            if (move.isCastle() && move.toString().equals(castleMove)) {
+                return move;
             }
         }
         return Move.NULL_MOVE;

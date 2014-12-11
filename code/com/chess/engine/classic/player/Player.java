@@ -1,6 +1,5 @@
 package com.chess.engine.classic.player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
@@ -62,13 +61,13 @@ public abstract class Player {
     }
 
     public List <Move> calculateAttacksOnTile(final int tile) {
-        final List <Move> moves = new ArrayList<>();
+        final ImmutableList.Builder<Move> attackMoves = ImmutableList.builder();
         for (final Move move : this.legalMoves) {
             if (tile == move.getDestinationCoordinate()) {
-                moves.add(move);
+                attackMoves.add(move);
             }
         }
-        return (moves);
+        return attackMoves.build();
     }
 
     public List<Move> getLegalMoves() {
@@ -81,13 +80,13 @@ public abstract class Player {
 
     public static List<Move> calculateAttacksOnTile(final int tile,
                                                     final List<Move> moves) {
-        final List<Move> attackMoves = new ArrayList<>();
+        final ImmutableList.Builder<Move> attackMoves = ImmutableList.builder();
         for (final Move move : moves) {
             if (tile == move.getDestinationCoordinate()) {
                 attackMoves.add(move);
             }
         }
-        return (attackMoves);
+        return attackMoves.build();
     }
 
     public abstract List<Piece> getActivePieces();

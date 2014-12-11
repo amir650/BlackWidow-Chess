@@ -3,11 +3,11 @@ package com.chess.engine.classic.board;
 import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.pieces.Pawn;
 import com.chess.engine.classic.pieces.Piece;
-import com.chess.engine.classic.pieces.Piece.Type;
+import com.chess.engine.classic.pieces.Piece.PieceType;
 import com.chess.engine.classic.pieces.Rook;
 import com.google.common.collect.Iterables;
 
-public class Move {
+public abstract class Move {
 
     protected final Board board;
     protected final int currentCoordinate;
@@ -17,10 +17,10 @@ public class Move {
 
     public static final Move NULL_MOVE = new NullMove();
 
-    public Move(final Board board,
-                final int currentCoordinate,
-                final int destinationCoordinate,
-                final Piece pieceMoved) {
+    private Move(final Board board,
+         final int currentCoordinate,
+         final int destinationCoordinate,
+         final Piece pieceMoved) {
         this.board = board;
         this.currentCoordinate = currentCoordinate;
         this.destinationCoordinate = destinationCoordinate;
@@ -28,7 +28,9 @@ public class Move {
         this.isFirstMove = pieceMoved.isFirstMove();
     }
 
-    public Move(final Board board, final int currentCoordinate, final int destinationCoordinate) {
+    private Move(final Board board,
+         final int currentCoordinate,
+         final int destinationCoordinate) {
         this.board = board;
         this.currentCoordinate = currentCoordinate;
         this.destinationCoordinate = destinationCoordinate;
@@ -113,12 +115,14 @@ public class Move {
         return builder.build();
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder s = new StringBuilder(Board.getPositionAtCoordinate(this.currentCoordinate));
-        s.append("-");
-        s.append(Board.getPositionAtCoordinate(this.destinationCoordinate));
-        return s.toString();
+    public String disambiguationFile() {
+        for(final Move move : board.currentPlayer().getLegalMoves()) {
+            if(move.getDestinationCoordinate() == this.destinationCoordinate && !this.equals(move) &&
+               this.movedPiece.getPieceType().equals(move.getMovedPiece().getPieceType())) {
+                return Board.getPositionAtCoordinate(this.currentCoordinate).substring(0, 1);
+            }
+        }
+        return "";
     }
 
     public static class PawnPromotion
@@ -156,7 +160,6 @@ public class Move {
             for (final Piece piece : pawnMovedBoard.currentPlayer().getOpponent().getActivePieces()) {
                 builder.setPiece(piece.getPiecePosition(), piece);
             }
-
             builder.setPiece(this.destinationCoordinate, this.promotedPawn.getPromotionPiece().movePiece(this));
             builder.setMoveMaker(pawnMovedBoard.currentPlayer().getAlliance());
             return builder.build();
@@ -178,7 +181,110 @@ public class Move {
             s.append("-");
             s.append(Board.getPositionAtCoordinate(this.destinationCoordinate));
             s.append("=");
-            s.append(Type.QUEEN.toString());
+            s.append(PieceType.QUEEN.toString());
+            return s.toString();
+        }
+
+    }
+
+    public static class MajorMove
+            extends Move {
+
+        public MajorMove(final Board board,
+                         final int currentCoordinate,
+                         final int destinationCoordinate,
+                         final Piece pieceMoved) {
+            super(board, currentCoordinate, destinationCoordinate, pieceMoved);
+        }
+
+        @Override
+        public boolean equals(final Object aThat) {
+            return this == aThat || aThat instanceof MajorMove && (super.equals(aThat));
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder s = new StringBuilder(movedPiece.getPieceType().toString());
+            s.append(disambiguationFile());
+            s.append(Board.getPositionAtCoordinate(this.destinationCoordinate));
+            return s.toString();
+        }
+
+    }
+
+    public static class MajorAttackMove
+            extends AttackMove {
+
+        public MajorAttackMove(final Board board,
+                               final int currentCoordinate,
+                               final int destinationCoordinate,
+                               final Piece pieceMoved,
+                               final Piece pieceAttacked) {
+            super(board, currentCoordinate, destinationCoordinate, pieceMoved, pieceAttacked);
+        }
+
+        @Override
+        public boolean equals(final Object aThat) {
+            return this == aThat || aThat instanceof PawnAttackMove && (super.equals(aThat));
+
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder s = new StringBuilder(movedPiece.getPieceType().toString());
+            s.append(disambiguationFile());
+            s.append("x");
+            s.append(Board.getPositionAtCoordinate(this.destinationCoordinate));
+            return s.toString();
+        }
+
+    }
+
+    public static class PawnMove
+            extends Move {
+
+        public PawnMove(final Board board,
+                        final int currentCoordinate,
+                        final int destinationCoordinate,
+                        final Pawn pieceMoved) {
+            super(board, currentCoordinate, destinationCoordinate, pieceMoved);
+        }
+
+        @Override
+        public boolean equals(final Object aThat) {
+            return this == aThat || aThat instanceof PawnMove && (super.equals(aThat));
+        }
+
+        @Override
+        public String toString() {
+            return Board.getPositionAtCoordinate(this.destinationCoordinate);
+        }
+
+    }
+
+    public static class PawnAttackMove
+            extends AttackMove {
+
+        public PawnAttackMove(final Board board,
+                              final int currentCoordinate,
+                              final int destinationCoordinate,
+                              final Piece pieceMoved,
+                              final Piece pieceAttacked) {
+            super(board, currentCoordinate, destinationCoordinate, pieceMoved, pieceAttacked);
+        }
+
+        @Override
+        public boolean equals(final Object aThat) {
+            return this == aThat || aThat instanceof PawnAttackMove && (super.equals(aThat));
+
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder s = new StringBuilder(Board.getPositionAtCoordinate(this.currentCoordinate).substring(0, 1));
+            s.append(disambiguationFile());
+            s.append("x");
+            s.append(Board.getPositionAtCoordinate(this.destinationCoordinate));
             return s.toString();
         }
 
@@ -214,6 +320,11 @@ public class Move {
             builder.setEnPassantPawn(movedPiece);
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
             return builder.build();
+        }
+
+        @Override
+        public String toString() {
+            return Board.getPositionAtCoordinate(this.destinationCoordinate);
         }
 
     }
@@ -352,16 +463,16 @@ public class Move {
 
     }
 
-    public static class AttackMove
+    public static abstract class AttackMove
             extends Move {
 
         private final Piece attackedPiece;
 
-        public AttackMove(final Board board,
-                          final int currentCoordinate,
-                          final int destinationCoordinate,
-                          final Piece pieceMoved,
-                          final Piece pieceAttacked) {
+        AttackMove(final Board board,
+                   final int currentCoordinate,
+                   final int destinationCoordinate,
+                   final Piece pieceMoved,
+                   final Piece pieceAttacked) {
             super(board, currentCoordinate, destinationCoordinate, pieceMoved);
             this.attackedPiece = pieceAttacked;
         }
@@ -387,14 +498,6 @@ public class Move {
             }
             final AttackMove that = (AttackMove) aThat;
             return (super.equals(that) && (getAttackedPiece().equals(that.getAttackedPiece())));
-        }
-
-        @Override
-        public String toString() {
-            final StringBuilder s = new StringBuilder(Board.getPositionAtCoordinate(this.currentCoordinate));
-            s.append("x");
-            s.append(Board.getPositionAtCoordinate(this.destinationCoordinate));
-            return s.toString();
         }
 
         @Override
@@ -435,11 +538,11 @@ public class Move {
         public static Move createMove(final Board board,
                                       final int currentCoordinate,
                                       final int destinationCoordinate) {
-            for (final Move m : Iterables.concat(board.whitePlayer().getLegalMoves(),
+            for (final Move move : Iterables.concat(board.whitePlayer().getLegalMoves(),
                     board.blackPlayer().getLegalMoves())) {
-                if (m.getCurrentCoordinate() == currentCoordinate &&
-                    m.getDestinationCoordinate() == destinationCoordinate) {
-                    return m;
+                if (move.getCurrentCoordinate() == currentCoordinate &&
+                    move.getDestinationCoordinate() == destinationCoordinate) {
+                    return move;
                 }
             }
             return NULL_MOVE;

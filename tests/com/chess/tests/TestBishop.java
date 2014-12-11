@@ -25,7 +25,7 @@ public class TestBishop {
         // White Layout
         builder.setPiece(35, new Bishop(Alliance.WHITE, 35));
         builder.setPiece(60, new King(Alliance.WHITE, 60));
-
+        // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();
@@ -58,7 +58,7 @@ public class TestBishop {
         // White Layout
         builder.setPiece(0, new Bishop(Alliance.WHITE, 0));
         builder.setPiece(60, new King(Alliance.WHITE, 60));
-
+        // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();
@@ -93,7 +93,7 @@ public class TestBishop {
         // White Layout
         builder.setPiece(7, new Bishop(Alliance.WHITE, 7));
         builder.setPiece(60, new King(Alliance.WHITE, 60));
-
+        // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();
@@ -128,7 +128,7 @@ public class TestBishop {
         // White Layout
         builder.setPiece(56, new Bishop(Alliance.WHITE, 56));
         builder.setPiece(60, new King(Alliance.WHITE, 60));
-
+        // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();
@@ -163,7 +163,7 @@ public class TestBishop {
         // White Layout
         builder.setPiece(63, new Bishop(Alliance.WHITE, 63));
         builder.setPiece(60, new King(Alliance.WHITE, 60));
-
+        // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();

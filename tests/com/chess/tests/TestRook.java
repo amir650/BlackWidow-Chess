@@ -25,7 +25,7 @@ public class TestRook {
         // White Layout
         builder.setPiece(36, new Rook(Alliance.WHITE, 36));
         builder.setPiece(60, new King(Alliance.WHITE, 60));
-
+        // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
         final Board board = builder.build();
