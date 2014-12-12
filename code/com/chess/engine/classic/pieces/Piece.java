@@ -57,6 +57,10 @@ public abstract class Piece implements Copyable<Piece>{
         return this.pieceType == PieceType.KING;
     }
 
+    public boolean isPawn() {
+        return this.pieceType == PieceType.PAWN;
+    }
+
     @Override
     public int hashCode() {
         int hash = 1;

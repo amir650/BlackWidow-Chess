@@ -15,7 +15,8 @@ import org.junit.runners.Suite;
                      TestMiniMax.class,
                      TestAlphaBeta.class,
                      TestCastling.class,
-                     TestPawn.class
+                     TestPawn.class,
+                     TestPawnStructure.class
                      /*TestPGNParser.class*/})
 public class ChessTestSuite {
 }

@@ -35,6 +35,10 @@ public final class Board {
     public static final int NUM_TILES = 64;
     public static final boolean[] FIRST_COLUMN = initColumn(0);
     public static final boolean[] SECOND_COLUMN = initColumn(1);
+    public static final boolean[] THIRD_COLUMN = initColumn(2);
+    public static final boolean[] FOURTH_COLUMN = initColumn(3);
+    public static final boolean[] FIFTH_COLUMN = initColumn(4);
+    public static final boolean[] SIXTH_COLUMN = initColumn(5);
     public static final boolean[] SEVENTH_COLUMN = initColumn(6);
     public static final boolean[] EIGHTH_COLUMN = initColumn(7);
     public static final boolean[] FIRST_ROW = initRow(0);
@@ -259,8 +263,8 @@ public final class Board {
             this.boardConfig = new HashMap<>();
         }
 
-        public Builder setPiece(final int i, final Piece piece) {
-            this.boardConfig.put(i, piece);
+        public Builder setPiece(final int location, final Piece piece) {
+            this.boardConfig.put(location, piece);
             return this;
         }
 

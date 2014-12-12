@@ -343,7 +343,6 @@ public final class Table extends Observable {
     class TableGameAIWatcher
             implements Observer {
         public void update(final Observable o, final Object arg) {
-            System.out.println("Message board changed: Observable = " + o + " arg = " + arg);
             if (gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
 
                 final Thread t = new Thread("Think Tank") {

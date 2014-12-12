@@ -14,6 +14,7 @@ public class SimpleBoardEvaluator
 
     private static int scorePlayer(final Player player) {
         int score = player.getLegalMoves().size();
+        score += PawnStructureAnalyzer.get().pawnStructureScore(player.getActivePieces());
         for (final Piece piece : player.getActivePieces()) {
             score += (piece.getPieceValue() + piece.locationBonus());
         }

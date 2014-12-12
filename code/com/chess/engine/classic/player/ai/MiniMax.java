@@ -1,11 +1,9 @@
 package com.chess.engine.classic.player.ai;
 
-import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.MoveStatus;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.MoveTransition;
-import com.chess.engine.classic.player.Player;
 
 public class MiniMax implements MoveStrategy {
 
@@ -31,8 +29,6 @@ public class MiniMax implements MoveStrategy {
     public Move execute(final Board board,
                         final int depth) {
         final long startTime = System.currentTimeMillis();
-        final Player currentPlayer = board.currentPlayer();
-        final Alliance alliance = currentPlayer.getAlliance();
         Move best_move = null;
         int highest_seen_value = Integer.MIN_VALUE;
         int lowest_seen_value = Integer.MAX_VALUE;
@@ -41,13 +37,13 @@ public class MiniMax implements MoveStrategy {
         for (final Move move : board.currentPlayer().getLegalMoves()) {
             final MoveTransition moveTransition = board.makeMove(move);
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
-                current_value = alliance.isWhite() ? min(moveTransition.getTransitionBoard(), depth - 1) : max(moveTransition.getTransitionBoard(), depth - 1);
+                current_value = board.currentPlayer().getAlliance().isWhite() ? min(moveTransition.getTransitionBoard(), depth - 1) : max(moveTransition.getTransitionBoard(), depth - 1);
                 System.out.println("\t" + toString() + " move " + move + " scores " + current_value);
-                if (alliance.isWhite() &&
+                if (board.currentPlayer().getAlliance().isWhite() &&
                         current_value >= highest_seen_value) {
                     highest_seen_value = current_value;
                     best_move = move;
-                } else if (alliance.isBlack() &&
+                } else if (board.currentPlayer().getAlliance().isBlack() &&
                         current_value <= lowest_seen_value) {
                     lowest_seen_value = current_value;
                     best_move = move;

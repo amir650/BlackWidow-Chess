@@ -18,7 +18,7 @@ public class AlphaBeta implements MoveStrategy {
     private long boardsEvaluated;
     private long executionTime;
     private int quiescenceCount;
-    private static final int MAX_QUIESCENCE = 25000;
+    private static final int MAX_QUIESCENCE = 0;
 
     private enum MoveSorter {
 
