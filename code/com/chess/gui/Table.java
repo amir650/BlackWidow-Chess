@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -53,14 +54,14 @@ public final class Table extends Observable {
     private final TakenPiecesPanel takenPiecesPanel;
     private final BoardPanel boardPanel;
     private final ArrayList<Move> moveLog;
+    private final TableGameAIWatcher gameWatcher;
+    private final GameSetup gameSetup;
     private Board chessBoard;
     private Tile sourceTile;
     private Tile destinationTile;
     private Piece movedPiece;
     private Color lightTileColor = Color.decode("#FFFACD");
     private Color darkTileColor = Color.decode("#593E1A");
-    private TableGameAIWatcher gameWatcher;
-    private GameSetup gameSetup;
 
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(600, 600);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
@@ -92,6 +93,7 @@ public final class Table extends Observable {
         setDefaultLookAndFeelDecorated(true);
         this.gameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
+        center(this.gameFrame);
         this.gameFrame.setVisible(true);
     }
 
@@ -133,6 +135,15 @@ public final class Table extends Observable {
         tableMenuBar.add(createOptionsMenu());
     }
 
+    private static void center(JFrame frame) {
+        final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        final int w = frame.getSize().width;
+        final int h = frame.getSize().height;
+        final int x = (dim.width - w) / 2;
+        final int y = (dim.height - h) / 2;
+        frame.setLocation(x, y);
+    }
+
     private JMenu createFileMenu() {
         final JMenu filesMenu = new JMenu("File");
         filesMenu.setMnemonic(KeyEvent.VK_F);
@@ -143,9 +154,6 @@ public final class Table extends Observable {
             int option = chooser.showOpenDialog(Table.get().getGameFrame());
             if (option == JFileChooser.APPROVE_OPTION) {
                 loadPGNFile(chooser.getSelectedFile());
-            }
-            else {
-                System.out.println("You canceled, bro.");
             }
         });
         filesMenu.add(openPGN);
@@ -312,11 +320,11 @@ public final class Table extends Observable {
         Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
     }
 
-    private static void loadPGNFile(File pgnFile) {
+    private static void loadPGNFile(final File pgnFile) {
         try {
             PGNUtilities.persistPGNFile(pgnFile);
         }
-        catch (IOException e) {
+        catch (final IOException e) {
             e.printStackTrace();
         }
     }
@@ -352,13 +360,11 @@ public final class Table extends Observable {
                                 .getNextBestMove(Table.get().getGameBoard(), Table.get().getGameBoard().currentPlayer(),
                                         moveLog.toString().replaceAll("\\[", "").replaceAll("\\]", ""));
                         if (bookMove != Move.NULL_MOVE) {
-                            System.out.println("book move = " + bookMove);
                             Table.this.chessBoard = Table.get().getGameBoard().makeMove(bookMove).getTransitionBoard();
                             Table.get().getMoveLog().add(bookMove);
                             Table.get().getGameHistoryPanel().redo(Table.get().getMoveLog());
                             Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
                             Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
-
                         }
                         else {
                             Table.get().getGameBoard().currentPlayer().setMoveStrategy(new AlphaBeta());
@@ -390,9 +396,9 @@ public final class Table extends Observable {
 
         final TilePanel[] boardTiles;
 
-        BoardPanel(Board board) {
+        BoardPanel(final Board board) {
             super(new GridLayout(8,8));
-            this.boardTiles = new TilePanel[64];
+            this.boardTiles = new TilePanel[Board.NUM_TILES];
             for (int i = 0; i < boardTiles.length; i++) {
                 this.boardTiles[i] = new TilePanel(this, i);
                 add(this.boardTiles[i]);
@@ -403,7 +409,7 @@ public final class Table extends Observable {
             setBackground(Color.decode("#8B4726"));
         }
 
-        public void drawBoard(Board board) {
+        public void drawBoard(final Board board) {
             for (final TilePanel boardTile : boardTiles) {
                 boardTile.drawTile(board);
             }
@@ -548,14 +554,13 @@ public final class Table extends Observable {
         private void assignTilePieceIcon(final Board board) {
             this.removeAll();
             if(board.getTile(this.tileId).isTileOccupied()) {
-                final Piece p = board.getTile(this.tileId).getPiece();
                 try{
-                    final BufferedImage image = ImageIO.read(new File(
-                            "art/holywarriors/" + p.getPieceAllegiance().toString().substring(0, 1) + "" + p.toString() +
-                                    ".gif"));
-                    JLabel imageLabel = new JLabel(new ImageIcon(image));
-                    add(imageLabel);
-                } catch(IOException e) {
+                    final BufferedImage image = ImageIO.read(new File("art/holywarriors/" +
+                            board.getTile(this.tileId).getPiece().getPieceAllegiance().toString().substring(0, 1) + "" +
+                            board.getTile(this.tileId).getPiece().toString() +
+                            ".gif"));
+                    add(new JLabel(new ImageIcon(image)));
+                } catch(final IOException e) {
                     e.printStackTrace();
                 }
             }

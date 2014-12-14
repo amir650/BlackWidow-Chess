@@ -36,7 +36,7 @@ public final class Bishop extends Piece {
         int candidateDestinationCoordinate;
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             candidateDestinationCoordinate = this.piecePosition;
-            while (true) {
+            while (Board.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 if (isDiagonalExclusion(currentCandidate, candidateDestinationCoordinate)) {
                     break;
                 }
@@ -55,9 +55,6 @@ public final class Bishop extends Piece {
                         }
                         break;
                     }
-                }
-                else {
-                    break;
                 }
             }
         }

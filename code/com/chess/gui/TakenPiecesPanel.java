@@ -31,12 +31,12 @@ class TakenPiecesPanel extends JPanel {
         super(new BorderLayout());
         setBackground(Color.decode("0xFDF5E6"));
         setBorder(PANEL_BORDER);
-        northPanel = new JPanel(new GridLayout(8, 2));
-        southPanel = new JPanel(new GridLayout(8, 2));
-        northPanel.setBackground(PANEL_COLOR);
-        southPanel.setBackground(PANEL_COLOR);
-        add(northPanel, BorderLayout.NORTH);
-        add(southPanel, BorderLayout.SOUTH);
+        this.northPanel = new JPanel(new GridLayout(8, 2));
+        this.southPanel = new JPanel(new GridLayout(8, 2));
+        this.northPanel.setBackground(PANEL_COLOR);
+        this.southPanel.setBackground(PANEL_COLOR);
+        add(this.northPanel, BorderLayout.NORTH);
+        add(this.southPanel, BorderLayout.SOUTH);
         setPreferredSize(TAKEN_PIECES_PANEL_DIMENSION);
     }
 
@@ -53,11 +53,11 @@ class TakenPiecesPanel extends JPanel {
                     final ImageIcon ic = new ImageIcon(image);
                     final JLabel imageLabel = new JLabel(new ImageIcon(ic.getImage().getScaledInstance(ic.getIconWidth() - 15, ic.getIconWidth() - 15, Image.SCALE_SMOOTH)));
                     if (takenPiece.getPieceAllegiance().isWhite()) {
-                        southPanel.add(imageLabel);
+                        this.southPanel.add(imageLabel);
                     } else if (takenPiece.getPieceAllegiance().isBlack()) {
-                        northPanel.add(imageLabel);
+                        this.northPanel.add(imageLabel);
                     }
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                 }
             }

@@ -145,4 +145,45 @@ public class TestAlphaBeta {
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, Board.getCoordinateAtPosition("d5"), Board.getCoordinateAtPosition("c7")));
     }
+
+    @Test
+    public void eloTest1() {
+        final Builder builder = new Builder();
+        // Black Layout
+        builder.setPiece(0, new Rook(Alliance.BLACK, 0));
+        builder.setPiece(2, new Bishop(Alliance.BLACK, 2));
+        builder.setPiece(6, new King(Alliance.BLACK, 6));
+
+        builder.setPiece(14, new Pawn(Alliance.BLACK, 14));
+        builder.setPiece(18, new Knight(Alliance.BLACK, 18));
+        builder.setPiece(20, new Pawn(Alliance.BLACK, 20));
+        builder.setPiece(21, new Rook(Alliance.BLACK, 21));
+        builder.setPiece(23, new Pawn(Alliance.BLACK, 23));
+        builder.setPiece(24, new Queen(Alliance.BLACK, 24));
+        builder.setPiece(26, new Pawn(Alliance.BLACK, 26));
+        builder.setPiece(33, new Bishop(Alliance.BLACK, 33));
+        // White Layout
+        builder.setPiece(16, new Pawn(Alliance.WHITE, 16));
+        builder.setPiece(35, new Pawn(Alliance.WHITE, 35));
+        builder.setPiece(42, new Knight(Alliance.WHITE, 42));
+        builder.setPiece(45, new Knight(Alliance.WHITE, 45));
+        builder.setPiece(48, new Pawn(Alliance.WHITE, 48));
+        builder.setPiece(49, new Pawn(Alliance.WHITE, 49));
+        builder.setPiece(51, new Queen(Alliance.WHITE, 51));
+        builder.setPiece(52, new Bishop(Alliance.WHITE, 52));
+        builder.setPiece(53, new Pawn(Alliance.WHITE, 53));
+        builder.setPiece(54, new Pawn(Alliance.WHITE, 54));
+        builder.setPiece(55, new Pawn(Alliance.WHITE, 55));
+        builder.setPiece(56, new Rook(Alliance.WHITE, 56));
+        builder.setPiece(60, new King(Alliance.WHITE, 60));
+        builder.setPiece(63, new Rook(Alliance.WHITE, 63));
+
+        // Set the current player
+        builder.setMoveMaker(Alliance.BLACK);
+        final Board board = builder.build();
+        final Player currentPlayer = board.currentPlayer();
+        currentPlayer.setMoveStrategy(new AlphaBeta());
+        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 8);
+        System.out.println(bestMove + " " +bestMove.getCurrentCoordinate());
+    }
 }

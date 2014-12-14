@@ -30,7 +30,7 @@ class GameHistoryPanel extends JPanel {
 
     public void redo(final List<Move> moveHistory) {
         int currentRow = 0;
-        model.clear();
+        this.model.clear();
         for (final Move move : moveHistory) {
             if (move.getMovedPiece().getPieceAllegiance().isWhite()) {
                 this.model.setValueAt(move, currentRow, 0);
@@ -75,20 +75,20 @@ class GameHistoryPanel extends JPanel {
         private static final String[] NAMES = {"White", "Black"};
 
         public DataModel() {
-            values = new ArrayList<>();
+            this.values = new ArrayList<>();
         }
 
         public void clear() {
-            values.clear();
+            this.values.clear();
             setRowCount(0);
         }
 
         @Override
         public int getRowCount() {
-            if(values == null) {
+            if(this.values == null) {
                 return 0;
             }
-            return values.size();
+            return this.values.size();
         }
 
         @Override
@@ -98,7 +98,7 @@ class GameHistoryPanel extends JPanel {
 
         @Override
         public Object getValueAt(final int row, final int col) {
-            final Row currentRow = values.get(row);
+            final Row currentRow = this.values.get(row);
             if(col == 0) {
                 return currentRow.getWhiteMove();
             } else if (col == 1) {
@@ -112,11 +112,11 @@ class GameHistoryPanel extends JPanel {
                                final int row,
                                final int col) {
             final Row currentRow;
-            if(values.size() <= row) {
+            if(this.values.size() <= row) {
                 currentRow = new Row();
-                values.add(currentRow);
+                this.values.add(currentRow);
             } else {
-                currentRow = values.get(row);
+                currentRow = this.values.get(row);
             }
             if(col == 0) {
                 currentRow.setWhiteMove((Move) aValue);

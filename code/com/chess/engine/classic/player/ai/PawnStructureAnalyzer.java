@@ -53,6 +53,7 @@ public class PawnStructureAnalyzer {
                 pawnStructurePenalty += (pawnsOnColumn * 10);
             }
         }
+        //80 is a perfect score.  So subtract 80 from all possible penalties
         return (80 - pawnStructurePenalty);
     }
 
