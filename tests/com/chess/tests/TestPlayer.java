@@ -69,12 +69,12 @@ public class TestPlayer {
         final Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(4, new King(Alliance.BLACK, 4));
-        builder.setPiece(24, new Rook(Alliance.BLACK, 24));
+        builder.setPiece(new King(Alliance.BLACK, 4));
+        builder.setPiece(new Rook(Alliance.BLACK, 24));
         // White Layout
-        builder.setPiece(44, new Bishop(Alliance.WHITE, 44));
-        builder.setPiece(52, new Rook(Alliance.WHITE, 52));
-        builder.setPiece(58, new King(Alliance.WHITE, 58));
+        builder.setPiece(new Bishop(Alliance.WHITE, 44));
+        builder.setPiece(new Rook(Alliance.WHITE, 52));
+        builder.setPiece(new King(Alliance.WHITE, 58));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 

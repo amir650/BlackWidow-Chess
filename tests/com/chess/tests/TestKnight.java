@@ -20,11 +20,11 @@ public class TestKnight {
 
         final Builder boardBuilder = new Builder();
         // Black Layout
-        boardBuilder.setPiece(4, new King(Alliance.BLACK, 4));
-        boardBuilder.setPiece(28, new Knight(Alliance.BLACK, 28));
+        boardBuilder.setPiece(new King(Alliance.BLACK, 4));
+        boardBuilder.setPiece(new Knight(Alliance.BLACK, 28));
         // White Layout
-        boardBuilder.setPiece(36, new Knight(Alliance.WHITE, 36));
-        boardBuilder.setPiece(60, new King(Alliance.WHITE, 60));
+        boardBuilder.setPiece(new Knight(Alliance.WHITE, 36));
+        boardBuilder.setPiece(new King(Alliance.WHITE, 60));
         // Set the current player
         boardBuilder.setMoveMaker(Alliance.WHITE);
 
@@ -94,10 +94,10 @@ public class TestKnight {
     public void testKnightInCorners() {
 
         final Builder boardBuilder = new Builder();
-        boardBuilder.setPiece(4, new King(Alliance.BLACK, 4));
-        boardBuilder.setPiece(0, new Knight(Alliance.BLACK, 0));
-        boardBuilder.setPiece(56, new Knight(Alliance.WHITE, 56));
-        boardBuilder.setPiece(60, new King(Alliance.WHITE, 60));
+        boardBuilder.setPiece(new King(Alliance.BLACK, 4));
+        boardBuilder.setPiece(new Knight(Alliance.BLACK, 0));
+        boardBuilder.setPiece(new Knight(Alliance.WHITE, 56));
+        boardBuilder.setPiece(new King(Alliance.WHITE, 60));
         boardBuilder.setMoveMaker(Alliance.WHITE);
 
         final Board board = boardBuilder.build();

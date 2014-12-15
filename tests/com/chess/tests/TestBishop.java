@@ -21,10 +21,10 @@ public class TestBishop {
         final Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(4, new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4));
         // White Layout
-        builder.setPiece(35, new Bishop(Alliance.WHITE, 35));
-        builder.setPiece(60, new King(Alliance.WHITE, 60));
+        builder.setPiece(new Bishop(Alliance.WHITE, 35));
+        builder.setPiece(new King(Alliance.WHITE, 60));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
@@ -54,10 +54,10 @@ public class TestBishop {
         Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(4, new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4));
         // White Layout
-        builder.setPiece(0, new Bishop(Alliance.WHITE, 0));
-        builder.setPiece(60, new King(Alliance.WHITE, 60));
+        builder.setPiece(new Bishop(Alliance.WHITE, 0));
+        builder.setPiece(new King(Alliance.WHITE, 60));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
@@ -89,10 +89,10 @@ public class TestBishop {
         Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(4, new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4));
         // White Layout
-        builder.setPiece(7, new Bishop(Alliance.WHITE, 7));
-        builder.setPiece(60, new King(Alliance.WHITE, 60));
+        builder.setPiece(new Bishop(Alliance.WHITE, 7));
+        builder.setPiece(new King(Alliance.WHITE, 60));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
@@ -124,10 +124,10 @@ public class TestBishop {
         Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(4, new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4));
         // White Layout
-        builder.setPiece(56, new Bishop(Alliance.WHITE, 56));
-        builder.setPiece(60, new King(Alliance.WHITE, 60));
+        builder.setPiece(new Bishop(Alliance.WHITE, 56));
+        builder.setPiece(new King(Alliance.WHITE, 60));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
@@ -159,10 +159,10 @@ public class TestBishop {
         Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(4, new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4));
         // White Layout
-        builder.setPiece(63, new Bishop(Alliance.WHITE, 63));
-        builder.setPiece(60, new King(Alliance.WHITE, 60));
+        builder.setPiece(new Bishop(Alliance.WHITE, 63));
+        builder.setPiece(new King(Alliance.WHITE, 60));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 

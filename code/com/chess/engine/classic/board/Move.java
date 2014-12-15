@@ -95,13 +95,13 @@ public abstract class Move {
         final Board.Builder builder = new Builder();
         for (final Piece piece : board.currentPlayer().getActivePieces()) {
             if (!this.movedPiece.equals(piece)) {
-                builder.setPiece(piece.getPiecePosition(), piece);
+                builder.setPiece(piece);
             }
         }
         for (final Piece piece : board.currentPlayer().getOpponent().getActivePieces()) {
-            builder.setPiece(piece.getPiecePosition(), piece);
+            builder.setPiece(piece);
         }
-        builder.setPiece(this.destinationCoordinate, this.movedPiece.movePiece(this));
+        builder.setPiece(this.movedPiece.movePiece(this));
         builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
         return builder.build();
     }
@@ -109,7 +109,7 @@ public abstract class Move {
     public Board undo() {
         final Board.Builder builder = new Builder();
         for (final Piece piece : this.board.getAllPieces()) {
-            builder.setPiece(piece.getPiecePosition(), piece);
+            builder.setPiece(piece);
         }
         builder.setMoveMaker(this.board.currentPlayer().getAlliance());
         return builder.build();
@@ -154,13 +154,13 @@ public abstract class Move {
             final Board.Builder builder = new Builder();
             for (final Piece piece : pawnMovedBoard.currentPlayer().getActivePieces()) {
                 if (!this.promotedPawn.equals(piece)) {
-                    builder.setPiece(piece.getPiecePosition(), piece);
+                    builder.setPiece(piece);
                 }
             }
             for (final Piece piece : pawnMovedBoard.currentPlayer().getOpponent().getActivePieces()) {
-                builder.setPiece(piece.getPiecePosition(), piece);
+                builder.setPiece(piece);
             }
-            builder.setPiece(this.destinationCoordinate, this.promotedPawn.getPromotionPiece().movePiece(this));
+            builder.setPiece(this.promotedPawn.getPromotionPiece().movePiece(this));
             builder.setMoveMaker(pawnMovedBoard.currentPlayer().getAlliance());
             return builder.build();
         }
@@ -310,13 +310,13 @@ public abstract class Move {
             final Board.Builder builder = new Builder();
             for (final Piece piece : board.currentPlayer().getActivePieces()) {
                 if (!this.movedPiece.equals(piece)) {
-                    builder.setPiece(piece.getPiecePosition(), piece);
+                    builder.setPiece(piece);
                 }
             }
             for (final Piece piece : board.currentPlayer().getOpponent().getActivePieces()) {
-                builder.setPiece(piece.getPiecePosition(), piece);
+                builder.setPiece(piece);
             }
-            builder.setPiece(this.destinationCoordinate, this.movedPiece.movePiece(this));
+            builder.setPiece(this.movedPiece.movePiece(this));
             builder.setEnPassantPawn(movedPiece);
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
             return builder.build();
@@ -363,13 +363,12 @@ public abstract class Move {
             final Board.Builder builder = new Builder();
             for (final Piece piece : this.board.getAllPieces()) {
                 if (!this.movedPiece.equals(piece) && !this.castleRook.equals(piece)) {
-                    builder.setPiece(piece.getPiecePosition(), piece);
+                    builder.setPiece(piece);
                 }
             }
-            builder.setPiece(this.destinationCoordinate, this.movedPiece.movePiece(this));
+            builder.setPiece(this.movedPiece.movePiece(this));
             //calling movePiece here doesn't work, we need to explicitly create a new Rook
-            builder.setPiece(this.castleRookDestination,
-                    new Rook(this.castleRook.getPieceAllegiance(), this.castleRookDestination, false));
+            builder.setPiece(new Rook(this.castleRook.getPieceAllegiance(), this.castleRookDestination, false));
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
             return builder.build();
         }

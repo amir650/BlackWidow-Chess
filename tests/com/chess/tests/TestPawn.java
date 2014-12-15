@@ -22,11 +22,11 @@ public class TestPawn {
         final Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(3, new Rook(Alliance.BLACK, 3));
-        builder.setPiece(22, new King(Alliance.BLACK, 22));
+        builder.setPiece(new Rook(Alliance.BLACK, 3));
+        builder.setPiece(new King(Alliance.BLACK, 22));
         // White Layout
-        builder.setPiece(15, new Pawn(Alliance.WHITE, 15));
-        builder.setPiece(52, new King(Alliance.WHITE, 52));
+        builder.setPiece(new Pawn(Alliance.WHITE, 15));
+        builder.setPiece(new King(Alliance.WHITE, 52));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 

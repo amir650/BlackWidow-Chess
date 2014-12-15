@@ -102,9 +102,7 @@ public class AlphaBeta implements MoveStrategy {
                    final int depth,
                    final int highest,
                    final int lowest) {
-        if (depth == 0 ||
-            board.currentPlayer().isInCheckMate() ||
-            board.currentPlayer().getOpponent().isInCheckMate()) {
+        if (depth == 0 || isEndGame(board)) {
             this.boardsEvaluated++;
             return this.evaluator.evaluate(board);
         }
@@ -125,9 +123,7 @@ public class AlphaBeta implements MoveStrategy {
                    final int depth,
                    final int highest,
                    final int lowest) {
-        if (depth == 0 ||
-            board.currentPlayer().isInCheckMate() ||
-            board.currentPlayer().getOpponent().isInCheckMate()) {
+        if (depth == 0 || isEndGame(board)) {
             this.boardsEvaluated++;
             return this.evaluator.evaluate(board);
         }
@@ -151,6 +147,11 @@ public class AlphaBeta implements MoveStrategy {
             return 2;
         }
         return depth - 1;
+    }
+
+    private static boolean isEndGame(final Board board) {
+        return board.currentPlayer().isInCheckMate() || board.currentPlayer().getOpponent().isInCheckMate() ||
+               board.currentPlayer().isInStaleMate() || board.currentPlayer().getOpponent().isInStaleMate();
     }
 
 }

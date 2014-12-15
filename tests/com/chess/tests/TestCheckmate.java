@@ -636,23 +636,23 @@ public class TestCheckmate {
         final Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(0, new Rook(Alliance.BLACK, 0));
-        builder.setPiece(5, new Rook(Alliance.BLACK, 5));
-        builder.setPiece(8, new Pawn(Alliance.BLACK, 8));
-        builder.setPiece(9, new Pawn(Alliance.BLACK, 9));
-        builder.setPiece(10, new Pawn(Alliance.BLACK, 10));
-        builder.setPiece(13, new Pawn(Alliance.BLACK, 13));
-        builder.setPiece(14, new Pawn(Alliance.BLACK, 14));
-        builder.setPiece(15, new King(Alliance.BLACK, 15));
+        builder.setPiece(new Rook(Alliance.BLACK, 0));
+        builder.setPiece(new Rook(Alliance.BLACK, 5));
+        builder.setPiece(new Pawn(Alliance.BLACK, 8));
+        builder.setPiece(new Pawn(Alliance.BLACK, 9));
+        builder.setPiece(new Pawn(Alliance.BLACK, 10));
+        builder.setPiece(new Pawn(Alliance.BLACK, 13));
+        builder.setPiece(new Pawn(Alliance.BLACK, 14));
+        builder.setPiece(new King(Alliance.BLACK, 15));
         // White Layout
-        builder.setPiece(12, new Knight(Alliance.WHITE, 12));
-        builder.setPiece(27, new Rook(Alliance.WHITE, 27));
-        builder.setPiece(41, new Pawn(Alliance.WHITE, 41));
-        builder.setPiece(48, new Pawn(Alliance.WHITE, 48));
-        builder.setPiece(53, new Pawn(Alliance.WHITE, 53));
-        builder.setPiece(54, new Pawn(Alliance.WHITE, 54));
-        builder.setPiece(55, new Pawn(Alliance.WHITE, 55));
-        builder.setPiece(62, new King(Alliance.WHITE, 62));
+        builder.setPiece(new Knight(Alliance.WHITE, 12));
+        builder.setPiece(new Rook(Alliance.WHITE, 27));
+        builder.setPiece(new Pawn(Alliance.WHITE, 41));
+        builder.setPiece(new Pawn(Alliance.WHITE, 48));
+        builder.setPiece(new Pawn(Alliance.WHITE, 53));
+        builder.setPiece(new Pawn(Alliance.WHITE, 54));
+        builder.setPiece(new Pawn(Alliance.WHITE, 55));
+        builder.setPiece(new King(Alliance.WHITE, 62));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
@@ -668,15 +668,15 @@ public class TestCheckmate {
 
         final Builder builder = new Builder();
 
-        builder.setPiece(7, new King(Alliance.BLACK, 7));
-        builder.setPiece(8, new Pawn(Alliance.BLACK, 8));
-        builder.setPiece(10, new Pawn(Alliance.BLACK, 10));
-        builder.setPiece(15, new Pawn(Alliance.BLACK, 15));
-        builder.setPiece(17, new Pawn(Alliance.BLACK, 17));
+        builder.setPiece(new King(Alliance.BLACK, 7));
+        builder.setPiece(new Pawn(Alliance.BLACK, 8));
+        builder.setPiece(new Pawn(Alliance.BLACK, 10));
+        builder.setPiece(new Pawn(Alliance.BLACK, 15));
+        builder.setPiece(new Pawn(Alliance.BLACK, 17));
         // White Layout
-        builder.setPiece(40, new Bishop(Alliance.WHITE, 40));
-        builder.setPiece(48, new Bishop(Alliance.WHITE, 48));
-        builder.setPiece(53, new King(Alliance.WHITE, 53));
+        builder.setPiece(new Bishop(Alliance.WHITE, 40));
+        builder.setPiece(new Bishop(Alliance.WHITE, 48));
+        builder.setPiece(new King(Alliance.WHITE, 53));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
@@ -693,11 +693,11 @@ public class TestCheckmate {
         final Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(5, new King(Alliance.BLACK, 5));
+        builder.setPiece(new King(Alliance.BLACK, 5));
         // White Layout
-        builder.setPiece(9, new Rook(Alliance.WHITE, 9));
-        builder.setPiece(16, new Queen(Alliance.WHITE, 16));
-        builder.setPiece(59, new King(Alliance.WHITE, 59));
+        builder.setPiece(new Rook(Alliance.WHITE, 9));
+        builder.setPiece(new Queen(Alliance.WHITE, 16));
+        builder.setPiece(new King(Alliance.WHITE, 59));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
@@ -715,12 +715,12 @@ public class TestCheckmate {
         final Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(4, new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4));
         // White Layout
-        builder.setPiece(15, new Queen(Alliance.WHITE, 15));
-        builder.setPiece(29, new Knight(Alliance.WHITE, 29));
-        builder.setPiece(55, new Pawn(Alliance.WHITE, 55));
-        builder.setPiece(60, new King(Alliance.WHITE, 60));
+        builder.setPiece(new Queen(Alliance.WHITE, 15));
+        builder.setPiece(new Knight(Alliance.WHITE, 29));
+        builder.setPiece(new Pawn(Alliance.WHITE, 55));
+        builder.setPiece(new King(Alliance.WHITE, 60));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
@@ -738,14 +738,14 @@ public class TestCheckmate {
         final Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(4, new King(Alliance.BLACK, 4));
-        builder.setPiece(18, new Rook(Alliance.BLACK, 18));
+        builder.setPiece(new King(Alliance.BLACK, 4));
+        builder.setPiece(new Rook(Alliance.BLACK, 18));
 
         // White Layout
-        builder.setPiece(53, new Pawn(Alliance.WHITE, 53));
-        builder.setPiece(54, new Pawn(Alliance.WHITE, 54));
-        builder.setPiece(55, new Pawn(Alliance.WHITE, 55));
-        builder.setPiece(62, new King(Alliance.WHITE, 62));
+        builder.setPiece(new Pawn(Alliance.WHITE, 53));
+        builder.setPiece(new Pawn(Alliance.WHITE, 54));
+        builder.setPiece(new Pawn(Alliance.WHITE, 55));
+        builder.setPiece(new King(Alliance.WHITE, 62));
         // Set the current player
         builder.setMoveMaker(Alliance.BLACK);
 
