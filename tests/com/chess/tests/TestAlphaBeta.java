@@ -254,7 +254,7 @@ public class TestAlphaBeta {
         currentPlayer.setMoveStrategy(new AlphaBeta());
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 8);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("g5"), Board.getCoordinateAtPosition("h7")));
+                .createMove(board, Board.getCoordinateAtPosition("g3"), Board.getCoordinateAtPosition("g6")));
 
     }
 

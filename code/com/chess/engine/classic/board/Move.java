@@ -225,7 +225,7 @@ public abstract class Move {
 
         @Override
         public boolean equals(final Object aThat) {
-            return this == aThat || aThat instanceof PawnAttackMove && (super.equals(aThat));
+            return this == aThat || aThat instanceof MajorAttackMove && (super.equals(aThat));
 
         }
 
@@ -282,7 +282,6 @@ public abstract class Move {
         @Override
         public String toString() {
             final StringBuilder s = new StringBuilder(Board.getPositionAtCoordinate(this.currentCoordinate).substring(0, 1));
-            s.append(disambiguationFile());
             s.append("x");
             s.append(Board.getPositionAtCoordinate(this.destinationCoordinate));
             return s.toString();
