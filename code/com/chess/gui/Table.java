@@ -33,6 +33,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import com.chess.com.chess.pgn.PGNDataStore;
@@ -68,8 +69,6 @@ public final class Table extends Observable {
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
 
     private static final Table INSTANCE = new Table();
-
-    private static final int AI_SEARCH_DEPTH = 6;
 
     private Table() {
         this.gameFrame = new JFrame("BlackWidow");
@@ -372,14 +371,19 @@ public final class Table extends Observable {
                                     .getGameBoard()
                                     .currentPlayer()
                                     .getMoveStrategy()
-                                    .execute(Table.get().getGameBoard(), AI_SEARCH_DEPTH);
+                                    .execute(Table.get().getGameBoard(), gameSetup.getSearchDepth());
                             chessBoard = chessBoard.makeMove(bestMove).getTransitionBoard();
                             Table.get().getMoveLog().add(bestMove);
-                            Table.get().getGameHistoryPanel().redo(Table.get().getMoveLog());
-                            Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
-                            Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
                         }
-                        Table.get().moveMadeUpdate(PlayerType.COMPUTER);
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                Table.get().getGameHistoryPanel().redo(Table.get().getMoveLog());
+                                Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
+                                Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
+                                Table.get().moveMadeUpdate(PlayerType.COMPUTER);
+                            }
+                        });
+
                     }
                 };
                 t.start();
@@ -467,12 +471,6 @@ public final class Table extends Observable {
                             if(transition.getMoveStatus() == MoveStatus.DONE) {
                                 chessBoard = chessBoard.makeMove(move).getTransitionBoard();
                                 moveLog.add(move);
-                                gameHistoryPanel.redo(moveLog);
-                                takenPiecesPanel.redo(moveLog);
-                                boardPanel.drawBoard(chessBoard);
-                                if(gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
-                                    Table.get().moveMadeUpdate(PlayerType.HUMAN);
-                                }
                             }
                             sourceTile = null;
                             destinationTile = null;
@@ -481,6 +479,11 @@ public final class Table extends Observable {
                     }
                     invokeLater(new Runnable() {
                         public void run() {
+                            gameHistoryPanel.redo(moveLog);
+                            takenPiecesPanel.redo(moveLog);
+                            if(gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
+                                Table.get().moveMadeUpdate(PlayerType.HUMAN);
+                            }
                             boardPanel.drawBoard(chessBoard);
                         }
                     });

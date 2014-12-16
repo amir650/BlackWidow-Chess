@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -14,6 +15,7 @@ import com.chess.engine.classic.board.Move;
 class GameHistoryPanel extends JPanel {
 
     private final DataModel model;
+    private final JScrollPane scrollPane;
     private static final Dimension HISTORY_PANEL_DIMENSION = new Dimension(100, 40);
 
     public GameHistoryPanel() {
@@ -21,7 +23,7 @@ class GameHistoryPanel extends JPanel {
         this.model = new DataModel();
         final JTable table = new JTable(model);
         table.setRowHeight(15);
-        final JScrollPane scrollPane = new JScrollPane(table);
+        this.scrollPane = new JScrollPane(table);
         scrollPane.setColumnHeaderView(table.getTableHeader());
         scrollPane.setPreferredSize(HISTORY_PANEL_DIMENSION);
         this.add(scrollPane, BorderLayout.CENTER);
@@ -41,14 +43,18 @@ class GameHistoryPanel extends JPanel {
             }
         }
 
+        final JScrollBar vertical = scrollPane.getVerticalScrollBar();
+        vertical.setValue(vertical.getMaximum());
+
     }
 
     private static class Row {
 
+        private int moveNumber;
         private Move whiteMove;
         private Move blackMove;
 
-        public Row() {
+        Row() {
         }
 
         public Move getWhiteMove() {
@@ -67,6 +73,10 @@ class GameHistoryPanel extends JPanel {
             this.blackMove = move;
         }
 
+        public void setMoveNumber(final int moveNumber) {
+            this.moveNumber = moveNumber;
+        }
+
     }
 
     private static class DataModel extends DefaultTableModel {
@@ -74,7 +84,7 @@ class GameHistoryPanel extends JPanel {
         private final List<Row> values;
         private static final String[] NAMES = {"White", "Black"};
 
-        public DataModel() {
+        DataModel() {
             this.values = new ArrayList<>();
         }
 
