@@ -47,6 +47,7 @@ import com.chess.engine.classic.board.Tile;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.ai.AlphaBeta;
 import com.chess.engine.classic.player.ai.SimpleBoardEvaluator;
+import com.google.common.collect.Lists;
 
 public final class Table extends Observable {
 
@@ -61,6 +62,7 @@ public final class Table extends Observable {
     private Tile sourceTile;
     private Tile destinationTile;
     private Piece movedPiece;
+    private BoardDirection boardDirection;
     private Color lightTileColor = Color.decode("#FFFACD");
     private Color darkTileColor = Color.decode("#593E1A");
 
@@ -77,6 +79,7 @@ public final class Table extends Observable {
         this.gameFrame.setJMenuBar(tableMenuBar);
         this.gameFrame.setLayout(new BorderLayout());
         this.chessBoard = Board.createStandardBoard();
+        this.boardDirection = BoardDirection.NORMAL;
         this.gameHistoryPanel = new GameHistoryPanel();
         final ChatPanel chatPanel = new ChatPanel();
         this.takenPiecesPanel = new TakenPiecesPanel();
@@ -288,7 +291,8 @@ public final class Table extends Observable {
         final JMenuItem flipBoardMenuItem = new JMenuItem("Flip board");
 
         flipBoardMenuItem.addActionListener(e -> {
-            Table.get().getGameFrame().repaint();
+            boardDirection = boardDirection == BoardDirection.NORMAL ? BoardDirection.FLIPPED : BoardDirection.NORMAL;
+            boardPanel.drawBoard(chessBoard);
         });
 
         preferencesMenu.add(flipBoardMenuItem);
@@ -398,14 +402,15 @@ public final class Table extends Observable {
 
     class BoardPanel extends JPanel {
 
-        final TilePanel[] boardTiles;
+        final List<TilePanel> boardTiles;
 
         BoardPanel(final Board board) {
             super(new GridLayout(8,8));
-            this.boardTiles = new TilePanel[Board.NUM_TILES];
-            for (int i = 0; i < boardTiles.length; i++) {
-                this.boardTiles[i] = new TilePanel(this, i);
-                add(this.boardTiles[i]);
+            this.boardTiles = new ArrayList<>();
+            for (int i = 0; i < Board.NUM_TILES; i++) {
+                final TilePanel tilePanel = new TilePanel(this, i);
+                this.boardTiles.add(tilePanel);
+                add(tilePanel);
             }
             drawBoard(board);
             setPreferredSize(BOARD_PANEL_DIMENSION);
@@ -414,8 +419,10 @@ public final class Table extends Observable {
         }
 
         public void drawBoard(final Board board) {
-            for (final TilePanel boardTile : boardTiles) {
+            removeAll();
+            for (final TilePanel boardTile : boardDirection.traverse(boardTiles)) {
                 boardTile.drawTile(board);
+                add(boardTile);
             }
             validate();
             repaint();
@@ -436,6 +443,25 @@ public final class Table extends Observable {
             }
             drawBoard(board);
         }
+
+    }
+
+    public enum BoardDirection {
+        NORMAL {
+            @Override
+            List<TilePanel> traverse(final List<TilePanel> boardTiles) {
+                return boardTiles;
+            }
+        },
+        FLIPPED {
+            @Override
+            List<TilePanel> traverse(final List<TilePanel> boardTiles) {
+                return Lists.reverse(boardTiles);
+            }
+        };
+
+        abstract List<TilePanel> traverse(final List<TilePanel> boardTiles);
+
     }
 
     class TilePanel extends JPanel {
