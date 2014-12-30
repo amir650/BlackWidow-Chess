@@ -13,6 +13,7 @@ public abstract class Piece implements Copyable<Piece>{
     protected final Alliance pieceAlliance;
     protected final int piecePosition;
     protected final boolean isFirstMove;
+    private final int cachedHashCode;
 
     Piece(final PieceType type,
           final Alliance alliance,
@@ -22,6 +23,7 @@ public abstract class Piece implements Copyable<Piece>{
         this.piecePosition = piecePosition;
         this.pieceAlliance = alliance;
         this.isFirstMove = isFirstMove;
+        this.cachedHashCode = computeHashCode();
     }
 
     Piece(final Piece p) {
@@ -29,6 +31,7 @@ public abstract class Piece implements Copyable<Piece>{
         this.pieceAlliance = p.getPieceAllegiance();
         this.piecePosition = p.getPiecePosition();
         this.isFirstMove = p.isFirstMove();
+        this.cachedHashCode = p.hashCode();
     }
 
     public PieceType getPieceType() {
@@ -81,6 +84,10 @@ public abstract class Piece implements Copyable<Piece>{
 
     @Override
     public int hashCode() {
+        return cachedHashCode;
+    }
+
+    private int computeHashCode() {
         int result = pieceType.hashCode();
         result = 31 * result + pieceAlliance.hashCode();
         result = 31 * result + piecePosition;
