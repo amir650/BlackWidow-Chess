@@ -48,7 +48,7 @@ public enum Alliance {
 
         @Override
         public int rookBonus(final int position) {
-            return 0;
+            return WHITE_ROOK_PREFERRED_COORDINATES[position];
         }
 
         @Override
@@ -106,7 +106,7 @@ public enum Alliance {
 
         @Override
         public int rookBonus(final int position) {
-            return 0;
+            return BLACK_ROOK_PREFERRED_COORDINATES[position];
         }
 
         @Override
@@ -182,6 +182,28 @@ public enum Alliance {
         -5, 5, 15, 15, 15, 15, 5, -5,
         -5, 5, 10, 10, 10, 10, 5, -5,
         -10, -5, 0, 0, 0, 0, -5, -10
+    };
+
+    private final static int[] WHITE_ROOK_PREFERRED_COORDINATES = {
+            0, 0, 0, 0, 0, 0, 0, 0,
+            25, 25, 25, 25, 25, 25, 25, 25,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0
+    };
+
+    private final static int[] BLACK_ROOK_PREFERRED_COORDINATES = {
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            25, 25, 25, 25, 25, 25, 25, 25,
+            0, 0, 0, 0, 0, 0, 0, 0
     };
 
     private final static int[] WHITE_QUEEN_PREFERRED_COORDINATES = {

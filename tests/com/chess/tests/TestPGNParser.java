@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.chess.com.chess.pgn.PGNDataStore;
+import com.chess.com.chess.pgn.MySqlGamePersistence;
 import com.chess.com.chess.pgn.PGNUtilities;
 import com.chess.com.chess.pgn.ParsePGNException;
 import com.chess.engine.classic.board.Board;
@@ -94,7 +94,7 @@ public class TestPGNParser {
 
     @Test
     public void testMax() throws IOException {
-        int maxId = PGNDataStore.get().getMaxGameRow();
+        int maxId = MySqlGamePersistence.get().getMaxGameRow();
         System.out.println("max id = " +maxId);
     }
 
@@ -110,9 +110,9 @@ public class TestPGNParser {
     @Test
     public void testWithErol() throws IOException {
         final Board board = Board.createStandardBoard();
-        final Move move = PGNDataStore.get().getNextBestMove(board, board.currentPlayer(), "");
+        final Move move = MySqlGamePersistence.get().getNextBestMove(board, board.currentPlayer(), "");
         final MoveTransition moveTransition = board.makeMove(move);
-        final Move move2 = PGNDataStore.get()
+        final Move move2 = MySqlGamePersistence.get()
                 .getNextBestMove(moveTransition.getTransitionBoard(),
                         moveTransition.getTransitionBoard().currentPlayer(), "e4");
         System.out.println("move 2 = " +move2);

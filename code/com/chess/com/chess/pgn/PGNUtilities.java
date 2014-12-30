@@ -59,7 +59,7 @@ public class PGNUtilities {
                             final Game game = GameFactory.createGame(tagsBuilder.build(), gameText, outcome);
                             System.out.println("Finished parsing " +game);
                             if(game.isValid()) {
-                                PGNDataStore.get().persistGame(game);
+                                MySqlGamePersistence.get().persistGame(game);
                             }
                         }
                         gameTextBuilder = new StringBuilder();

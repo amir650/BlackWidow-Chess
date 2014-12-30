@@ -25,13 +25,14 @@ abstract public class Tile {
 
     public static Tile createTile(final int coordinate,
                                   final Piece piece) {
-        if(piece != null) {
-            //return new OccupiedTile(coordinate, piece);
-            final OccupiedTile occupiedTile = OCCUPIED_TILES.get(coordinate, piece);
-            if(occupiedTile == null) {
-                OCCUPIED_TILES.put(coordinate, piece, new OccupiedTile(coordinate, piece));
+        if (piece != null) {
+            final OccupiedTile existingOccupiedTile = OCCUPIED_TILES.get(coordinate, piece);
+            if (existingOccupiedTile != null) {
+                return existingOccupiedTile;
             }
-            return OCCUPIED_TILES.get(coordinate, piece);
+            final OccupiedTile occupiedTile = new OccupiedTile(coordinate, piece);
+            OCCUPIED_TILES.put(coordinate, piece, occupiedTile);
+            return occupiedTile;
         }
         return EMPTY_TILES.get(coordinate);
     }

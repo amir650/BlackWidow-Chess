@@ -40,7 +40,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 
-import com.chess.com.chess.pgn.PGNDataStore;
+import com.chess.com.chess.pgn.MySqlGamePersistence;
 import com.chess.com.chess.pgn.PGNUtilities;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.MoveStatus;
@@ -212,6 +212,7 @@ public final class Table extends Observable {
 
         final JMenu optionsMenu = new JMenu("Options");
         optionsMenu.setMnemonic(KeyEvent.VK_O);
+
         final JMenuItem resetMenuItem = new JMenuItem("New Game", KeyEvent.VK_P);
         resetMenuItem.addActionListener(e -> {
             undoAllMoves();
@@ -221,7 +222,6 @@ public final class Table extends Observable {
         final JMenuItem evaluateBoardMenuItem = new JMenuItem("Evaluate Board", KeyEvent.VK_E);
         evaluateBoardMenuItem.addActionListener(e -> System.out.println(new SimpleBoardEvaluator().evaluate(Table.get().getGameBoard())));
         optionsMenu.add(evaluateBoardMenuItem);
-
 
         final JMenuItem legalMovesMenuItem = new JMenuItem("Current State", KeyEvent.VK_L);
         legalMovesMenuItem.addActionListener(e -> {
@@ -429,9 +429,9 @@ public final class Table extends Observable {
                     public void run() {
                         try {
                             Move bestMove;
-                            final Move bookMove = PGNDataStore.get()
+                            final Move bookMove = MySqlGamePersistence.get()
                                     .getNextBestMove(Table.get().getGameBoard(), Table.get().getGameBoard().currentPlayer(),
-                                            moveLog.toString().replaceAll("\\[", "").replaceAll("\\]", ""));
+                                            moveLog.getMoves().toString().replaceAll("\\[", "").replaceAll("\\]", ""));
                             if (Table.get().getUseBook() && bookMove != Move.NULL_MOVE) {
                                 bestMove = bookMove;
                             } else {

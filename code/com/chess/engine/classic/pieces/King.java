@@ -43,7 +43,7 @@ public final class King extends Piece {
 
     public boolean isInCheckMate(final Board board) {
         return !Player.calculateAttacksOnTile(this.piecePosition, board.currentPlayer().getOpponent().getLegalMoves())
-                .isEmpty() && !(hasEscapeMoves(board));
+               .isEmpty() && !(hasEscapeMoves(board));
     }
 
     public boolean isInStaleMate(final Board board) {

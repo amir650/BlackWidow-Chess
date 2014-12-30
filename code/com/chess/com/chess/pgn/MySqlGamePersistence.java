@@ -11,22 +11,22 @@ import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.player.Player;
 
-public class PGNDataStore {
+public class MySqlGamePersistence implements PGNPersistence {
 
     private final Connection dbConnection;
 
-    private static PGNDataStore INSTANCE = new PGNDataStore();
+    private static MySqlGamePersistence INSTANCE = new MySqlGamePersistence();
     private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     private static final String DB_URL = "jdbc:mysql://localhost/chessgames";
     private static final String USER = "amir";
     private static final String PASS = "x";
     private static final String NEXT_BEST_MOVE_QUERY =
-            "SELECT SUBSTR(g1.moves, LENGTH('%s') + %d, INSTR(SUBSTR(g1.moves, LENGTH('%s') + %d, LENGTH(g1.moves)), ',') - 1), " +
-                    "COUNT(*) FROM game g1 WHERE g1.moves LIKE '%s%%' AND (outcome = '%s') GROUP BY substr(g1.moves, LENGTH('%s') + %d, INSTR(substr(g1.moves, " +
-                    "LENGTH('%s') + %d, LENGTH(g1.moves)), ',') - 1) ORDER BY 2 DESC";
+        "SELECT SUBSTR(g1.moves, LENGTH('%s') + %d, INSTR(SUBSTR(g1.moves, LENGTH('%s') + %d, LENGTH(g1.moves)), ',') - 1), " +
+        "COUNT(*) FROM game g1 WHERE g1.moves LIKE '%s%%' AND (outcome = '%s') GROUP BY substr(g1.moves, LENGTH('%s') + %d, " +
+        "INSTR(substr(g1.moves, LENGTH('%s') + %d, LENGTH(g1.moves)), ',') - 1) ORDER BY 2 DESC";
 
 
-    private PGNDataStore() {
+    private MySqlGamePersistence() {
         this.dbConnection = createDBConnection();
         createGameTable();
         createOutcomeIndex();
@@ -43,20 +43,20 @@ public class PGNDataStore {
         }
     }
 
-    public static PGNDataStore get() {
+    public static MySqlGamePersistence get() {
         return INSTANCE;
     }
 
+    @Override
     public void persistGame(final Game game) {
         executePersist(game);
     }
 
+    @Override
     public Move getNextBestMove(final Board board,
                                 final Player player,
                                 final String gameText) {
-
         return queryBestMove(board, player, gameText);
-
     }
 
     private Move queryBestMove(final Board board,
@@ -69,6 +69,7 @@ public class PGNDataStore {
             final int offSet = gameText.isEmpty() ? 1 : 3;
             final String sqlString = String.format(NEXT_BEST_MOVE_QUERY, gameText, offSet, gameText, offSet, gameText,
                     player.getAlliance().name(), gameText, offSet, gameText, offSet);
+            System.out.println(sqlString);
             final Statement gameStatement = this.dbConnection.createStatement();
             gameStatement.execute(sqlString);
             final ResultSet rs2 = gameStatement.getResultSet();
