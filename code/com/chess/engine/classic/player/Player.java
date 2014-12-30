@@ -22,7 +22,7 @@ public abstract class Player {
            final List<Move> playerLegals,
            final List<Move> opponentLegals) {
         this.board = board;
-        this.playerKing = findKing();
+        this.playerKing = establishKing();
         this.legalMoves = ImmutableList.copyOf(Iterables.concat(playerLegals, calculateKingCastles(playerLegals, opponentLegals)));
     }
 
@@ -93,5 +93,5 @@ public abstract class Player {
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
     protected abstract List<Move> calculateKingCastles(List<Move> playerLegals, List<Move> opponentLegals);
-    protected abstract King findKing();
+    protected abstract King establishKing();
 }

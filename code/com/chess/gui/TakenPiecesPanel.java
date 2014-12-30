@@ -8,7 +8,6 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -17,6 +16,7 @@ import javax.swing.border.EtchedBorder;
 
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.Piece;
+import com.chess.gui.Table.MoveLog;
 
 class TakenPiecesPanel extends JPanel {
 
@@ -40,10 +40,10 @@ class TakenPiecesPanel extends JPanel {
         setPreferredSize(TAKEN_PIECES_PANEL_DIMENSION);
     }
 
-    public void redo(final List<Move> moves) {
+    public void redo(final MoveLog moveLog) {
         southPanel.removeAll();
         northPanel.removeAll();
-        for(final Move move : moves) {
+        for(final Move move : moveLog.getMoves()) {
             if(move.isAttack()) {
                 try {
                     final Piece takenPiece = move.getAttackedPiece();

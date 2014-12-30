@@ -80,7 +80,9 @@ public class AlphaBeta implements MoveStrategy {
                 currentValue = alliance.isWhite() ?
                         min(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue) :
                         max(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue);
-                System.out.println("\t" + toString() + " move " + move + " scores " + currentValue + " quiescenceCount = " +this.quiescenceCount);
+
+                final String quiescenceInfo = quiescenceCount > 0 ? " quiescenceCount = " +this.quiescenceCount : "";
+                System.out.println("\t" + toString() + " analyzing move " + move + " best score so far " + currentValue + quiescenceInfo);
                 if (alliance.isWhite() && currentValue > highestSeenValue) {
                     highestSeenValue = currentValue;
                     bestMove = move;

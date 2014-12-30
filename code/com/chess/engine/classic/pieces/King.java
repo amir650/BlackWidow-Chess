@@ -68,13 +68,13 @@ public final class King extends Piece {
             if (Board.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                 if (!candidateDestinationTile.isTileOccupied()) {
-                    legalMoves.add(new MajorMove(board, this.piecePosition, candidateDestinationCoordinate, this));
+                    legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
                 }
                 else {
                     final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                     final Alliance pieceAtDestinationAllegiance = pieceAtDestination.getPieceAllegiance();
                     if (this.pieceAlliance != pieceAtDestinationAllegiance) {
-                        legalMoves.add(new MajorAttackMove(board, this.piecePosition, candidateDestinationCoordinate, this,
+                        legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate,
                                 pieceAtDestination));
                     }
                 }
@@ -130,5 +130,33 @@ public final class King extends Piece {
         return Board.EIGHTH_COLUMN[currentCandidate]
                 && ((candidateDestinationCoordinate == -7) || (candidateDestinationCoordinate == 1) ||
                    (candidateDestinationCoordinate == 9));
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof King)) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
+
+        final King king = (King) other;
+
+        if (isCastled != king.isCastled) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (isCastled ? 1 : 0);
+        return result;
     }
 }

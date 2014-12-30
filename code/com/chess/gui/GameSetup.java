@@ -25,25 +25,27 @@ public class GameSetup
     private PlayerType whitePlayerType;
     private PlayerType blackPlayerType;
     private JSpinner searchDepthSpinner;
-    private static final String humanText = "Human";
-    private static final String computerText = "Computer";
 
+    private static final String HUMAN_TEXT = "Human";
+    private static final String COMPUTER_TEXT = "Computer";
 
     GameSetup(final JFrame frame, boolean modal) {
         super(frame, modal);
         final JPanel myPanel = new JPanel(new GridLayout(0, 1));
-        final JRadioButton whiteHumanButton = new JRadioButton(humanText);
-        final JRadioButton whiteComputerButton = new JRadioButton(computerText);
-        final JRadioButton blackHumanButton = new JRadioButton(humanText);
-        final JRadioButton blackComputerButton = new JRadioButton(computerText);
-        whiteHumanButton.setActionCommand(humanText);
+        final JRadioButton whiteHumanButton = new JRadioButton(HUMAN_TEXT);
+        final JRadioButton whiteComputerButton = new JRadioButton(COMPUTER_TEXT);
+        final JRadioButton blackHumanButton = new JRadioButton(HUMAN_TEXT);
+        final JRadioButton blackComputerButton = new JRadioButton(COMPUTER_TEXT);
+        whiteHumanButton.setActionCommand(HUMAN_TEXT);
         final ButtonGroup whiteGroup = new ButtonGroup();
         whiteGroup.add(whiteHumanButton);
         whiteGroup.add(whiteComputerButton);
+        whiteHumanButton.setSelected(true);
 
         final ButtonGroup blackGroup = new ButtonGroup();
         blackGroup.add(blackHumanButton);
         blackGroup.add(blackComputerButton);
+        blackHumanButton.setSelected(true);
 
         getContentPane().add(myPanel);
         myPanel.add(new JLabel("White"));

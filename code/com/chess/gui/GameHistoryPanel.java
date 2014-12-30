@@ -11,6 +11,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import com.chess.engine.classic.board.Move;
+import com.chess.gui.Table.MoveLog;
 
 class GameHistoryPanel extends JPanel {
 
@@ -30,10 +31,10 @@ class GameHistoryPanel extends JPanel {
         this.setVisible(true);
     }
 
-    public void redo(final List<Move> moveHistory) {
+    public void redo(final MoveLog moveHistory) {
         int currentRow = 0;
         this.model.clear();
-        for (final Move move : moveHistory) {
+        for (final Move move : moveHistory.getMoves()) {
             if (move.getMovedPiece().getPieceAllegiance().isWhite()) {
                 this.model.setValueAt(move, currentRow, 0);
             }

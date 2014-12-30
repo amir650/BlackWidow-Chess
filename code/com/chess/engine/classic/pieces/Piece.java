@@ -61,35 +61,32 @@ public abstract class Piece implements Copyable<Piece>{
         return this.pieceType == PieceType.PAWN;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 1;
-        hash = hash * 31 + this.pieceType.hashCode() + this.pieceAlliance.hashCode()
-                + this.piecePosition + Boolean.valueOf(this.isFirstMove).hashCode();
-        return hash;
-    }
+    public abstract List<Move> calculateLegalMoves(final Board board);
 
     @Override
     public boolean equals(final Object other) {
-
         if (this == other) {
             return true;
         }
-
         if (!(other instanceof Piece)) {
             return false;
         }
 
         final Piece otherPiece = (Piece) other;
 
-        return (this.pieceType == otherPiece.getPieceType())
-                && (this.pieceAlliance == otherPiece.getPieceAllegiance())
-                && (this.piecePosition == otherPiece.getPiecePosition()
-                && (this.isFirstMove == otherPiece.isFirstMove()));
+        return piecePosition == otherPiece.piecePosition && pieceType == otherPiece.pieceType &&
+               pieceAlliance == otherPiece.pieceAlliance && isFirstMove == otherPiece.isFirstMove;
 
     }
 
-    public abstract List<Move> calculateLegalMoves(final Board board);
+    @Override
+    public int hashCode() {
+        int result = pieceType.hashCode();
+        result = 31 * result + pieceAlliance.hashCode();
+        result = 31 * result + piecePosition;
+        result = 31 * result + (isFirstMove ? 1 : 0);
+        return result;
+    }
 
     public enum PieceType {
 

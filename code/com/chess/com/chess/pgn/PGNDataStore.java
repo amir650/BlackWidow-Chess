@@ -29,6 +29,8 @@ public class PGNDataStore {
     private PGNDataStore() {
         this.dbConnection = createDBConnection();
         createGameTable();
+        createOutcomeIndex();
+        createMovesIndex();
     }
 
     private static Connection createDBConnection() {
@@ -67,7 +69,6 @@ public class PGNDataStore {
             final int offSet = gameText.isEmpty() ? 1 : 3;
             final String sqlString = String.format(NEXT_BEST_MOVE_QUERY, gameText, offSet, gameText, offSet, gameText,
                     player.getAlliance().name(), gameText, offSet, gameText, offSet);
-            System.out.println("SQL Statement = " +sqlString);
             final Statement gameStatement = this.dbConnection.createStatement();
             gameStatement.execute(sqlString);
             final ResultSet rs2 = gameStatement.getResultSet();
@@ -80,7 +81,7 @@ public class PGNDataStore {
         catch (final SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("\tbest move from book = " +bestMove+ " with a count of " +count);
+        System.out.println("\tselected book move = " +bestMove+ " with " +count+ " hits");
         return PGNUtilities.createMove(board, bestMove);
     }
 
@@ -88,10 +89,47 @@ public class PGNDataStore {
         try {
             final Statement statement = this.dbConnection.createStatement();
             statement.execute("CREATE TABLE IF NOT EXISTS Game(id int primary key, outcome varchar(10), moves varchar(4000));");
-            statement.execute("CREATE INDEX OutcomeIndex on Game(outcome);\n");
-            statement.execute("CREATE INDEX MoveIndex on Game(moves);\n");
+//            statement.execute("CREATE INDEX OutcomeIndex on Game(outcome);\n");
+//            statement.execute("CREATE INDEX MoveIndex on Game(moves);\n");
         }
         catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createOutcomeIndex() {
+        try {
+            Class.forName("org.h2.Driver");
+            final String sqlString = "SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_CATALOG = 'def' AND TABLE_SCHEMA = DATABASE() AND TABLE_NAME = \"game\" AND INDEX_NAME = \"OutcomeIndex\"";
+            final Statement gameStatement = this.dbConnection.createStatement();
+            gameStatement.execute(sqlString);
+            final ResultSet rs2 = gameStatement.getResultSet();
+            if(rs2.next()) {
+                //do something....
+            }
+            gameStatement.close();
+        }
+        catch (final ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createMovesIndex() {
+        try {
+            Class.forName("org.h2.Driver");
+            final String sqlString = "SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_CATALOG = 'def' AND TABLE_SCHEMA = DATABASE() AND TABLE_NAME = \"game\" AND INDEX_NAME = \"MoveIndex\"";
+            final Statement gameStatement = this.dbConnection.createStatement();
+            gameStatement.execute(sqlString);
+            final ResultSet rs2 = gameStatement.getResultSet();
+            if(rs2.next()) {
+                //do something....
+            } else {
+
+
+            }
+            gameStatement.close();
+        }
+        catch (final ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }

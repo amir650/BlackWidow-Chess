@@ -38,7 +38,7 @@ public class MiniMax implements MoveStrategy {
             final MoveTransition moveTransition = board.makeMove(move);
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 current_value = board.currentPlayer().getAlliance().isWhite() ? min(moveTransition.getTransitionBoard(), depth - 1) : max(moveTransition.getTransitionBoard(), depth - 1);
-                System.out.println("\t" + toString() + " move " + move + " scores " + current_value);
+                System.out.println("\t" + toString() + " analyzing move " + move + " scores " + current_value);
                 if (board.currentPlayer().getAlliance().isWhite() &&
                         current_value >= highest_seen_value) {
                     highest_seen_value = current_value;

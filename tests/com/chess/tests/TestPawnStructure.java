@@ -30,8 +30,8 @@ public class TestPawnStructure {
         // Set the current player
         final Board board = builder.build();
 
-        assertEquals(PawnStructureAnalyzer.get().pawnStructureScore(board.getWhitePieces()), 80);
-        assertEquals(PawnStructureAnalyzer.get().pawnStructureScore(board.getBlackPieces()), 30);
+        assertEquals(PawnStructureAnalyzer.get().pawnStructureScore(board.whitePlayer()), 80);
+        assertEquals(PawnStructureAnalyzer.get().pawnStructureScore(board.blackPlayer()), 30);
     }
 
 }

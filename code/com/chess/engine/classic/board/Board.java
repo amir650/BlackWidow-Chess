@@ -1,6 +1,5 @@
 package com.chess.engine.classic.board;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +16,7 @@ import com.chess.engine.classic.player.BlackPlayer;
 import com.chess.engine.classic.player.Player;
 import com.chess.engine.classic.player.WhitePlayer;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 
 public final class Board {
@@ -27,7 +27,6 @@ public final class Board {
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
-    private final Piece enPassantPawn;
 
     private static final String[] ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
     private static final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
@@ -54,7 +53,6 @@ public final class Board {
         this.gameBoard = createGameBoard(boardBuilder);
         this.whitePieces = calculateActivePieces(Alliance.WHITE);
         this.blackPieces = calculateActivePieces(Alliance.BLACK);
-        this.enPassantPawn = boardBuilder.enPassantPawn;
 
         final List<Move> whiteStandardMoves = calculateLegalMoves(this.whitePieces);
         final List<Move> blackStandardMoves = calculateLegalMoves(this.blackPieces);
@@ -197,11 +195,11 @@ public final class Board {
     }
 
     private static Map<String, Integer> initializePositionToCoordinateMap() {
-        final Map<String, Integer> posToCoord = new HashMap<>();
+        final Map<String, Integer> positionToCoordinate = new HashMap<>();
         for (int i = 0; i < NUM_TILES; i++) {
-            posToCoord.put(ALGEBRAIC_NOTATION[i], i);
+            positionToCoordinate.put(ALGEBRAIC_NOTATION[i], i);
         }
-        return Collections.unmodifiableMap(posToCoord);
+        return ImmutableMap.copyOf(positionToCoordinate);
     }
 
     private static String[] initializeAlgebraicNotation() {

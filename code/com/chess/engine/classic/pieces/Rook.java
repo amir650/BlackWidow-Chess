@@ -30,6 +30,11 @@ public final class Rook extends Piece {
     }
 
     @Override
+    public boolean equals(final Object other) {
+        return this == other || other instanceof Rook && (super.equals(other));
+    }
+
+    @Override
     public List<Move> calculateLegalMoves(final Board board) {
         final Builder<Move> legalMoves = ImmutableList.builder();
         int candidateDestinationCoordinate;
@@ -43,12 +48,12 @@ public final class Rook extends Piece {
                 if (Board.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                     if (!candidateDestinationTile.isTileOccupied()) {
-                        legalMoves.add(new MajorMove(board, this.piecePosition, candidateDestinationCoordinate, this));
+                        legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
                     } else {
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance pieceAtDestinationAllegiance = pieceAtDestination.getPieceAllegiance();
                         if (this.pieceAlliance != pieceAtDestinationAllegiance) {
-                            legalMoves.add(new MajorAttackMove(board, this.piecePosition, candidateDestinationCoordinate, this,
+                            legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate,
                                     pieceAtDestination));
                         }
                         break;

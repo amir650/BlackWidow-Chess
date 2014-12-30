@@ -37,8 +37,7 @@ public class BlackPlayer extends Player {
                    Player.calculateAttacksOnTile(6, opponentLegals).isEmpty() &&
                    rookTile.getPiece().getPieceType() == PieceType.ROOK) {
                     kingCastles.add(
-                            new KingSideCastleMove(this.board, this.playerKing.getPiecePosition(), 6, this.playerKing,
-                                    (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 5));
+                            new KingSideCastleMove(this.board, this.playerKing, 6, (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 5));
                 }
             }
             //blacks queen side castle
@@ -51,8 +50,7 @@ public class BlackPlayer extends Player {
                    Player.calculateAttacksOnTile(3, opponentLegals).isEmpty() &&
                    rookTile.getPiece().getPieceType() == PieceType.ROOK) {
                     kingCastles.add(
-                            new QueenSideCastleMove(this.board, this.playerKing.getPiecePosition(), 2, this.playerKing,
-                                    (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 3));
+                            new QueenSideCastleMove(this.board, this.playerKing, 2, (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 3));
                 }
             }
         }
@@ -80,7 +78,7 @@ public class BlackPlayer extends Player {
     }
 
     @Override
-    protected King findKing() {
+    protected King establishKing() {
         for(final Piece p : this.board.getBlackPieces()) {
             if(p.isKing()) {
                 return (King) p;
