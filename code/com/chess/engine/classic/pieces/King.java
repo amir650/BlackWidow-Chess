@@ -5,6 +5,7 @@ import java.util.List;
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.MoveStatus;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
@@ -32,18 +33,13 @@ public final class King extends Piece {
         this.isCastled = isCastled;
     }
 
-    private King(final King king) {
-        super(king);
-        this.isCastled = king.isCastled();
-    }
-
     public boolean isInCheck(final List<Move> enemyMoves) {
         return !Player.calculateAttacksOnTile(this.piecePosition, enemyMoves).isEmpty();
     }
 
     public boolean isInCheckMate(final Board board) {
         return !Player.calculateAttacksOnTile(this.piecePosition, board.currentPlayer().getOpponent().getLegalMoves())
-               .isEmpty() && !(hasEscapeMoves(board));
+                .isEmpty() && !(hasEscapeMoves(board));
     }
 
     public boolean isInStaleMate(final Board board) {
@@ -99,11 +95,6 @@ public final class King extends Piece {
     }
 
     @Override
-    public King createCopy() {
-        return new King(this);
-    }
-
-    @Override
     public King movePiece(final Move move) {
         return new King(this.pieceAlliance, move.getDestinationCoordinate(), false, move.isCastle());
     }
@@ -120,14 +111,14 @@ public final class King extends Piece {
 
     private static boolean isFirstColumnExclusion(final int currentCandidate,
                                                   final int candidateDestinationCoordinate) {
-        return Board.FIRST_COLUMN[currentCandidate]
+        return BoardUtils.FIRST_COLUMN[currentCandidate]
                 && ((candidateDestinationCoordinate == -9) || (candidateDestinationCoordinate == -1) ||
                    (candidateDestinationCoordinate == 7));
     }
 
     private static boolean isEighthColumnExclusion(final int currentCandidate,
                                                    final int candidateDestinationCoordinate) {
-        return Board.EIGHTH_COLUMN[currentCandidate]
+        return BoardUtils.EIGHTH_COLUMN[currentCandidate]
                 && ((candidateDestinationCoordinate == -7) || (candidateDestinationCoordinate == 1) ||
                    (candidateDestinationCoordinate == 9));
     }
@@ -146,11 +137,8 @@ public final class King extends Piece {
 
         final King king = (King) other;
 
-        if (isCastled != king.isCastled) {
-            return false;
-        }
+        return isCastled == king.isCastled;
 
-        return true;
     }
 
     @Override

@@ -3,17 +3,13 @@ package com.chess.engine.classic.board;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.chess.engine.classic.Copyable;
 import com.chess.engine.classic.pieces.Piece;
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Table;
 
 abstract public class Tile {
 
     protected final int tileCoordinate;
     private static final Map<Integer, EmptyTile> EMPTY_TILES = createAllPossibleEmptyTiles();
-    private static final Table<Integer, Piece, OccupiedTile> OCCUPIED_TILES = HashBasedTable.create();
 
     private Tile(final int coordinate) {
         this.tileCoordinate = coordinate;
@@ -26,13 +22,7 @@ abstract public class Tile {
     public static Tile createTile(final int coordinate,
                                   final Piece piece) {
         if (piece != null) {
-            final OccupiedTile existingOccupiedTile = OCCUPIED_TILES.get(coordinate, piece);
-            if (existingOccupiedTile != null) {
-                return existingOccupiedTile;
-            }
-            final OccupiedTile occupiedTile = new OccupiedTile(coordinate, piece);
-            OCCUPIED_TILES.put(coordinate, piece, occupiedTile);
-            return occupiedTile;
+            return new OccupiedTile(coordinate, piece);
         }
         return EMPTY_TILES.get(coordinate);
     }
@@ -43,21 +33,16 @@ abstract public class Tile {
 
     private static Map<Integer,EmptyTile> createAllPossibleEmptyTiles() {
         final Map<Integer, EmptyTile> emptyTileMap = new HashMap<>();
-        for(int i = 0; i < Board.NUM_TILES; i++) {
+        for(int i = 0; i < BoardUtils.NUM_TILES; i++) {
             emptyTileMap.put(i, new EmptyTile(i));
         }
         return ImmutableMap.copyOf(emptyTileMap);
     }
 
-    public static final class EmptyTile extends Tile implements Copyable<EmptyTile> {
+    public static final class EmptyTile extends Tile {
 
         EmptyTile(final int coordinate) {
             super(coordinate);
-        }
-
-        @Override
-        public EmptyTile createCopy() {
-            return new EmptyTile(this.tileCoordinate);
         }
 
         @Override
@@ -76,18 +61,13 @@ abstract public class Tile {
 
     }
 
-    public static final class OccupiedTile extends Tile implements Copyable<OccupiedTile> {
+    public static final class OccupiedTile extends Tile {
 
         private final Piece pieceOnTile;
 
         OccupiedTile(final int coordinate, final Piece pieceOnTile) {
             super(coordinate);
             this.pieceOnTile = pieceOnTile;
-        }
-
-        @Override
-        public OccupiedTile createCopy() {
-            return new OccupiedTile(tileCoordinate, pieceOnTile.createCopy());
         }
 
         @Override

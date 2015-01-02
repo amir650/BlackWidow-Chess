@@ -62,7 +62,7 @@ public class MiniMax implements MoveStrategy {
             board.currentPlayer().isInCheckMate() ||
             board.currentPlayer().getOpponent().isInCheckMate()) {
             this.boardsEvaluated++;
-            return this.evaluator.evaluate(board);
+            return this.evaluator.evaluate(board, depth);
         }
         int lowest_seen_value = Integer.MAX_VALUE;
         for (final Move move : board.currentPlayer().getLegalMoves()) {
@@ -83,7 +83,7 @@ public class MiniMax implements MoveStrategy {
             board.currentPlayer().isInCheckMate() ||
             board.currentPlayer().getOpponent().isInCheckMate()) {
             this.boardsEvaluated++;
-            return this.evaluator.evaluate(board);
+            return this.evaluator.evaluate(board, depth);
         }
         int highest_seen_value = Integer.MIN_VALUE;
         for (final Move move : board.currentPlayer().getLegalMoves()) {

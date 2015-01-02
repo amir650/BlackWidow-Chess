@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
@@ -24,10 +25,6 @@ public final class Bishop extends Piece {
                   final int piecePosition,
                   final boolean isFirstMove) {
         super(PieceType.BISHOP, alliance, piecePosition, isFirstMove);
-    }
-
-    private Bishop(final Bishop bishop) {
-        super(bishop);
     }
 
     @Override
@@ -77,13 +74,8 @@ public final class Bishop extends Piece {
     }
 
     @Override
-    public Bishop createCopy() {
-        return new Bishop(this);
-    }
-
-    @Override
     public Bishop movePiece(final Move move) {
-        return new Bishop(this.pieceAlliance, move.getDestinationCoordinate(), false);
+        return PieceUtils.ALL_POSSIBLE_BISHOPS.get(this.pieceAlliance, move.getDestinationCoordinate());
     }
 
     @Override
@@ -93,9 +85,9 @@ public final class Bishop extends Piece {
 
     private static boolean isDiagonalExclusion(final int currentCandidate,
                                                final int candidateDestinationCoordinate) {
-        return (Board.FIRST_COLUMN[candidateDestinationCoordinate] &&
+        return (BoardUtils.FIRST_COLUMN[candidateDestinationCoordinate] &&
                 ((currentCandidate == -9) || (currentCandidate == 7))) ||
-                (Board.EIGHTH_COLUMN[candidateDestinationCoordinate] &&
+                (BoardUtils.EIGHTH_COLUMN[candidateDestinationCoordinate] &&
                         ((currentCandidate == -7) || (currentCandidate == 9)));
     }
 

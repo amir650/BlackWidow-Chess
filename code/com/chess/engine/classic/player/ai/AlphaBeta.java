@@ -106,7 +106,7 @@ public class AlphaBeta implements MoveStrategy {
                    final int lowest) {
         if (depth == 0 || isEndGame(board)) {
             this.boardsEvaluated++;
-            return this.evaluator.evaluate(board);
+            return this.evaluator.evaluate(board, depth);
         }
         int currentHighest = highest;
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
@@ -127,7 +127,7 @@ public class AlphaBeta implements MoveStrategy {
                    final int lowest) {
         if (depth == 0 || isEndGame(board)) {
             this.boardsEvaluated++;
-            return this.evaluator.evaluate(board);
+            return this.evaluator.evaluate(board, depth);
         }
         int currentLowest = lowest;
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {

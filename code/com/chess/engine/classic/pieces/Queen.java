@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
@@ -24,10 +25,6 @@ public final class Queen extends Piece {
                  final int piecePosition,
                  final boolean isFirstMove) {
         super(PieceType.QUEEN, alliance, piecePosition, isFirstMove);
-    }
-
-    private Queen(final Queen queen) {
-        super(queen);
     }
 
     @Override
@@ -79,13 +76,8 @@ public final class Queen extends Piece {
     }
 
     @Override
-    public Queen createCopy() {
-        return new Queen(this);
-    }
-
-    @Override
     public Queen movePiece(final Move move) {
-        return new Queen(this.pieceAlliance, move.getDestinationCoordinate(), false);
+        return PieceUtils.ALL_POSSIBLE_QUEENS.get(this.pieceAlliance, move.getDestinationCoordinate());
     }
 
     @Override
@@ -95,13 +87,13 @@ public final class Queen extends Piece {
 
     private static boolean isFirstColumnExclusion(final int currentPosition,
                                                   final int candidatePosition) {
-        return Board.FIRST_COLUMN[candidatePosition] && ((currentPosition == -9)
+        return BoardUtils.FIRST_COLUMN[candidatePosition] && ((currentPosition == -9)
                 || (currentPosition == -1) || (currentPosition == 7));
     }
 
     private static boolean isEightColumnExclusion(final int currentPosition,
                                                   final int candidatePosition) {
-        return Board.EIGHTH_COLUMN[candidatePosition] && ((currentPosition == -7)
+        return BoardUtils.EIGHTH_COLUMN[candidatePosition] && ((currentPosition == -7)
                 || (currentPosition == 1) || (currentPosition == 9));
     }
 

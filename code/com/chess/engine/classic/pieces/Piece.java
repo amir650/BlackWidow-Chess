@@ -3,11 +3,10 @@ package com.chess.engine.classic.pieces;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
-import com.chess.engine.classic.Copyable;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
 
-public abstract class Piece implements Copyable<Piece>{
+public abstract class Piece {
 
     protected final PieceType pieceType;
     protected final Alliance pieceAlliance;
@@ -24,14 +23,6 @@ public abstract class Piece implements Copyable<Piece>{
         this.pieceAlliance = alliance;
         this.isFirstMove = isFirstMove;
         this.cachedHashCode = computeHashCode();
-    }
-
-    Piece(final Piece p) {
-        this.pieceType = p.getPieceType();
-        this.pieceAlliance = p.getPieceAllegiance();
-        this.piecePosition = p.getPiecePosition();
-        this.isFirstMove = p.isFirstMove();
-        this.cachedHashCode = p.hashCode();
     }
 
     public PieceType getPieceType() {

@@ -255,7 +255,35 @@ public class TestAlphaBeta {
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 8);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, Board.getCoordinateAtPosition("g3"), Board.getCoordinateAtPosition("g6")));
+    }
 
+    @Test
+    public void testCheckmateHorizon() {
+        final Builder builder = new Builder();
+        // Black Layout
+        builder.setPiece(new Rook(Alliance.BLACK, 11));
+        builder.setPiece(new Pawn(Alliance.BLACK, 16));
+        builder.setPiece(new Bishop(Alliance.BLACK, 27));
+        builder.setPiece(new King(Alliance.BLACK, 29));
+        // White Layout
+        builder.setPiece(new Rook(Alliance.WHITE, 17));
+        builder.setPiece(new Rook(Alliance.WHITE, 26));
+        builder.setPiece(new Pawn(Alliance.WHITE, 35));
+        builder.setPiece(new Pawn(Alliance.WHITE, 45));
+        builder.setPiece(new Bishop(Alliance.WHITE, 51));
+        builder.setPiece(new Pawn(Alliance.WHITE, 54));
+        builder.setPiece(new Pawn(Alliance.WHITE, 55));
+        builder.setPiece(new King(Alliance.WHITE, 63));
+
+
+        // Set the current player
+        builder.setMoveMaker(Alliance.WHITE);
+        final Board board = builder.build();
+        final Player currentPlayer = board.currentPlayer();
+        currentPlayer.setMoveStrategy(new AlphaBeta());
+        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 8);
+        assertEquals(bestMove, Move.MoveFactory
+                .createMove(board, Board.getCoordinateAtPosition("g2"), Board.getCoordinateAtPosition("g4")));
     }
 
 }

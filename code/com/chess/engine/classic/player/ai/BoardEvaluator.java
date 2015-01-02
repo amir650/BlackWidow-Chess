@@ -4,6 +4,6 @@ import com.chess.engine.classic.board.Board;
 
 public interface BoardEvaluator {
 
-    public int evaluate(Board board);
+    public int evaluate(Board board, int depth);
 
 }

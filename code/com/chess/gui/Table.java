@@ -44,6 +44,7 @@ import com.chess.com.chess.pgn.MySqlGamePersistence;
 import com.chess.com.chess.pgn.PGNUtilities;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.MoveStatus;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.board.MoveTransition;
@@ -220,7 +221,7 @@ public final class Table extends Observable {
         optionsMenu.add(resetMenuItem);
 
         final JMenuItem evaluateBoardMenuItem = new JMenuItem("Evaluate Board", KeyEvent.VK_E);
-        evaluateBoardMenuItem.addActionListener(e -> System.out.println(new SimpleBoardEvaluator().evaluate(Table.get().getGameBoard())));
+        evaluateBoardMenuItem.addActionListener(e -> System.out.println(new SimpleBoardEvaluator().evaluate(Table.get().getGameBoard(), gameSetup.getSearchDepth())));
         optionsMenu.add(evaluateBoardMenuItem);
 
         final JMenuItem legalMovesMenuItem = new JMenuItem("Current State", KeyEvent.VK_L);
@@ -430,7 +431,8 @@ public final class Table extends Observable {
                         try {
                             Move bestMove;
                             final Move bookMove = MySqlGamePersistence.get()
-                                    .getNextBestMove(Table.get().getGameBoard(), Table.get().getGameBoard().currentPlayer(),
+                                    .getNextBestMove(Table.get().getGameBoard(),
+                                            Table.get().getGameBoard().currentPlayer(),
                                             moveLog.getMoves().toString().replaceAll("\\[", "").replaceAll("\\]", ""));
                             if (Table.get().getUseBook() && bookMove != Move.NULL_MOVE) {
                                 bestMove = bookMove;
@@ -466,7 +468,7 @@ public final class Table extends Observable {
         BoardPanel() {
             super(new GridLayout(8,8));
             this.boardTiles = new ArrayList<>();
-            for (int i = 0; i < Board.NUM_TILES; i++) {
+            for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
                 final TilePanel tilePanel = new TilePanel(this, i);
                 this.boardTiles.add(tilePanel);
                 add(tilePanel);
@@ -691,15 +693,15 @@ public final class Table extends Observable {
         }
 
         private void assignTileColor() {
-            if (Board.FIRST_ROW[this.tileId] ||
-                Board.THIRD_ROW[this.tileId] ||
-                Board.FIFTH_ROW[this.tileId] ||
-                Board.SEVENTH_ROW[this.tileId]) {
+            if (BoardUtils.FIRST_ROW[this.tileId] ||
+                    BoardUtils.THIRD_ROW[this.tileId] ||
+                    BoardUtils.FIFTH_ROW[this.tileId] ||
+                    BoardUtils.SEVENTH_ROW[this.tileId]) {
                 setBackground(this.tileId % 2 == 0 ? lightTileColor : darkTileColor);
-            } else if(Board.SECOND_ROW[this.tileId] ||
-                      Board.FOURTH_ROW[this.tileId] ||
-                      Board.SIXTH_ROW[this.tileId]  ||
-                      Board.EIGHTH_ROW[this.tileId]) {
+            } else if(BoardUtils.SECOND_ROW[this.tileId] ||
+                    BoardUtils.FOURTH_ROW[this.tileId] ||
+                    BoardUtils.SIXTH_ROW[this.tileId]  ||
+                    BoardUtils.EIGHTH_ROW[this.tileId]) {
                 setBackground(this.tileId % 2 != 0 ? lightTileColor : darkTileColor);
             }
         }

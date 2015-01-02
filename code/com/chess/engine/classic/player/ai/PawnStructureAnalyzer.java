@@ -2,7 +2,7 @@ package com.chess.engine.classic.player.ai;
 
 import java.util.List;
 
-import com.chess.engine.classic.board.Board;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.pieces.Pawn;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
@@ -22,14 +22,14 @@ public class PawnStructureAnalyzer {
 
     private static List<boolean[]> initColumns() {
         final Builder<boolean[]> columns = new Builder<>();
-        columns.add(Board.FIRST_COLUMN);
-        columns.add(Board.SECOND_COLUMN);
-        columns.add(Board.THIRD_COLUMN);
-        columns.add(Board.FOURTH_COLUMN);
-        columns.add(Board.FIFTH_COLUMN);
-        columns.add(Board.SIXTH_COLUMN);
-        columns.add(Board.SEVENTH_COLUMN);
-        columns.add(Board.EIGHTH_COLUMN);
+        columns.add(BoardUtils.FIRST_COLUMN);
+        columns.add(BoardUtils.SECOND_COLUMN);
+        columns.add(BoardUtils.THIRD_COLUMN);
+        columns.add(BoardUtils.FOURTH_COLUMN);
+        columns.add(BoardUtils.FIFTH_COLUMN);
+        columns.add(BoardUtils.SIXTH_COLUMN);
+        columns.add(BoardUtils.SEVENTH_COLUMN);
+        columns.add(BoardUtils.EIGHTH_COLUMN);
         return columns.build();
     }
 

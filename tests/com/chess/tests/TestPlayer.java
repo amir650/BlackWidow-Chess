@@ -33,7 +33,7 @@ public class TestPlayer {
 
         assertEquals(MoveStatus.DONE, t2.getMoveStatus());
 
-        assertEquals(new SimpleBoardEvaluator().evaluate(t2.getTransitionBoard()), 0);
+        assertEquals(new SimpleBoardEvaluator().evaluate(t2.getTransitionBoard(), 0), 0);
     }
 
     @Test

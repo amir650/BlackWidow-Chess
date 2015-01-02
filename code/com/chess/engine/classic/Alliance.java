@@ -1,6 +1,6 @@
 package com.chess.engine.classic;
 
-import com.chess.engine.classic.board.Board;
+import com.chess.engine.classic.board.BoardUtils;
 
 public enum Alliance {
 
@@ -23,7 +23,7 @@ public enum Alliance {
 
         @Override
         public boolean isPawnPromotionSquare(final int position) {
-            return Board.FIRST_ROW[position];
+            return BoardUtils.FIRST_ROW[position];
         }
 
         @Override
@@ -81,7 +81,7 @@ public enum Alliance {
 
         @Override
         public boolean isPawnPromotionSquare(final int position) {
-            return Board.EIGHTH_ROW[position];
+            return BoardUtils.EIGHTH_ROW[position];
         }
 
         @Override

@@ -30,7 +30,7 @@ public class TestBoard {
         assertFalse(board.currentPlayer().getOpponent().isInCheckMate());
         assertEquals(board.currentPlayer(), board.whitePlayer());
         assertEquals(board.currentPlayer().getOpponent(), board.blackPlayer());
-        assertEquals(new SimpleBoardEvaluator().evaluate(board), 0);
+        assertEquals(new SimpleBoardEvaluator().evaluate(board, 0), 0);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class TestBoard {
         assertFalse(board.currentPlayer().getOpponent().isInCheckMate());
         assertEquals(board.currentPlayer(), board.whitePlayer());
         assertEquals(board.currentPlayer().getOpponent(), board.blackPlayer());
-        assertEquals(new SimpleBoardEvaluator().evaluate(board), 0);
+        assertEquals(new SimpleBoardEvaluator().evaluate(board, 0), 0);
 
         final MoveTransition moveTransition = board.makeMove(
                 MoveFactory.createMove(board, Board.getCoordinateAtPosition("e1"), Board.getCoordinateAtPosition("f1")));

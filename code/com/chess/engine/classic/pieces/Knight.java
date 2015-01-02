@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
@@ -24,10 +25,6 @@ public final class Knight extends Piece {
                   final int piecePosition,
                   final boolean isFirstMove) {
         super(PieceType.KNIGHT, alliance, piecePosition, isFirstMove);
-    }
-
-    private Knight(final Knight knight) {
-        super(knight);
     }
 
     @Override
@@ -75,13 +72,8 @@ public final class Knight extends Piece {
     }
 
     @Override
-    public Knight createCopy() {
-        return new Knight(this);
-    }
-
-    @Override
     public Knight movePiece(final Move move) {
-        return new Knight(this.pieceAlliance, move.getDestinationCoordinate(), false);
+        return PieceUtils.ALL_POSSIBLE_KNIGHTS.get(this.pieceAlliance, move.getDestinationCoordinate());
     }
 
     @Override
@@ -91,23 +83,23 @@ public final class Knight extends Piece {
 
     private static boolean isFirstColumnExclusion(final int currentPosition,
                                                   final int candidatePosition) {
-        return Board.FIRST_COLUMN[currentPosition] && ((candidatePosition == -17) ||
+        return BoardUtils.FIRST_COLUMN[currentPosition] && ((candidatePosition == -17) ||
                 (candidatePosition == -10) || (candidatePosition == 6) || (candidatePosition == 15));
     }
 
     private static boolean isSecondColumnExclusion(final int currentPosition,
                                                    final int candidatePosition) {
-        return Board.SECOND_COLUMN[currentPosition] && ((candidatePosition == -10) || (candidatePosition == 6));
+        return BoardUtils.SECOND_COLUMN[currentPosition] && ((candidatePosition == -10) || (candidatePosition == 6));
     }
 
     private static boolean isSeventhColumnExclusion(final int currentPosition,
                                                     final int candidatePosition) {
-        return Board.SEVENTH_COLUMN[currentPosition] && ((candidatePosition == -6) || (candidatePosition == 10));
+        return BoardUtils.SEVENTH_COLUMN[currentPosition] && ((candidatePosition == -6) || (candidatePosition == 10));
     }
 
     private static boolean isEighthColumnExclusion(final int currentPosition,
                                                    final int candidatePosition) {
-        return Board.EIGHTH_COLUMN[currentPosition] && ((candidatePosition == -15) || (candidatePosition == -6) ||
+        return BoardUtils.EIGHTH_COLUMN[currentPosition] && ((candidatePosition == -15) || (candidatePosition == -6) ||
                 (candidatePosition == 10) || (candidatePosition == 17));
     }
 
