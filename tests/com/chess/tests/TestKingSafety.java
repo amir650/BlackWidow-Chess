@@ -9,9 +9,9 @@ import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Pawn;
-import com.chess.engine.classic.player.ai.PawnStructureAnalyzer;
+import com.chess.engine.classic.player.ai.KingSafetyAnalyzer;
 
-public class TestPawnStructure {
+public class TestKingSafety {
 
     @Test
     public void test1() {
@@ -19,10 +19,6 @@ public class TestPawnStructure {
         // Black Layout
         builder.setPiece(new King(Alliance.BLACK, 4));
         builder.setPiece(new Pawn(Alliance.BLACK, 12));
-        builder.setPiece(new Pawn(Alliance.BLACK, 20));
-        builder.setPiece(new Pawn(Alliance.BLACK, 28));
-        builder.setPiece(new Pawn(Alliance.BLACK, 8));
-        builder.setPiece(new Pawn(Alliance.BLACK, 16));
         // White Layout
         builder.setPiece(new Pawn(Alliance.WHITE, 52));
         builder.setPiece(new King(Alliance.WHITE, 60));
@@ -30,8 +26,7 @@ public class TestPawnStructure {
         // Set the current player
         final Board board = builder.build();
 
-        assertEquals(PawnStructureAnalyzer.get().pawnStructureScore(board.whitePlayer()), -25);
-        assertEquals(PawnStructureAnalyzer.get().pawnStructureScore(board.blackPlayer()), -100);
+        assertEquals(KingSafetyAnalyzer.get().calculateKingTropism(board.whitePlayer()).tropismScore(), 40);
     }
 
 }

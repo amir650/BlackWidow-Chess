@@ -84,22 +84,22 @@ public class GameSetup
         setVisible(false);
     }
 
-    public void promptUser() {
+    void promptUser() {
         setVisible(true);
     }
 
-    public boolean isAIPlayer(final Player player) {
+    boolean isAIPlayer(final Player player) {
         if(player.getAlliance() == Alliance.WHITE) {
             return getWhitePlayerType() == PlayerType.COMPUTER;
         }
         return getBlackPlayerType() == PlayerType.COMPUTER;
     }
 
-    public Table.PlayerType getWhitePlayerType() {
+    Table.PlayerType getWhitePlayerType() {
         return this.whitePlayerType;
     }
 
-    public PlayerType getBlackPlayerType() {
+    PlayerType getBlackPlayerType() {
         return this.blackPlayerType;
     }
 
@@ -112,7 +112,7 @@ public class GameSetup
         return spinner;
     }
 
-    public int getSearchDepth() {
+    int getSearchDepth() {
         return (Integer)this.searchDepthSpinner.getValue();
     }
 }

@@ -42,14 +42,14 @@ public final class Board {
 
     @Override
     public String toString() {
-        final StringBuilder s = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
-            s.append(String.format("%2s", this.gameBoard.get(i)));
+            builder.append(String.format("%2s", this.gameBoard.get(i)));
             if ((i + 1) % 8 == 0) {
-                s.append("\n");
+                builder.append("\n");
             }
         }
-        return s.toString();
+        return builder.toString();
     }
 
     public List<Piece> getBlackPieces() {
@@ -170,18 +170,6 @@ public final class Board {
             }
         }
         return activePieces.build();
-    }
-
-    public static boolean isValidTileCoordinate(final int coordinate) {
-        return coordinate >= 0 && coordinate < BoardUtils.NUM_TILES;
-    }
-
-    public static int getCoordinateAtPosition(final String position) {
-        return BoardUtils.POSITION_TO_COORDINATE.get(position);
-    }
-
-    public static String getPositionAtCoordinate(final int coordinate) {
-        return BoardUtils.ALGEBRAIC_NOTATION[coordinate];
     }
 
     public enum MoveStatus {

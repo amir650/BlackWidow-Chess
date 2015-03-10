@@ -10,6 +10,7 @@ import org.junit.Test;
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Knight;
@@ -37,21 +38,21 @@ public class TestKnight {
         assertEquals(blackLegals.size(), 13);
 
         final Move wm1 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("d6"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("d6"));
         final Move wm2 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("f6"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("f6"));
         final Move wm3 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("c5"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("c5"));
         final Move wm4 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("g5"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("g5"));
         final Move wm5 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("c3"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("c3"));
         final Move wm6 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("g3"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("g3"));
         final Move wm7 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("d2"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("d2"));
         final Move wm8 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("f2"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("f2"));
 
         assertTrue(whiteLegals.contains(wm1));
         assertTrue(whiteLegals.contains(wm2));
@@ -63,21 +64,21 @@ public class TestKnight {
         assertTrue(whiteLegals.contains(wm8));
 
         final Move bm1 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e5"), Board.getCoordinateAtPosition("d7"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e5"), BoardUtils.getCoordinateAtPosition("d7"));
         final Move bm2 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e5"), Board.getCoordinateAtPosition("f7"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e5"), BoardUtils.getCoordinateAtPosition("f7"));
         final Move bm3 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e5"), Board.getCoordinateAtPosition("c6"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e5"), BoardUtils.getCoordinateAtPosition("c6"));
         final Move bm4 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e5"), Board.getCoordinateAtPosition("g6"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e5"), BoardUtils.getCoordinateAtPosition("g6"));
         final Move bm5 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e5"), Board.getCoordinateAtPosition("c4"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e5"), BoardUtils.getCoordinateAtPosition("c4"));
         final Move bm6 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e5"), Board.getCoordinateAtPosition("g4"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e5"), BoardUtils.getCoordinateAtPosition("g4"));
         final Move bm7 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e5"), Board.getCoordinateAtPosition("d3"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e5"), BoardUtils.getCoordinateAtPosition("d3"));
         final Move bm8 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e5"), Board.getCoordinateAtPosition("f3"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e5"), BoardUtils.getCoordinateAtPosition("f3"));
 
         assertTrue(blackLegals.contains(bm1));
         assertTrue(blackLegals.contains(bm2));
@@ -109,17 +110,17 @@ public class TestKnight {
         assertEquals(blackLegals.size(), 7);
 
         final Move wm1 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a1"), Board.getCoordinateAtPosition("b3"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a1"), BoardUtils.getCoordinateAtPosition("b3"));
         final Move wm2 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a1"), Board.getCoordinateAtPosition("c2"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a1"), BoardUtils.getCoordinateAtPosition("c2"));
 
         assertTrue(whiteLegals.contains(wm1));
         assertTrue(whiteLegals.contains(wm2));
 
         final Move bm1 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a8"), Board.getCoordinateAtPosition("b6"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a8"), BoardUtils.getCoordinateAtPosition("b6"));
         final Move bm2 = Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a8"), Board.getCoordinateAtPosition("c7"));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a8"), BoardUtils.getCoordinateAtPosition("c7"));
 
         assertTrue(blackLegals.contains(bm1));
         assertTrue(blackLegals.contains(bm2));

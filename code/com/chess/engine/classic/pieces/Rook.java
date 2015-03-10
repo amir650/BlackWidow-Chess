@@ -37,12 +37,12 @@ public final class Rook extends Piece {
         int candidateDestinationCoordinate;
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             candidateDestinationCoordinate = this.piecePosition;
-            while (Board.isValidTileCoordinate(candidateDestinationCoordinate)) {
+            while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 if (isColumnExclusion(currentCandidate, candidateDestinationCoordinate)) {
                     break;
                 }
                 candidateDestinationCoordinate += currentCandidate;
-                if (Board.isValidTileCoordinate(candidateDestinationCoordinate)) {
+                if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                     if (!candidateDestinationTile.isTileOccupied()) {
                         legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
@@ -73,7 +73,7 @@ public final class Rook extends Piece {
 
     @Override
     public Rook movePiece(final Move move) {
-        return PieceUtils.ALL_POSSIBLE_ROOKS.get(this.pieceAlliance, move.getDestinationCoordinate());
+        return PieceUtils.getMovedRook(move);
     }
 
     @Override

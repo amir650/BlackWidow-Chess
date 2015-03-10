@@ -3,6 +3,7 @@ package com.chess.engine.classic.player.ai;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
+import com.chess.engine.classic.player.ai.KingSafetyAnalyzer.KingDistance;
 
 public class SimpleBoardEvaluator
         implements BoardEvaluator {
@@ -16,18 +17,19 @@ public class SimpleBoardEvaluator
     }
 
     private static int scorePlayer(final Player player, final int depth) {
-        int score = mobilityScore(player) + checkMateScore(player, depth) + castleScore(player) + pawnStructureScore(player);
+        int score = mobility(player) + checkmate(player, depth) + castling(player) +
+                    pawnStructure(player);//+ kingSafety(player);
         for (final Piece piece : player.getActivePieces()) {
             score += piece.getPieceValue() + piece.locationBonus();
         }
         return score;
     }
 
-    private static int mobilityScore(final Player player) {
+    private static int mobility(final Player player) {
         return player.getLegalMoves().size();
     }
 
-    private static int checkMateScore(final Player player, final int depth) {
+    private static int checkmate(final Player player, final int depth) {
         return player.getOpponent().isInCheckMate() ? CHECK_MATE_BONUS  * depthBonus(depth): 0;
     }
 
@@ -35,12 +37,17 @@ public class SimpleBoardEvaluator
         return depth == 0 ? 1 : 100 * depth;
     }
 
-    private static int castleScore(final Player player) {
+    private static int castling(final Player player) {
         return player.isCastled() ? CASTLE_BONUS : 0;
     }
 
-    private static int pawnStructureScore(final Player player) {
+    private static int pawnStructure(final Player player) {
         return PawnStructureAnalyzer.get().pawnStructureScore(player);
+    }
+
+    private static int kingSafety(final Player player) {
+        final KingDistance kingDistance = KingSafetyAnalyzer.get().calculateKingTropism(player);
+        return ((kingDistance.getEnemyPiece().getPieceValue() / 100) * kingDistance.getDistance());
     }
 
 }

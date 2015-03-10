@@ -2,6 +2,7 @@ package com.chess.engine.classic.pieces;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.BoardUtils;
+import com.chess.engine.classic.board.Move;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 
@@ -17,7 +18,27 @@ public class PieceUtils {
         throw new RuntimeException("Not instantiable!");
     }
 
-    static Table<Alliance, Integer, Pawn> createAllPossibleMovedPawns() {
+    static Pawn getMovedPawn(final Move move) {
+        return PieceUtils.ALL_POSSIBLE_PAWNS.get(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    }
+
+    static Knight getMovedKnight(final Move move) {
+        return PieceUtils.ALL_POSSIBLE_KNIGHTS.get(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    }
+
+    static Bishop getMovedBishop(final Move move) {
+        return PieceUtils.ALL_POSSIBLE_BISHOPS.get(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    }
+
+    static Rook getMovedRook(final Move move) {
+        return PieceUtils.ALL_POSSIBLE_ROOKS.get(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    }
+
+    static Queen getMovedQueen(final Move move) {
+        return PieceUtils.ALL_POSSIBLE_QUEENS.get(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    }
+
+    private static Table<Alliance, Integer, Pawn> createAllPossibleMovedPawns() {
 
         final ImmutableTable.Builder<Alliance, Integer, Pawn> pieces = ImmutableTable.builder();
 
@@ -33,7 +54,7 @@ public class PieceUtils {
 
     }
 
-    static Table<Alliance, Integer, Knight> createAllPossibleMovedKnights() {
+    private static Table<Alliance, Integer, Knight> createAllPossibleMovedKnights() {
 
         final ImmutableTable.Builder<Alliance, Integer, Knight> pieces = ImmutableTable.builder();
 
@@ -49,7 +70,7 @@ public class PieceUtils {
 
     }
 
-    static Table<Alliance, Integer, Bishop> createAllPossibleMovedBishops() {
+    private static Table<Alliance, Integer, Bishop> createAllPossibleMovedBishops() {
 
         final ImmutableTable.Builder<Alliance, Integer, Bishop> pieces = ImmutableTable.builder();
 
@@ -65,7 +86,7 @@ public class PieceUtils {
 
     }
 
-    static Table<Alliance, Integer, Rook> createAllPossibleMovedRooks() {
+    private static Table<Alliance, Integer, Rook> createAllPossibleMovedRooks() {
 
         final ImmutableTable.Builder<Alliance, Integer, Rook> pieces = ImmutableTable.builder();
 
@@ -81,7 +102,7 @@ public class PieceUtils {
 
     }
 
-    static Table<Alliance, Integer, Queen> createAllPossibleMovedQueens() {
+    private static Table<Alliance, Integer, Queen> createAllPossibleMovedQueens() {
 
         final ImmutableTable.Builder<Alliance, Integer, Queen> pieces = ImmutableTable.builder();
 

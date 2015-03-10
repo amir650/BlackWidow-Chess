@@ -34,7 +34,11 @@ public class PawnStructureAnalyzer {
     }
 
     public int pawnStructureScore(final Player player) {
-        return calculatePawnPenalties(calculatePawns(player));
+
+        final List<Pawn> playerPawns = calculatePawns(player);
+        final List<Integer> pawnLocations = calculatePawnLocations(playerPawns);
+
+        return calculatePawnStacksPenalty(pawnLocations) + calculateIsolatedPawnPenalty(pawnLocations);
     }
 
 
@@ -56,8 +60,7 @@ public class PawnStructureAnalyzer {
         return playerPawns.build();
     }
 
-    private static int calculatePawnPenalties(final List<Pawn> pawns) {
-        final List<Integer> pawnLocations = calculatePawnLocations(pawns);
+    private static int calculatePawnStacksPenalty(final List<Integer> pawnLocations) {
         final int[] pawnsOnColumnTable = new int[COLUMNS.size()];
         for(int i = 0; i < COLUMNS.size(); i++) {
             for(final Integer location : pawnLocations) {
@@ -72,21 +75,32 @@ public class PawnStructureAnalyzer {
                 stackedPawnPenalty += (10 * pawnsOnColumn);
             }
         }
-        //calculate doubled, tripled, quadrupled pawns.
-        //80 is a perfect score.  So subtract 80 from all possible penalties
-        final int stackedPawnScore = 80 - stackedPawnPenalty;
+        return -stackedPawnPenalty;
+    }
 
-        int isolatedPawnPenalty = 0;
-
-        for(int i = 0; i < COLUMNS.size(); i++) {
-            for(final Integer location : pawnLocations) {
-                if(COLUMNS.get(i)[location]) {
+    private static int calculateIsolatedPawnPenalty(final List<Integer> pawnLocations) {
+        final int[] pawnsOnColumnTable = new int[COLUMNS.size()];
+        for (int i = 0; i < COLUMNS.size(); i++) {
+            for (final Integer location : pawnLocations) {
+                if (COLUMNS.get(i)[location]) {
                     pawnsOnColumnTable[i]++;
                 }
             }
         }
+        int isolatedPawnPenalty = 0;
 
-        return stackedPawnScore + isolatedPawnPenalty;
+        if(pawnsOnColumnTable[0] > 0 && pawnsOnColumnTable[1] == 0) {
+            isolatedPawnPenalty += 25;
+        }
+        for(int i = 1; i < COLUMNS.size() - 1; i++) {
+            if(pawnsOnColumnTable[i] > 0 && (pawnsOnColumnTable[i-1] == 0 && pawnsOnColumnTable[i+1] == 0)) {
+             isolatedPawnPenalty += 25;
+            }
+        }
+        if(pawnsOnColumnTable[COLUMNS.size() - 1] > 0 && pawnsOnColumnTable[COLUMNS.size() - 2] == 0) {
+            isolatedPawnPenalty += 25;
+        }
+        return -isolatedPawnPenalty;
     }
 
 }

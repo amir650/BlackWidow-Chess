@@ -41,7 +41,7 @@ public final class Pawn
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             int candidateDestinationCoordinate =
                     this.piecePosition + (this.pieceAlliance.getDirection() * currentCandidate * -1);
-            if (!Board.isValidTileCoordinate(candidateDestinationCoordinate)) {
+            if (!BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 continue;
             }
             if (currentCandidate == 8 && !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
@@ -111,7 +111,7 @@ public final class Pawn
 
     @Override
     public Pawn movePiece(final Move move) {
-        return PieceUtils.ALL_POSSIBLE_PAWNS.get(this.pieceAlliance, move.getDestinationCoordinate());
+        return PieceUtils.getMovedPawn(move);
     }
 
     public Piece getPromotionPiece() {

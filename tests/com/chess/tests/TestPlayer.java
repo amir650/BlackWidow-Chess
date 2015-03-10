@@ -9,6 +9,7 @@ import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.board.Board.MoveStatus;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.Bishop;
@@ -24,12 +25,14 @@ public class TestPlayer {
         final Board board = Board.createStandardBoard();
 
         final MoveTransition t1 = board.makeMove(
-                MoveFactory.createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
+                MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition(
+                        "e2"), BoardUtils.getCoordinateAtPosition("e4")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
 
-        final MoveTransition t2 = t1.getTransitionBoard().makeMove(MoveFactory.createMove(t1.getTransitionBoard(), Board.getCoordinateAtPosition("e7"),
-                Board.getCoordinateAtPosition("e5")));
+        final MoveTransition t2 = t1.getTransitionBoard().makeMove(MoveFactory.createMove(t1.getTransitionBoard(), BoardUtils
+                .getCoordinateAtPosition("e7"),
+                BoardUtils.getCoordinateAtPosition("e5")));
 
         assertEquals(MoveStatus.DONE, t2.getMoveStatus());
 
@@ -41,23 +44,26 @@ public class TestPlayer {
 
         final Board board = Board.createStandardBoard();
 
-        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("c2"),
-                Board.getCoordinateAtPosition("c3")));
+        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("c2"),
+                BoardUtils.getCoordinateAtPosition("c3")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
 
-        final MoveTransition t2 = t1.getTransitionBoard().makeMove(MoveFactory.createMove(t1.getTransitionBoard(), Board.getCoordinateAtPosition("b8"),
-                Board.getCoordinateAtPosition("a6")));
+        final MoveTransition t2 = t1.getTransitionBoard().makeMove(MoveFactory.createMove(t1.getTransitionBoard(), BoardUtils
+                .getCoordinateAtPosition("b8"),
+                BoardUtils.getCoordinateAtPosition("a6")));
 
         assertEquals(MoveStatus.DONE, t2.getMoveStatus());
 
-        final MoveTransition t3 = t2.getTransitionBoard().makeMove(MoveFactory.createMove(t2.getTransitionBoard(), Board.getCoordinateAtPosition("d1"),
-                Board.getCoordinateAtPosition("a4")));
+        final MoveTransition t3 = t2.getTransitionBoard().makeMove(MoveFactory.createMove(t2.getTransitionBoard(), BoardUtils
+                .getCoordinateAtPosition("d1"),
+                BoardUtils.getCoordinateAtPosition("a4")));
 
         assertEquals(MoveStatus.DONE, t3.getMoveStatus());
 
-        final MoveTransition t4 = t3.getTransitionBoard().makeMove(MoveFactory.createMove(t3.getTransitionBoard(), Board.getCoordinateAtPosition("d7"),
-                Board.getCoordinateAtPosition("d6")));
+        final MoveTransition t4 = t3.getTransitionBoard().makeMove(MoveFactory.createMove(t3.getTransitionBoard(), BoardUtils
+                .getCoordinateAtPosition("d7"),
+                BoardUtils.getCoordinateAtPosition("d6")));
 
         assertEquals(MoveStatus.ILLEGAL_LEAVES_PLAYER_IN_CHECK, t4.getMoveStatus());
 
@@ -80,19 +86,21 @@ public class TestPlayer {
 
         final Board board = builder.build();
 
-        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e3"),
-                Board.getCoordinateAtPosition("b6")));
+        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("e3"),
+                BoardUtils.getCoordinateAtPosition("b6")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
         assertTrue(t1.getTransitionBoard().currentPlayer().isInCheck());
 
-        final MoveTransition t2 = t1.getTransitionBoard().makeMove(MoveFactory.createMove(t1.getTransitionBoard(), Board.getCoordinateAtPosition("a5"),
-                Board.getCoordinateAtPosition("b5")));
+        final MoveTransition t2 = t1.getTransitionBoard().makeMove(MoveFactory.createMove(t1.getTransitionBoard(), BoardUtils
+                .getCoordinateAtPosition("a5"),
+                BoardUtils.getCoordinateAtPosition("b5")));
 
         assertEquals(MoveStatus.ILLEGAL_LEAVES_PLAYER_IN_CHECK, t2.getMoveStatus());
 
-        final MoveTransition t3 = t1.getTransitionBoard().makeMove(MoveFactory.createMove(t1.getTransitionBoard(), Board.getCoordinateAtPosition("a5"),
-                Board.getCoordinateAtPosition("e5")));
+        final MoveTransition t3 = t1.getTransitionBoard().makeMove(MoveFactory.createMove(t1.getTransitionBoard(), BoardUtils
+                .getCoordinateAtPosition("a5"),
+                BoardUtils.getCoordinateAtPosition("e5")));
 
         assertEquals(MoveStatus.DONE, t3.getMoveStatus());
     }

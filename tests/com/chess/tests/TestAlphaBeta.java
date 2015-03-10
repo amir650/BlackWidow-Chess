@@ -7,6 +7,7 @@ import org.junit.Test;
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.Bishop;
 import com.chess.engine.classic.pieces.King;
@@ -19,52 +20,6 @@ import com.chess.engine.classic.player.ai.AlphaBeta;
 import com.chess.engine.classic.player.ai.MoveStrategy;
 
 public class TestAlphaBeta {
-
-    @Test
-    public void testOpeningDepth1() {
-        final Board board = Board.createStandardBoard();
-        final Player currentPlayer = board.currentPlayer();
-        final MoveStrategy alphaBeta = new AlphaBeta();
-        currentPlayer.setMoveStrategy(alphaBeta);
-        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 1);
-        final long numBoardsEvaluated = alphaBeta.getNumBoardsEvaluated();
-        assertEquals(numBoardsEvaluated, 20L);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
-    }
-
-    @Test
-    public void testOpeningDepth2() {
-        final Board board = Board.createStandardBoard();
-        final Player currentPlayer = board.currentPlayer();
-        final MoveStrategy alphaBeta = new AlphaBeta();
-        currentPlayer.setMoveStrategy(alphaBeta);
-        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 2);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
-    }
-
-    @Test
-    public void testOpeningDepth3() {
-        final Board board = Board.createStandardBoard();
-        final Player currentPlayer = board.currentPlayer();
-        final MoveStrategy alphaBeta = new AlphaBeta();
-        currentPlayer.setMoveStrategy(alphaBeta);
-        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 3);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("d2"), Board.getCoordinateAtPosition("d4")));
-    }
-
-    @Test
-    public void testOpeningDepth4() {
-        final Board board = Board.createStandardBoard();
-        final Player currentPlayer = board.currentPlayer();
-        final MoveStrategy alphaBeta = new AlphaBeta();
-        currentPlayer.setMoveStrategy(alphaBeta);
-        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 4);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
-    }
 
     @Test
     public void testOpeningDepth4BlackMovesFirst() {
@@ -115,7 +70,7 @@ public class TestAlphaBeta {
         currentPlayer.setMoveStrategy(alphaBeta);
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 4);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e7"), Board.getCoordinateAtPosition("e5")));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e7"), BoardUtils.getCoordinateAtPosition("e5")));
     }
 
     @Test
@@ -143,7 +98,7 @@ public class TestAlphaBeta {
         currentPlayer.setMoveStrategy(new AlphaBeta());
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 6);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("d5"), Board.getCoordinateAtPosition("c7")));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("d5"), BoardUtils.getCoordinateAtPosition("c7")));
     }
 
     @Test
@@ -184,7 +139,7 @@ public class TestAlphaBeta {
         currentPlayer.setMoveStrategy(new AlphaBeta());
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 6);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("c8"), Board.getCoordinateAtPosition("a6")));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("c5"), BoardUtils.getCoordinateAtPosition("d4")));
     }
 
     @Test
@@ -224,7 +179,7 @@ public class TestAlphaBeta {
         currentPlayer.setMoveStrategy(new AlphaBeta());
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 8);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("g5"), Board.getCoordinateAtPosition("h7")));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("g5"), BoardUtils.getCoordinateAtPosition("h7")));
     }
 
     @Test
@@ -254,7 +209,7 @@ public class TestAlphaBeta {
         currentPlayer.setMoveStrategy(new AlphaBeta());
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 8);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("g3"), Board.getCoordinateAtPosition("g6")));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("g3"), BoardUtils.getCoordinateAtPosition("g6")));
     }
 
     @Test
@@ -283,7 +238,7 @@ public class TestAlphaBeta {
         currentPlayer.setMoveStrategy(new AlphaBeta());
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 8);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("g2"), Board.getCoordinateAtPosition("g4")));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("g2"), BoardUtils.getCoordinateAtPosition("g4")));
     }
 
 }

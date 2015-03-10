@@ -10,6 +10,7 @@ import org.junit.Test;
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.Bishop;
 import com.chess.engine.classic.pieces.King;
@@ -35,17 +36,17 @@ public class TestBishop {
         assertEquals(whiteLegals.size(), 18);
         assertEquals(blackLegals.size(), 5);
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("d4"), Board.getCoordinateAtPosition("a7"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("d4"), BoardUtils.getCoordinateAtPosition("a7"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("d4"), Board.getCoordinateAtPosition("b6"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("d4"), BoardUtils.getCoordinateAtPosition("b6"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("d4"), Board.getCoordinateAtPosition("c5"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("d4"), BoardUtils.getCoordinateAtPosition("c5"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("d4"), Board.getCoordinateAtPosition("e3"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("d4"), BoardUtils.getCoordinateAtPosition("e3"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("d4"), Board.getCoordinateAtPosition("f2"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("d4"), BoardUtils.getCoordinateAtPosition("f2"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("d4"), Board.getCoordinateAtPosition("g1"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("d4"), BoardUtils.getCoordinateAtPosition("g1"))));
     }
 
     @Test
@@ -68,19 +69,19 @@ public class TestBishop {
         assertEquals(whiteLegals.size(), 12);
         assertEquals(blackLegals.size(), 5);
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a8"), Board.getCoordinateAtPosition("b7"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a8"), BoardUtils.getCoordinateAtPosition("b7"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a8"), Board.getCoordinateAtPosition("c6"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a8"), BoardUtils.getCoordinateAtPosition("c6"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a8"), Board.getCoordinateAtPosition("d5"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a8"), BoardUtils.getCoordinateAtPosition("d5"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a8"), Board.getCoordinateAtPosition("e4"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a8"), BoardUtils.getCoordinateAtPosition("e4"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a8"), Board.getCoordinateAtPosition("f3"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a8"), BoardUtils.getCoordinateAtPosition("f3"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a8"), Board.getCoordinateAtPosition("g2"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a8"), BoardUtils.getCoordinateAtPosition("g2"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a8"), Board.getCoordinateAtPosition("h1"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a8"), BoardUtils.getCoordinateAtPosition("h1"))));
     }
 
     @Test
@@ -103,19 +104,19 @@ public class TestBishop {
         assertEquals(whiteLegals.size(), 12);
         assertEquals(blackLegals.size(), 5);
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h8"), Board.getCoordinateAtPosition("g7"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h8"), BoardUtils.getCoordinateAtPosition("g7"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h8"), Board.getCoordinateAtPosition("f6"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h8"), BoardUtils.getCoordinateAtPosition("f6"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h8"), Board.getCoordinateAtPosition("e5"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h8"), BoardUtils.getCoordinateAtPosition("e5"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h8"), Board.getCoordinateAtPosition("d4"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h8"), BoardUtils.getCoordinateAtPosition("d4"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h8"), Board.getCoordinateAtPosition("c3"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h8"), BoardUtils.getCoordinateAtPosition("c3"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h8"), Board.getCoordinateAtPosition("b2"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h8"), BoardUtils.getCoordinateAtPosition("b2"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h8"), Board.getCoordinateAtPosition("a1"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h8"), BoardUtils.getCoordinateAtPosition("a1"))));
     }
 
     @Test
@@ -138,19 +139,19 @@ public class TestBishop {
         assertEquals(whiteLegals.size(), 12);
         assertEquals(blackLegals.size(), 5);
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a1"), Board.getCoordinateAtPosition("b2"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a1"), BoardUtils.getCoordinateAtPosition("b2"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a1"), Board.getCoordinateAtPosition("c3"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a1"), BoardUtils.getCoordinateAtPosition("c3"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a1"), Board.getCoordinateAtPosition("d4"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a1"), BoardUtils.getCoordinateAtPosition("d4"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a1"), Board.getCoordinateAtPosition("e5"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a1"), BoardUtils.getCoordinateAtPosition("e5"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a1"), Board.getCoordinateAtPosition("f6"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a1"), BoardUtils.getCoordinateAtPosition("f6"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a1"), Board.getCoordinateAtPosition("g7"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a1"), BoardUtils.getCoordinateAtPosition("g7"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("a1"), Board.getCoordinateAtPosition("h8"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a1"), BoardUtils.getCoordinateAtPosition("h8"))));
     }
 
     @Test
@@ -173,18 +174,18 @@ public class TestBishop {
         assertEquals(whiteLegals.size(), 12);
         assertEquals(blackLegals.size(), 5);
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h1"), Board.getCoordinateAtPosition("g2"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h1"), BoardUtils.getCoordinateAtPosition("g2"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h1"), Board.getCoordinateAtPosition("f3"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h1"), BoardUtils.getCoordinateAtPosition("f3"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h1"), Board.getCoordinateAtPosition("e4"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h1"), BoardUtils.getCoordinateAtPosition("e4"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h1"), Board.getCoordinateAtPosition("d5"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h1"), BoardUtils.getCoordinateAtPosition("d5"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h1"), Board.getCoordinateAtPosition("c6"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h1"), BoardUtils.getCoordinateAtPosition("c6"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h1"), Board.getCoordinateAtPosition("b7"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h1"), BoardUtils.getCoordinateAtPosition("b7"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("h1"), Board.getCoordinateAtPosition("a8"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("h1"), BoardUtils.getCoordinateAtPosition("a8"))));
     }
 }

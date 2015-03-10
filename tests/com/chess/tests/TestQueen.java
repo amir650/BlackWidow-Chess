@@ -10,6 +10,7 @@ import org.junit.Test;
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Queen;
@@ -37,31 +38,31 @@ public class TestQueen {
         assertEquals(blackLegals.size(), 5);
 
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("e8"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("e8"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("e7"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("e7"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("e6"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("e6"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("e5"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("e5"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("e3"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("e3"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("e2"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("e2"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("a4"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("a4"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("b4"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("b4"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("c4"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("c4"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("d4"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("d4"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("f4"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("f4"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("g4"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("g4"))));
         assertTrue(whiteLegals.contains(Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e4"), Board.getCoordinateAtPosition("h4"))));
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("h4"))));
     }
 }
 

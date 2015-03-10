@@ -44,7 +44,7 @@ public final class Queen extends Piece {
                     break;
                 }
                 candidateDestinationCoordinate += currentCandidate;
-                if (!Board.isValidTileCoordinate(candidateDestinationCoordinate)) {
+                if (!BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     break;
                 } else {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
@@ -77,7 +77,7 @@ public final class Queen extends Piece {
 
     @Override
     public Queen movePiece(final Move move) {
-        return PieceUtils.ALL_POSSIBLE_QUEENS.get(this.pieceAlliance, move.getDestinationCoordinate());
+        return PieceUtils.getMovedQueen(move);
     }
 
     @Override

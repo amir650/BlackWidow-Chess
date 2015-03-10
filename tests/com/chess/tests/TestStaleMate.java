@@ -10,6 +10,7 @@ import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.board.Board.MoveStatus;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.Bishop;
@@ -36,8 +37,8 @@ public class TestStaleMate {
 
         assertFalse(board.currentPlayer().isInStaleMate());
 
-        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("e4"),
-                Board.getCoordinateAtPosition("f5")));
+        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("e4"),
+                BoardUtils.getCoordinateAtPosition("f5")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
         assertTrue(t1.getTransitionBoard().currentPlayer().isInStaleMate());
@@ -61,8 +62,8 @@ public class TestStaleMate {
 
         assertFalse(board.currentPlayer().isInStaleMate());
 
-        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("c5"),
-                Board.getCoordinateAtPosition("c6")));
+        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("c5"),
+                BoardUtils.getCoordinateAtPosition("c6")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
         assertTrue(t1.getTransitionBoard().currentPlayer().isInStaleMate());
@@ -87,8 +88,8 @@ public class TestStaleMate {
 
         assertFalse(board.currentPlayer().isInStaleMate());
 
-        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, Board.getCoordinateAtPosition("a6"),
-                Board.getCoordinateAtPosition("a7")));
+        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("a6"),
+                BoardUtils.getCoordinateAtPosition("a7")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
         assertTrue(t1.getTransitionBoard().currentPlayer().isInStaleMate());

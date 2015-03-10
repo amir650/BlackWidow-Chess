@@ -8,6 +8,7 @@ import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.board.Board.MoveStatus;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.King;
@@ -32,17 +33,20 @@ public class TestPawn {
 
         final Board board = builder.build();
 
-        final Move m1 = Move.MoveFactory.createMove(board, Board.getCoordinateAtPosition("h7"), Board.getCoordinateAtPosition("h8"));
+        final Move m1 = Move.MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition(
+                "h7"), BoardUtils.getCoordinateAtPosition("h8"));
         final MoveTransition t1 = board.makeMove(m1);
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
 
-        final Move m2 = Move.MoveFactory.createMove(t1.getTransitionBoard(), Board.getCoordinateAtPosition("d8"), Board.getCoordinateAtPosition("h8"));
+        final Move m2 = Move.MoveFactory.createMove(t1.getTransitionBoard(), BoardUtils.getCoordinateAtPosition("d8"), BoardUtils
+                .getCoordinateAtPosition("h8"));
         final MoveTransition t2 = t1.getTransitionBoard().makeMove(m2);
 
         assertEquals(MoveStatus.DONE, t2.getMoveStatus());
 
-        final Move m3 = Move.MoveFactory.createMove(t2.getTransitionBoard(), Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("d2"));
+        final Move m3 = Move.MoveFactory.createMove(t2.getTransitionBoard(), BoardUtils.getCoordinateAtPosition("e2"), BoardUtils
+                .getCoordinateAtPosition("d2"));
         final MoveTransition t3 = board.makeMove(m3);
 
         assertEquals(MoveStatus.DONE, t3.getMoveStatus());

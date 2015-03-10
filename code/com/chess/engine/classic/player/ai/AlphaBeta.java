@@ -18,7 +18,7 @@ public class AlphaBeta implements MoveStrategy {
     private long boardsEvaluated;
     private long executionTime;
     private int quiescenceCount;
-    private static final int MAX_QUIESCENCE = 0;
+    private static final int MAX_QUIESCENCE = 2500;
 
     private enum MoveSorter {
 
@@ -68,7 +68,7 @@ public class AlphaBeta implements MoveStrategy {
         final long startTime = System.currentTimeMillis();
         final Player currentPlayer = board.currentPlayer();
         final Alliance alliance = currentPlayer.getAlliance();
-        Move bestMove = null;
+        Move bestMove = Move.NULL_MOVE;
         int highestSeenValue = Integer.MIN_VALUE;
         int lowestSeenValue = Integer.MAX_VALUE;
         int currentValue;
@@ -77,12 +77,12 @@ public class AlphaBeta implements MoveStrategy {
             final MoveTransition moveTransition = board.makeMove(move);
             this.quiescenceCount = 0;
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
+                final long candidateMoveStartTime = System.nanoTime();
                 currentValue = alliance.isWhite() ?
                         min(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue) :
                         max(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue);
-
                 final String quiescenceInfo = quiescenceCount > 0 ? " quiescenceCount = " +this.quiescenceCount : "";
-                System.out.println("\t" + toString() + " analyzing move " + move + " best score so far " + currentValue + quiescenceInfo);
+                System.out.println("\t" + toString() + " analyzing move " + move + " (best move so far is:  " + bestMove + quiescenceInfo + " took " +calculateTimeTaken(candidateMoveStartTime, System.nanoTime()));
                 if (alliance.isWhite() && currentValue > highestSeenValue) {
                     highestSeenValue = currentValue;
                     bestMove = move;
@@ -112,7 +112,7 @@ public class AlphaBeta implements MoveStrategy {
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.makeMove(move);
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
-                currentHighest = Math.max(currentHighest, min(moveTransition.getTransitionBoard(), calculateQuiescenceDepth(move, depth), currentHighest, lowest));
+                currentHighest = Math.max(currentHighest, min(moveTransition.getTransitionBoard(), calculateQuiescenceDepth(board, move, depth), currentHighest, lowest));
                 if (currentHighest >= lowest) {
                     return lowest;
                 }
@@ -133,7 +133,7 @@ public class AlphaBeta implements MoveStrategy {
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.makeMove(move);
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
-                currentLowest = Math.min(currentLowest, max(moveTransition.getTransitionBoard(), calculateQuiescenceDepth(move, depth), highest, currentLowest));
+                currentLowest = Math.min(currentLowest, max(moveTransition.getTransitionBoard(), calculateQuiescenceDepth(board, move, depth), highest, currentLowest));
                 if (currentLowest <= highest) {
                     return highest;
                 }
@@ -142,9 +142,10 @@ public class AlphaBeta implements MoveStrategy {
         return currentLowest;
     }
 
-    private int calculateQuiescenceDepth(final Move move,
+    private int calculateQuiescenceDepth(final Board board,
+                                         final Move move,
                                          final int depth) {
-        if(move.isAttack() && depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
+        if((move.isAttack() || board.currentPlayer().getOpponent().isInCheck()) && depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
             this.quiescenceCount++;
             return 2;
         }
@@ -154,6 +155,11 @@ public class AlphaBeta implements MoveStrategy {
     private static boolean isEndGame(final Board board) {
         return board.currentPlayer().isInCheckMate() || board.currentPlayer().getOpponent().isInCheckMate() ||
                board.currentPlayer().isInStaleMate() || board.currentPlayer().getOpponent().isInStaleMate();
+    }
+
+    private static String calculateTimeTaken(final long start, final long end) {
+        final long timeTaken = (end - start) / 1000000;
+        return timeTaken + " ms";
     }
 
 }

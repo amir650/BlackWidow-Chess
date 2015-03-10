@@ -19,7 +19,7 @@ class GameHistoryPanel extends JPanel {
     private final JScrollPane scrollPane;
     private static final Dimension HISTORY_PANEL_DIMENSION = new Dimension(100, 40);
 
-    public GameHistoryPanel() {
+    GameHistoryPanel() {
         this.setLayout(new BorderLayout());
         this.model = new DataModel();
         final JTable table = new JTable(model);
@@ -31,7 +31,7 @@ class GameHistoryPanel extends JPanel {
         this.setVisible(true);
     }
 
-    public void redo(final MoveLog moveHistory) {
+    void redo(final MoveLog moveHistory) {
         int currentRow = 0;
         this.model.clear();
         for (final Move move : moveHistory.getMoves()) {

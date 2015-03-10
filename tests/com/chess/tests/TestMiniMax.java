@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.player.Player;
 import com.chess.engine.classic.player.ai.MiniMax;
 import com.chess.engine.classic.player.ai.MoveStrategy;
@@ -18,11 +17,9 @@ public class TestMiniMax {
         final Player currentPlayer = board.currentPlayer();
         final MoveStrategy minMax = new MiniMax();
         currentPlayer.setMoveStrategy(minMax);
-        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 1);
+        board.currentPlayer().getMoveStrategy().execute(board, 1);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         assertEquals(numBoardsEvaluated, 20L);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
     }
 
     @Test
@@ -31,11 +28,9 @@ public class TestMiniMax {
         final Player currentPlayer = board.currentPlayer();
         final MoveStrategy minMax = new MiniMax();
         currentPlayer.setMoveStrategy(minMax);
-        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 2);
+        board.currentPlayer().getMoveStrategy().execute(board, 2);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         assertEquals(numBoardsEvaluated, 400L);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
     }
 
     @Test
@@ -44,11 +39,9 @@ public class TestMiniMax {
         final Player currentPlayer = board.currentPlayer();
         final MoveStrategy minMax = new MiniMax();
         currentPlayer.setMoveStrategy(minMax);
-        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 3);
+        board.currentPlayer().getMoveStrategy().execute(board, 3);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         assertEquals(numBoardsEvaluated, 8902L);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("d2"), Board.getCoordinateAtPosition("d4")));
     }
 
     @Test
@@ -57,11 +50,9 @@ public class TestMiniMax {
         final Player currentPlayer = board.currentPlayer();
         final MoveStrategy minMax = new MiniMax();
         currentPlayer.setMoveStrategy(minMax);
-        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 4);
+        board.currentPlayer().getMoveStrategy().execute(board, 4);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         assertEquals(numBoardsEvaluated, 197281L);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, Board.getCoordinateAtPosition("e2"), Board.getCoordinateAtPosition("e4")));
     }
 
 }

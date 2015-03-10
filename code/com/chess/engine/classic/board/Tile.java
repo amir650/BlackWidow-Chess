@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableMap;
 abstract public class Tile {
 
     protected final int tileCoordinate;
+
     private static final Map<Integer, EmptyTile> EMPTY_TILES = createAllPossibleEmptyTiles();
 
     private Tile(final int coordinate) {
