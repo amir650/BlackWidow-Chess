@@ -39,7 +39,7 @@ public abstract class Move {
         int result = 1;
         result = prime * result + this.movedPiece.getPiecePosition();
         result = prime * result + this.destinationCoordinate;
-        result = prime * result + (this.movedPiece.hashCode());
+        result = prime * result + this.movedPiece.hashCode();
         return result;
     }
 

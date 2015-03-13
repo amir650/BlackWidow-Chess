@@ -105,7 +105,7 @@ public class KingSafetyAnalyzer {
         throw new RuntimeException("should not reach here!");
     }
 
-    public static class KingDistance {
+    static class KingDistance {
 
         final Piece enemyPiece;
         final int distance;

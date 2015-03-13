@@ -10,6 +10,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -170,39 +172,48 @@ public final class Table extends Observable {
         filesMenu.setMnemonic(KeyEvent.VK_F);
 
         final JMenuItem openPGN = new JMenuItem("Load PGN File", KeyEvent.VK_O);
-        openPGN.addActionListener(e -> {
-            JFileChooser chooser = new JFileChooser();
-            int option = chooser.showOpenDialog(Table.get().getGameFrame());
-            if (option == JFileChooser.APPROVE_OPTION) {
-                loadPGNFile(chooser.getSelectedFile());
+        openPGN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                JFileChooser chooser = new JFileChooser();
+                int option = chooser.showOpenDialog(Table.get().getGameFrame());
+                if (option == JFileChooser.APPROVE_OPTION) {
+                    loadPGNFile(chooser.getSelectedFile());
+                }
             }
         });
         filesMenu.add(openPGN);
 
         final JMenuItem saveToPGN = new JMenuItem("Save Game", KeyEvent.VK_S);
-        saveToPGN.addActionListener(e -> {
-            final JFileChooser chooser = new JFileChooser();
-            chooser.setFileFilter(new FileFilter() {
-                @Override
-                public String getDescription() {
-                    return ".pgn";
+        saveToPGN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final JFileChooser chooser = new JFileChooser();
+                chooser.setFileFilter(new FileFilter() {
+                    @Override
+                    public String getDescription() {
+                        return ".pgn";
+                    }
+                    @Override
+                    public boolean accept(final File file) {
+                        return file.isDirectory() || file.getName().toLowerCase().endsWith("pgn");
+                    }
+                });
+                final int option = chooser.showSaveDialog(Table.get().getGameFrame());
+                if (option == JFileChooser.APPROVE_OPTION) {
+                    savePGNFile(chooser.getSelectedFile());
                 }
-                @Override
-                public boolean accept(final File file) {
-                    return file.isDirectory() || file.getName().toLowerCase().endsWith("pgn");
-                }
-            });
-            final int option = chooser.showSaveDialog(Table.get().getGameFrame());
-            if (option == JFileChooser.APPROVE_OPTION) {
-                savePGNFile(chooser.getSelectedFile());
             }
         });
         filesMenu.add(saveToPGN);
 
         final JMenuItem exitMenuItem = new JMenuItem("Exit", KeyEvent.VK_X);
-        exitMenuItem.addActionListener(e -> {
-            Table.get().getGameFrame().dispose();
-            System.exit(0);
+        exitMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                Table.get().getGameFrame().dispose();
+                System.exit(0);
+            }
         });
         filesMenu.add(exitMenuItem);
 
@@ -215,36 +226,55 @@ public final class Table extends Observable {
         optionsMenu.setMnemonic(KeyEvent.VK_O);
 
         final JMenuItem resetMenuItem = new JMenuItem("New Game", KeyEvent.VK_P);
-        resetMenuItem.addActionListener(e -> {
-            undoAllMoves();
+        resetMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                undoAllMoves();
+            }
+
         });
         optionsMenu.add(resetMenuItem);
 
         final JMenuItem evaluateBoardMenuItem = new JMenuItem("Evaluate Board", KeyEvent.VK_E);
-        evaluateBoardMenuItem.addActionListener(e -> System.out.println(new SimpleBoardEvaluator().evaluate(Table.get().getGameBoard(), gameSetup.getSearchDepth())));
+        evaluateBoardMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                System.out.println(new SimpleBoardEvaluator().evaluate(Table.get().getGameBoard(), gameSetup.getSearchDepth()));
+
+            }
+        });
         optionsMenu.add(evaluateBoardMenuItem);
 
         final JMenuItem legalMovesMenuItem = new JMenuItem("Current State", KeyEvent.VK_L);
-        legalMovesMenuItem.addActionListener(e -> {
-            System.out.println(Table.get().getGameBoard().getWhitePieces());
-            System.out.println(Table.get().getGameBoard().getBlackPieces());
-            System.out.println(Table.get().getGameBoard().currentPlayer().playerInfo());
-            System.out.println(Table.get().getGameBoard().currentPlayer().getOpponent().playerInfo());
+        legalMovesMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                System.out.println(Table.get().getGameBoard().getWhitePieces());
+                System.out.println(Table.get().getGameBoard().getBlackPieces());
+                System.out.println(Table.get().getGameBoard().currentPlayer().playerInfo());
+                System.out.println(Table.get().getGameBoard().currentPlayer().getOpponent().playerInfo());
+            }
         });
         optionsMenu.add(legalMovesMenuItem);
 
         final JMenuItem undoMoveMenuItem = new JMenuItem("Undo last move", KeyEvent.VK_M);
-        undoMoveMenuItem.addActionListener(e -> {
-            if(Table.get().getMoveLog().size() > 0) {
-                undoLastMove();
+        undoMoveMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                if(Table.get().getMoveLog().size() > 0) {
+                    undoLastMove();
+                }
             }
         });
         optionsMenu.add(undoMoveMenuItem);
 
         final JMenuItem setupGameMenuItem = new JMenuItem("Setup Game", KeyEvent.VK_S);
-        setupGameMenuItem.addActionListener(e -> {
-            Table.get().getGameSetup().promptUser();
-            Table.get().setupUpdate(Table.get().getGameSetup());
+        setupGameMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                Table.get().getGameSetup().promptUser();
+                Table.get().setupUpdate(Table.get().getGameSetup());
+            }
         });
         optionsMenu.add(setupGameMenuItem);
 
@@ -270,19 +300,25 @@ public final class Table extends Observable {
 
         preferencesMenu.add(colorChooserSubMenu);
 
-        chooseDarkMenuItem.addActionListener(e -> {
-            final Color colorChoice = JColorChooser.showDialog(Table.get().getGameFrame(), "Choose Dark Tile Color",
-                    Table.get().getGameFrame().getBackground());
-            if (colorChoice != null) {
-                Table.get().getBoardPanel().setTileDarkColor(Table.get().getGameBoard(), colorChoice);
+        chooseDarkMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final Color colorChoice = JColorChooser.showDialog(Table.get().getGameFrame(), "Choose Dark Tile Color",
+                        Table.get().getGameFrame().getBackground());
+                if (colorChoice != null) {
+                    Table.get().getBoardPanel().setTileDarkColor(Table.get().getGameBoard(), colorChoice);
+                }
             }
         });
 
-        chooseLightMenuItem.addActionListener(e -> {
-            final Color colorChoice = JColorChooser.showDialog(Table.get().getGameFrame(), "Choose Light Tile Color",
-                    Table.get().getGameFrame().getBackground());
-            if (colorChoice != null) {
-                Table.get().getBoardPanel().setTileLightColor(Table.get().getGameBoard(), colorChoice);
+        chooseLightMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final Color colorChoice = JColorChooser.showDialog(Table.get().getGameFrame(), "Choose Light Tile Color",
+                        Table.get().getGameFrame().getBackground());
+                if (colorChoice != null) {
+                    Table.get().getBoardPanel().setTileLightColor(Table.get().getGameBoard(), colorChoice);
+                }
             }
         });
 
@@ -300,37 +336,56 @@ public final class Table extends Observable {
         final JMenuItem woodMenMenuItem = new JMenuItem("Wood Men");
         chessMenChoiceSubMenu.add(woodMenMenuItem);
 
-        woodMenMenuItem.addActionListener(e -> {
-            System.out.println("implement me");
-            Table.get().getGameFrame().repaint();
+        woodMenMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                System.out.println("implement me");
+                Table.get().getGameFrame().repaint();
+            }
         });
 
-        holyWarriorsMenuItem.addActionListener(e -> {
-            pieceIconPath = "art/holywarriors/";
-            Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
+        holyWarriorsMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                pieceIconPath = "art/holywarriors/";
+                Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
+            }
         });
 
-        rockMenMenuItem.addActionListener(e -> {
+        rockMenMenuItem.addActionListener(new ActionListener() {
 
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+
+            }
         });
 
-        abstractMenMenuItem.addActionListener(e -> {
-            pieceIconPath = "art/simple/";
-            Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
+        abstractMenMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                pieceIconPath = "art/simple/";
+                Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
+            }
         });
 
         preferencesMenu.add(chessMenChoiceSubMenu);
 
-        chooseLegalHighlightMenuItem.addActionListener(e -> {
-            System.out.println("implement me");
-            Table.get().getGameFrame().repaint();
+        chooseLegalHighlightMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                System.out.println("implement me");
+                Table.get().getGameFrame().repaint();
+            }
         });
 
         final JMenuItem flipBoardMenuItem = new JMenuItem("Flip board");
 
-        flipBoardMenuItem.addActionListener(e -> {
-            boardDirection = boardDirection == BoardDirection.NORMAL ? BoardDirection.FLIPPED : BoardDirection.NORMAL;
-            boardPanel.drawBoard(chessBoard);
+        flipBoardMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                boardDirection = boardDirection == BoardDirection.NORMAL ? BoardDirection.FLIPPED : BoardDirection.NORMAL;
+                boardPanel.drawBoard(chessBoard);
+            }
         });
 
         preferencesMenu.add(flipBoardMenuItem);
@@ -340,8 +395,11 @@ public final class Table extends Observable {
         final JCheckBoxMenuItem cbLegalMoveHighlighter = new JCheckBoxMenuItem(
                 "Highlight Legal Moves", false);
 
-        cbLegalMoveHighlighter.addActionListener(e -> {
-            highlightLegalMoves = cbLegalMoveHighlighter.isSelected();
+        cbLegalMoveHighlighter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                highlightLegalMoves = cbLegalMoveHighlighter.isSelected();
+            }
         });
 
         preferencesMenu.add(cbLegalMoveHighlighter);
@@ -349,8 +407,11 @@ public final class Table extends Observable {
         final JCheckBoxMenuItem cbUseBookMoves = new JCheckBoxMenuItem(
                 "Use Book Moves", true);
 
-        cbUseBookMoves.addActionListener(e -> {
-            useBook = cbUseBookMoves.isSelected();
+        cbUseBookMoves.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                useBook = cbUseBookMoves.isSelected();
+            }
         });
 
         preferencesMenu.add(cbUseBookMoves);

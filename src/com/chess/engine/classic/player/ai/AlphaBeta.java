@@ -82,7 +82,8 @@ public class AlphaBeta implements MoveStrategy {
                         min(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue) :
                         max(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue);
                 final String quiescenceInfo = quiescenceCount > 0 ? " quiescenceCount = " +this.quiescenceCount : "";
-                System.out.println("\t" + toString() + " analyzing move " + move + " (best move so far is:  " + bestMove + quiescenceInfo + " took " +calculateTimeTaken(candidateMoveStartTime, System.nanoTime()));
+                System.out.println("\t" + toString() + " analyzing move " + move + " (best move so far is:  " + bestMove
+                                    + quiescenceInfo + " took " +calculateTimeTaken(candidateMoveStartTime, System.nanoTime()));
                 if (alliance.isWhite() && currentValue > highestSeenValue) {
                     highestSeenValue = currentValue;
                     bestMove = move;
@@ -112,7 +113,8 @@ public class AlphaBeta implements MoveStrategy {
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.makeMove(move);
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
-                currentHighest = Math.max(currentHighest, min(moveTransition.getTransitionBoard(), calculateQuiescenceDepth(board, move, depth), currentHighest, lowest));
+                currentHighest = Math.max(currentHighest, min(moveTransition.getTransitionBoard(),
+                                          calculateQuiescenceDepth(board, move, depth), currentHighest, lowest));
                 if (currentHighest >= lowest) {
                     return lowest;
                 }
@@ -133,7 +135,8 @@ public class AlphaBeta implements MoveStrategy {
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.makeMove(move);
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
-                currentLowest = Math.min(currentLowest, max(moveTransition.getTransitionBoard(), calculateQuiescenceDepth(board, move, depth), highest, currentLowest));
+                currentLowest = Math.min(currentLowest, max(moveTransition.getTransitionBoard(),
+                                         calculateQuiescenceDepth(board, move, depth), highest, currentLowest));
                 if (currentLowest <= highest) {
                     return highest;
                 }
@@ -145,7 +148,8 @@ public class AlphaBeta implements MoveStrategy {
     private int calculateQuiescenceDepth(final Board board,
                                          final Move move,
                                          final int depth) {
-        if((move.isAttack() || board.currentPlayer().getOpponent().isInCheck()) && depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
+        if((move.isAttack() || board.currentPlayer().getOpponent().isInCheck()) &&
+                depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
             this.quiescenceCount++;
             return 2;
         }

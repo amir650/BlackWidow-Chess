@@ -8,7 +8,7 @@ public class GameFactory {
         try {
             return new ValidGame(tags, PGNUtilities.processMoveText(gameText), outcome);
         } catch(final ParsePGNException e) {
-            return new InvalidGame(tags, null, outcome);
+            return new InvalidGame(tags, gameText, outcome);
         }
     }
 }

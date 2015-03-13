@@ -43,6 +43,7 @@ public class PGNUtilities {
             String line;
             TagsBuilder tagsBuilder = new TagsBuilder();
             StringBuilder gameTextBuilder = new StringBuilder();
+            int count = 0;
             while((line = br.readLine()) != null) {
                 if (!line.isEmpty()) {
                     if (isTag(line)) {
@@ -58,7 +59,7 @@ public class PGNUtilities {
                         final String gameText = gameTextBuilder.toString().trim();
                         if(!gameText.isEmpty() && gameText.length() > 80) {
                             final Game game = GameFactory.createGame(tagsBuilder.build(), gameText, outcome);
-                            System.out.println("Finished parsing " +game);
+                            System.out.println("Finished parsing " +game+ " count = " + (++count));
                             if(game.isValid()) {
                                 MySqlGamePersistence.get().persistGame(game);
                             }
@@ -104,7 +105,7 @@ public class PGNUtilities {
     }
 
     public static List<String> processMoveText(final String gameText) throws ParsePGNException {
-        return gameText.isEmpty() ? Collections.emptyList() : createMovesFromPGN(gameText);
+        return gameText.isEmpty() ? Collections.<String>emptyList() : createMovesFromPGN(gameText);
     }
 
     private static List<String> createMovesFromPGN(final String pgnText) {

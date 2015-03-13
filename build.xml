@@ -1,81 +1,55 @@
-<project name="DependencyAnalyzer" basedir="." default="jar" >
-    <description >Build file for Shatranj</description >
-    <property name="build.dir" location="build/" />
-    <property name="build.jar.dir" location="${build.dir}/jar" />
-    <property name="build.jar.art.dir" location="${build.jar.dir}/art" />
-    <property name="test.dir" location="tests" />
-    <property name="test.build.dir" location="tests/build" />
-    <property name="lib.dir" location="lib" />
-    <property name="src.dir" location="code/com/chess" />
-    <property name="jar.name" location="Chess" />
-    <property name="art.dir" location="art" />
+<project name="com.thingz.Thingz" basedir=".">
 
-    <path id="classpath.base" >
-    </path >
+    <description>Build file for BlackWidow Chess</description>
 
-    <path id="classpath.test" >
-        <pathelement location="${lib.dir}/tests/junit-4.8.2.jar" />
-        <path refid="classpath.base" />
-    </path >
+    <property name="build.dir" value="build/" />
+    <property name="lib.dir" value="lib" />
+    <property name="dist.dir" value="dist" />
+    <property name="manifest.file" value="${jar.dir}/MANIFEST.MF" />
+    <property name="main.class" value="com.chess.BlackWidow" />
+
+    <path id="master-classpath">
+        <fileset dir="${lib.dir}/">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement path="${build.dir}"/>
+    </path>
 
     <target name="initialize"
-            description="initial directory setup" >
-        <mkdir dir="${build.dir}" />
-        <mkdir dir="${build.jar.dir}" />
-        <mkdir dir="${build.jar.art.dir}" />
-        <mkdir dir="${test.dir}" />
-        <mkdir dir="${test.build.dir}" />
-    </target >
+            description="initial directory setup">
+        <mkdir dir="build"/>
+    </target>
 
     <target name="clean"
-            description="removes all unwanted files" >
-        <delete dir="${build.dir}" />
-        <delete dir="tests" />
-    </target >
+            description="removes all unwanted files">
+        <delete dir="build"/>
+    </target>
 
     <target name="compile"
             depends="initialize"
-            description="compiles source files" >
-        <javac srcdir="${src.dir}"
-               destdir="${build.jar.dir}"
+            description="compiles source files">
+        <javac srcdir="src"
+               destdir="build"
                includeAntRuntime="no"
                failonerror="true"
-               excludes="tests/*" >
-        </javac >
-    </target >
+               classpath="xyz.jar"
+               excludes="tests/**/*.java">
+            <classpath refid="master-classpath"/>
+        </javac>
+    </target>
 
     <target name="jar"
             depends="compile"
-            description="builds jar file" >
-        <copydir src="${art.dir}" dest="${build.jar.art.dir}" />
-        <jar destfile="${build.dir}/${jar.name}.jar" basedir="${build.jar.dir}" >
-            <manifest >
+            description="builds jar file">
+        <jar destfile="${dist.dir}/BlackWidow.jar" basedir="${build.dir}">
+            <fileset dir="${build.dir}" includes="**/*.class" />
+            <zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
+            <manifest>
                 <attribute name="built-by" value="amir.afghani" />
-            </manifest >
-        </jar >
-    </target >
+                <attribute name="Manifest-Version" value="1.0" />
+                <attribute name="Main-Class" value="${main.class}" />
+            </manifest>
+        </jar>
+    </target>
 
-    <target name="compile-test" depends="initialize" >
-        <javac srcdir="${src.dir}"
-               destdir="${test.build.dir}"
-               classpathref="classpath.test" >
-        </javac >
-    </target >
-
-    <target name="test" depends="compile-test" >
-        <junit failureProperty="test.failure">
-            <classpath>
-                <path refid="classpath.test" />
-                <pathelement location="${test.build.dir}" />
-            </classpath>
-
-
-            <batchtest >
-                <formatter type="plain" usefile="false" />
-                <fileset dir="${test.build.dir}" includes="**/*TestSuite.class" />
-            </batchtest >
-        </junit >
-        <fail message="test failed!" if="test.failure" />
-    </target >
-
-</project >
+</project>

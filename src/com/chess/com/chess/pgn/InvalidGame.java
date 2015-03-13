@@ -1,13 +1,16 @@
 package com.chess.com.chess.pgn;
 
-import java.util.List;
+import java.util.Collections;
 
 public class InvalidGame extends Game {
 
+    final String malformedGameText;
+
     public InvalidGame(final PGNGameTags tags,
-                       final List<String> moves,
+                       final String malformedGameText,
                        final String outcome) {
-        super(tags, moves, outcome);
+        super(tags, Collections.<String>emptyList(), outcome);
+        this.malformedGameText = malformedGameText;
     }
 
     @Override

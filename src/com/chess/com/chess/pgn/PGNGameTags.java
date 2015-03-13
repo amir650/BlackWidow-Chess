@@ -1,15 +1,16 @@
 package com.chess.com.chess.pgn;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.collect.ImmutableMap;
 
 public class PGNGameTags {
 
     private final Map<String,String> gameTags;
 
     private PGNGameTags(final TagsBuilder builder) {
-        this.gameTags = builder.gameTags.build();
+        this.gameTags = ImmutableMap.copyOf(builder.gameTags);
     }
 
     @Override
@@ -19,14 +20,14 @@ public class PGNGameTags {
 
     public static class TagsBuilder {
 
-        final Builder<String,String> gameTags;
+        final Map<String,String> gameTags;
 
         public TagsBuilder() {
-            this.gameTags = new Builder<>();
+            this.gameTags = new HashMap<>();
         }
 
         public TagsBuilder addTag(final String tagKey,
-                              final String tagValue) {
+                                  final String tagValue) {
             this.gameTags.put(tagKey, tagValue);
             return this;
         }

@@ -17,11 +17,14 @@ public final class Pawn
 
     private final static int[] CANDIDATE_MOVE_COORDINATES = {8, 16, 7, 9};
 
-    public Pawn(final Alliance allegiance, final int piecePosition) {
+    public Pawn(final Alliance allegiance,
+                final int piecePosition) {
         super(PieceType.PAWN, allegiance, piecePosition, true);
     }
 
-    public Pawn(final Alliance alliance, final int piecePosition, final boolean isFirstMove) {
+    public Pawn(final Alliance alliance,
+                final int piecePosition,
+                final boolean isFirstMove) {
         super(PieceType.PAWN, alliance, piecePosition, isFirstMove);
     }
 
