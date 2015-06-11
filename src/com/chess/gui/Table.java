@@ -383,7 +383,7 @@ public final class Table extends Observable {
         flipBoardMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                boardDirection = boardDirection == BoardDirection.NORMAL ? BoardDirection.FLIPPED : BoardDirection.NORMAL;
+                boardDirection = boardDirection.opposite();
                 boardPanel.drawBoard(chessBoard);
             }
         });
@@ -573,15 +573,26 @@ public final class Table extends Observable {
             List<TilePanel> traverse(final List<TilePanel> boardTiles) {
                 return boardTiles;
             }
+
+            @Override
+            BoardDirection opposite() {
+                return FLIPPED;
+            }
         },
         FLIPPED {
             @Override
             List<TilePanel> traverse(final List<TilePanel> boardTiles) {
                 return Lists.reverse(boardTiles);
             }
+
+            @Override
+            BoardDirection opposite() {
+                return NORMAL;
+            }
         };
 
         abstract List<TilePanel> traverse(final List<TilePanel> boardTiles);
+        abstract BoardDirection opposite();
 
     }
 

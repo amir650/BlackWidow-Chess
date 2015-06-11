@@ -6,8 +6,8 @@ import com.chess.engine.classic.player.Player;
 
 public interface PGNPersistence {
 
-    public void persistGame(Game game);
+    void persistGame(Game game);
 
-    public Move getNextBestMove(Board board, Player player, String gameText);
+    Move getNextBestMove(Board board, Player player, String gameText);
 
 }

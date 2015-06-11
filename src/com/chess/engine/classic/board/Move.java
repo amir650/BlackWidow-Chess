@@ -170,13 +170,8 @@ public abstract class Move {
 
         @Override
         public String toString() {
-            final StringBuilder s = new StringBuilder(
-                    BoardUtils.getPositionAtCoordinate(this.movedPiece.getPiecePosition()));
-            s.append("-");
-            s.append(BoardUtils.getPositionAtCoordinate(this.destinationCoordinate));
-            s.append("=");
-            s.append(PieceType.QUEEN.toString());
-            return s.toString();
+            return BoardUtils.getPositionAtCoordinate(this.movedPiece.getPiecePosition()) + "-" +
+                    BoardUtils.getPositionAtCoordinate(this.destinationCoordinate) + "=" + PieceType.QUEEN;
         }
 
     }
@@ -197,10 +192,8 @@ public abstract class Move {
 
         @Override
         public String toString() {
-            final StringBuilder s = new StringBuilder(movedPiece.getPieceType().toString());
-            s.append(disambiguationFile());
-            s.append(BoardUtils.getPositionAtCoordinate(this.destinationCoordinate));
-            return s.toString();
+            return movedPiece.getPieceType().toString() + disambiguationFile() +
+                    BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
         }
 
     }
@@ -223,11 +216,8 @@ public abstract class Move {
 
         @Override
         public String toString() {
-            final StringBuilder s = new StringBuilder(movedPiece.getPieceType().toString());
-            s.append(disambiguationFile());
-            s.append("x");
-            s.append(BoardUtils.getPositionAtCoordinate(this.destinationCoordinate));
-            return s.toString();
+            return movedPiece.getPieceType() + disambiguationFile() + "x" +
+                    BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
         }
 
     }
@@ -269,11 +259,8 @@ public abstract class Move {
 
         @Override
         public String toString() {
-            final StringBuilder s = new StringBuilder(
-                    BoardUtils.getPositionAtCoordinate(this.movedPiece.getPiecePosition()).substring(0, 1));
-            s.append("x");
-            s.append(BoardUtils.getPositionAtCoordinate(this.destinationCoordinate));
-            return s.toString();
+            return BoardUtils.getPositionAtCoordinate(this.movedPiece.getPiecePosition()).substring(0, 1) + "x" +
+                    BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
         }
 
     }
@@ -304,7 +291,7 @@ public abstract class Move {
                 builder.setPiece(piece);
             }
             builder.setPiece(this.movedPiece.movePiece(this));
-            builder.setEnPassantPawn(movedPiece);
+            builder.setEnPassantPawn((Pawn)movedPiece);
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
             return builder.build();
         }

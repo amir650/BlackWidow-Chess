@@ -23,7 +23,8 @@ public abstract class Player {
            final List<Move> opponentLegals) {
         this.board = board;
         this.playerKing = establishKing();
-        this.legalMoves = ImmutableList.copyOf(Iterables.concat(playerLegals, calculateKingCastles(playerLegals, opponentLegals)));
+        this.legalMoves = ImmutableList.copyOf(
+                Iterables.concat(playerLegals, calculateKingCastles(playerLegals, opponentLegals)));
     }
 
     public boolean isMoveLegal(final Move move) {
@@ -60,10 +61,20 @@ public abstract class Player {
                 "\nisCastled = " +isCastled())+ "\n";
     }
 
-    public List <Move> calculateAttacksOnTile(final int tile) {
+    protected King establishKing() {
+        for(final Piece piece : getActivePieces()) {
+            if(piece.isKing()) {
+                return (King) piece;
+            }
+        }
+        throw new RuntimeException("Should not reach here! Black King could not be established!");
+    }
+
+    public List <Move> calculateAttacksOnPiece(final Piece piece) {
         final ImmutableList.Builder<Move> attackMoves = ImmutableList.builder();
+        final int piecePosition = piece.getPiecePosition();
         for (final Move move : this.legalMoves) {
-            if (tile == move.getDestinationCoordinate()) {
+            if (piecePosition == move.getDestinationCoordinate()) {
                 attackMoves.add(move);
             }
         }
@@ -93,5 +104,5 @@ public abstract class Player {
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
     protected abstract List<Move> calculateKingCastles(List<Move> playerLegals, List<Move> opponentLegals);
-    protected abstract King establishKing();
+    //protected abstract King establishKing();
 }

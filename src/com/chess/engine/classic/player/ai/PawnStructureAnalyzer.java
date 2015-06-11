@@ -11,6 +11,7 @@ public class PawnStructureAnalyzer {
 
     private static final PawnStructureAnalyzer INSTANCE = new PawnStructureAnalyzer();
     private static final List<boolean[]> BOARD_COLUMNS = initColumns();
+    private static final int ISOLATED_PAWN_PENALTY = 25;
 
     private PawnStructureAnalyzer() {
     }
@@ -66,11 +67,11 @@ public class PawnStructureAnalyzer {
         }
         for(int i = 1; i < BOARD_COLUMNS.size() - 1; i++) {
             if(pawnsOnColumnTable[i] > 0 && (pawnsOnColumnTable[i-1] == 0 && pawnsOnColumnTable[i+1] == 0)) {
-                isolatedPawnPenalty += 25;
+                isolatedPawnPenalty += ISOLATED_PAWN_PENALTY;
             }
         }
         if(pawnsOnColumnTable[BOARD_COLUMNS.size() - 1] > 0 && pawnsOnColumnTable[BOARD_COLUMNS.size() - 2] == 0) {
-            isolatedPawnPenalty += 25;
+            isolatedPawnPenalty += ISOLATED_PAWN_PENALTY;
         }
         return -isolatedPawnPenalty;
     }

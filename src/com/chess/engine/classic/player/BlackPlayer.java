@@ -8,7 +8,6 @@ import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.KingSideCastleMove;
 import com.chess.engine.classic.board.Move.QueenSideCastleMove;
 import com.chess.engine.classic.board.Tile;
-import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.pieces.Piece.PieceType;
 import com.chess.engine.classic.pieces.Rook;
@@ -75,16 +74,6 @@ public class BlackPlayer extends Player {
     @Override
     public String toString() {
         return Alliance.BLACK.toString();
-    }
-
-    @Override
-    protected King establishKing() {
-        for(final Piece p : this.board.getBlackPieces()) {
-            if(p.isKing()) {
-                return (King) p;
-            }
-        }
-        throw new RuntimeException("Should not reach here! Black King could not be established!");
     }
 
 }

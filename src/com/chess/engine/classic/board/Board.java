@@ -26,18 +26,18 @@ public final class Board {
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
+    private final Pawn enPassantPawn;
 
-    public Board(final Builder boardBuilder) {
-        this.gameBoard = createGameBoard(boardBuilder);
+    public Board(final Builder builder) {
+        this.gameBoard = createGameBoard(builder);
         this.whitePieces = calculateActivePieces(Alliance.WHITE);
         this.blackPieces = calculateActivePieces(Alliance.BLACK);
-
+        this.enPassantPawn = builder.enPassantPawn;
         final List<Move> whiteStandardMoves = calculateLegalMoves(this.whitePieces);
         final List<Move> blackStandardMoves = calculateLegalMoves(this.blackPieces);
-
         this.whitePlayer = new WhitePlayer(this, whiteStandardMoves, blackStandardMoves);
         this.blackPlayer = new BlackPlayer(this, whiteStandardMoves, blackStandardMoves);
-        this.currentPlayer = boardBuilder.nextMoveMaker == Alliance.WHITE ? this.whitePlayer : this.blackPlayer;
+        this.currentPlayer = builder.nextMoveMaker == Alliance.WHITE ? this.whitePlayer : this.blackPlayer;
     }
 
     @Override
@@ -84,15 +84,19 @@ public final class Board {
         return this.gameBoard;
     }
 
+    public Pawn getEnPassantPawn() {
+        return this.enPassantPawn;
+    }
+
     public MoveTransition makeMove(final Move move) {
-        if(!this.currentPlayer.isMoveLegal(move)) {
-            return new MoveTransition(this, MoveStatus.ILLEGAL_NOT_IN_MOVES_LIST);
+           if(!this.currentPlayer.isMoveLegal(move)) {
+            return new MoveTransition(this, MoveStatus.ILLEGAL_MOVE);
         }
         final Board transitionedBoard = move.execute();
-        final List<Move> kingAttacks = transitionedBoard.currentPlayer().calculateAttacksOnTile(
-                transitionedBoard.currentPlayer().getOpponent().getPlayerKing().getPiecePosition());
+        final List<Move> kingAttacks = transitionedBoard.currentPlayer().calculateAttacksOnPiece(
+                transitionedBoard.currentPlayer().getOpponent().getPlayerKing());
         if (!kingAttacks.isEmpty()) {
-            return new MoveTransition(this, MoveStatus.ILLEGAL_LEAVES_PLAYER_IN_CHECK);
+            return new MoveTransition(this, MoveStatus.LEAVES_PLAYER_IN_CHECK);
         }
         return new MoveTransition(transitionedBoard, MoveStatus.DONE);
     }
@@ -174,15 +178,15 @@ public final class Board {
 
     public enum MoveStatus {
         DONE,
-        ILLEGAL_NOT_IN_MOVES_LIST,
-        ILLEGAL_LEAVES_PLAYER_IN_CHECK,
+        ILLEGAL_MOVE,
+        LEAVES_PLAYER_IN_CHECK,
     }
 
     public static class Builder {
 
         Map<Integer, Piece> boardConfig;
         Alliance nextMoveMaker;
-        Piece enPassantPawn;
+        Pawn enPassantPawn;
 
         public Builder() {
             this.boardConfig = new HashMap<>();
@@ -198,7 +202,7 @@ public final class Board {
             return this;
         }
 
-        public Builder setEnPassantPawn(final Piece enPassantPawn) {
+        public Builder setEnPassantPawn(final Pawn enPassantPawn) {
             this.enPassantPawn = enPassantPawn;
             return this;
         }

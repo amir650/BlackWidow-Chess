@@ -2,6 +2,7 @@ package com.chess.tests;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.chess.engine.classic.Alliance;
@@ -51,6 +52,43 @@ public class TestPawn {
 
         assertEquals(MoveStatus.DONE, t3.getMoveStatus());
 
+    }
+
+    @Ignore
+    @Test
+    public void testEnPassant1() {
+        final Builder builder = new Builder();
+
+        // Black Layout
+        builder.setPiece(new King(Alliance.BLACK, 4));
+        builder.setPiece(new Pawn(Alliance.BLACK, 11));
+        // White Layout
+        builder.setPiece(new Pawn(Alliance.WHITE, 52));
+        builder.setPiece(new King(Alliance.WHITE, 60));
+        // Set the current player
+        builder.setMoveMaker(Alliance.WHITE);
+
+        final Board board = builder.build();
+
+        final Move m1 = Move.MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition(
+                "e2"), BoardUtils.getCoordinateAtPosition("e4"));
+        final MoveTransition t1 = board.makeMove(m1);
+
+        assertEquals(MoveStatus.DONE, t1.getMoveStatus());
+
+        final Move m2 = Move.MoveFactory.createMove(t1.getTransitionBoard(), BoardUtils.getCoordinateAtPosition("e8"), BoardUtils
+                .getCoordinateAtPosition("d8"));
+        final MoveTransition t2 = t1.getTransitionBoard().makeMove(m2);
+
+        final Move m3 = Move.MoveFactory.createMove(t2.getTransitionBoard(), BoardUtils.getCoordinateAtPosition("e4"), BoardUtils
+                .getCoordinateAtPosition("e5"));
+        final MoveTransition t3 = t2.getTransitionBoard().makeMove(m3);
+
+        final Move m4 = Move.MoveFactory.createMove(t3.getTransitionBoard(), BoardUtils.getCoordinateAtPosition("d7"), BoardUtils
+                .getCoordinateAtPosition("d5"));
+        final MoveTransition t4 = t3.getTransitionBoard().makeMove(m4);
+
+        System.out.println(t4.getTransitionBoard());
     }
 
 }

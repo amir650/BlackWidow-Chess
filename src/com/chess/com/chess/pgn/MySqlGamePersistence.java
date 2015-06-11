@@ -29,8 +29,10 @@ public class MySqlGamePersistence implements PGNPersistence {
     private MySqlGamePersistence() {
         this.dbConnection = createDBConnection();
         createGameTable();
-        createOutcomeIndex();
-        createMovesIndex();
+        createIndex("outcome", "OutcomeIndex");
+        createIndex("moves", "MoveIndex");
+//        createOutcomeIndex();
+//        createMovesIndex();
     }
 
     private static Connection createDBConnection() {
@@ -90,56 +92,73 @@ public class MySqlGamePersistence implements PGNPersistence {
         try {
             final Statement statement = this.dbConnection.createStatement();
             statement.execute("CREATE TABLE IF NOT EXISTS Game(id int primary key, outcome varchar(10), moves varchar(4000));");
-//            statement.execute("CREATE INDEX OutcomeIndex on Game(outcome);\n");
-//            statement.execute("CREATE INDEX MoveIndex on Game(moves);\n");
+            statement.close();
         }
-        catch (SQLException e) {
+        catch (final SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void createOutcomeIndex() {
+    private void createIndex(final String columnName,
+                             final String indexName) {
         try {
-            Class.forName("org.h2.Driver");
+            final String sqlString = "SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_CATALOG = 'def' AND " +
+                    "                 TABLE_SCHEMA = DATABASE() AND TABLE_NAME = \"game\" AND INDEX_NAME = \"" +indexName+"\"";
+            final Statement gameStatement = this.dbConnection.createStatement();
+            gameStatement.execute(sqlString);
+            final ResultSet resultSet = gameStatement.getResultSet();
+            if(!resultSet.isBeforeFirst() ) {
+                final Statement indexStatement = this.dbConnection.createStatement();
+                indexStatement.execute("CREATE INDEX " +indexName+ " on Game(" +columnName+ ");\n");
+                indexStatement.close();
+            }
+            gameStatement.close();
+        }
+        catch (final SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void createOutcomeIndex() {
+        try {
             final String sqlString = "SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_CATALOG = 'def' AND TABLE_SCHEMA = DATABASE() AND TABLE_NAME = \"game\" AND INDEX_NAME = \"OutcomeIndex\"";
             final Statement gameStatement = this.dbConnection.createStatement();
             gameStatement.execute(sqlString);
-            final ResultSet rs2 = gameStatement.getResultSet();
-            if(rs2.next()) {
-                //do something....
+            final ResultSet resultSet = gameStatement.getResultSet();
+            if(!resultSet.isBeforeFirst() ) {
+                final Statement indexStatement = this.dbConnection.createStatement();
+                indexStatement.execute("CREATE INDEX OutcomeIndex on Game(outcome);\n");
+                indexStatement.close();
             }
             gameStatement.close();
         }
-        catch (final ClassNotFoundException | SQLException e) {
+        catch (final SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void createMovesIndex() {
+    private void createMovesIndex() {
         try {
-            Class.forName("org.h2.Driver");
             final String sqlString = "SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_CATALOG = 'def' AND TABLE_SCHEMA = DATABASE() AND TABLE_NAME = \"game\" AND INDEX_NAME = \"MoveIndex\"";
             final Statement gameStatement = this.dbConnection.createStatement();
             gameStatement.execute(sqlString);
-            final ResultSet rs2 = gameStatement.getResultSet();
-            if(rs2.next()) {
-                //do something....
-            } else {
-
-
+            final ResultSet resultSet = gameStatement.getResultSet();
+            if(!resultSet.isBeforeFirst() ) {
+                final Statement indexStatement = this.dbConnection.createStatement();
+                indexStatement.execute("CREATE INDEX MoveIndex on Game(moves);\n");
+                indexStatement.close();
             }
             gameStatement.close();
         }
-        catch (final ClassNotFoundException | SQLException e) {
+        catch (final SQLException e) {
             e.printStackTrace();
         }
     }
 
     public int getMaxGameRow() {
-
         int maxId = 0;
         try {
-            Class.forName("org.h2.Driver");
             final String sqlString = "SELECT MAX(ID) FROM Game";
             final Statement gameStatement = this.dbConnection.createStatement();
             gameStatement.execute(sqlString);
@@ -149,13 +168,11 @@ public class MySqlGamePersistence implements PGNPersistence {
             }
             gameStatement.close();
         }
-        catch (final ClassNotFoundException | SQLException e) {
+        catch (final SQLException e) {
             e.printStackTrace();
         }
-
         return maxId;
     }
-
 
     private void executePersist(final Game game) {
         try {

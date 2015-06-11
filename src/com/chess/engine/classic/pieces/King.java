@@ -134,11 +134,8 @@ public final class King extends Piece {
         if (!super.equals(other)) {
             return false;
         }
-
         final King king = (King) other;
-
         return isCastled == king.isCastled;
-
     }
 
     @Override

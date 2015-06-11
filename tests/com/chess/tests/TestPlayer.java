@@ -65,7 +65,7 @@ public class TestPlayer {
                 .getCoordinateAtPosition("d7"),
                 BoardUtils.getCoordinateAtPosition("d6")));
 
-        assertEquals(MoveStatus.ILLEGAL_LEAVES_PLAYER_IN_CHECK, t4.getMoveStatus());
+        assertEquals(MoveStatus.LEAVES_PLAYER_IN_CHECK, t4.getMoveStatus());
 
     }
 
@@ -96,7 +96,7 @@ public class TestPlayer {
                 .getCoordinateAtPosition("a5"),
                 BoardUtils.getCoordinateAtPosition("b5")));
 
-        assertEquals(MoveStatus.ILLEGAL_LEAVES_PLAYER_IN_CHECK, t2.getMoveStatus());
+        assertEquals(MoveStatus.LEAVES_PLAYER_IN_CHECK, t2.getMoveStatus());
 
         final MoveTransition t3 = t1.getTransitionBoard().makeMove(MoveFactory.createMove(t1.getTransitionBoard(), BoardUtils
                 .getCoordinateAtPosition("a5"),

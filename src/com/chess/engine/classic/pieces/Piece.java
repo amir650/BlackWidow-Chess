@@ -65,12 +65,9 @@ public abstract class Piece {
         if (!(other instanceof Piece)) {
             return false;
         }
-
         final Piece otherPiece = (Piece) other;
-
         return piecePosition == otherPiece.piecePosition && pieceType == otherPiece.pieceType &&
                pieceAlliance == otherPiece.pieceAlliance && isFirstMove == otherPiece.isFirstMove;
-
     }
 
     @Override
