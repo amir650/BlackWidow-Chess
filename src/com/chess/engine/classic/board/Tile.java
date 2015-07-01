@@ -22,10 +22,8 @@ abstract public class Tile {
 
     public static Tile createTile(final int coordinate,
                                   final Piece piece) {
-        if (piece != null) {
-            return new OccupiedTile(coordinate, piece);
-        }
-        return EMPTY_TILES.get(coordinate);
+        return piece != null ? new OccupiedTile(coordinate, piece) :
+                               EMPTY_TILES.get(coordinate);
     }
 
     public int getTileCoordinate() {
