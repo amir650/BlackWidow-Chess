@@ -111,7 +111,7 @@ public class TestPGNParser {
     public void testWithErol() throws IOException {
         final Board board = Board.createStandardBoard();
         final Move move = MySqlGamePersistence.get().getNextBestMove(board, board.currentPlayer(), "");
-        final MoveTransition moveTransition = board.makeMove(move);
+        final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
         final Move move2 = MySqlGamePersistence.get()
                 .getNextBestMove(moveTransition.getTransitionBoard(),
                         moveTransition.getTransitionBoard().currentPlayer(), "e4");

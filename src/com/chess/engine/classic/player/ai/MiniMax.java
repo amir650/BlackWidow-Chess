@@ -35,7 +35,7 @@ public class MiniMax implements MoveStrategy {
         int current_value;
         System.out.println(board.currentPlayer() + " THINKING with depth = " +depth);
         for (final Move move : board.currentPlayer().getLegalMoves()) {
-            final MoveTransition moveTransition = board.makeMove(move);
+            final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 current_value = board.currentPlayer().getAlliance().isWhite() ?
                                 min(moveTransition.getTransitionBoard(), depth - 1) :
@@ -68,7 +68,7 @@ public class MiniMax implements MoveStrategy {
         }
         int lowest_seen_value = Integer.MAX_VALUE;
         for (final Move move : board.currentPlayer().getLegalMoves()) {
-            final MoveTransition moveTransition = board.makeMove(move);
+            final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 final int current_value = max(moveTransition.getTransitionBoard(), depth - 1);
                 if (current_value <= lowest_seen_value) {
@@ -89,7 +89,7 @@ public class MiniMax implements MoveStrategy {
         }
         int highest_seen_value = Integer.MIN_VALUE;
         for (final Move move : board.currentPlayer().getLegalMoves()) {
-            final MoveTransition moveTransition = board.makeMove(move);
+            final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 final int current_value = min(moveTransition.getTransitionBoard(), depth - 1);
                 if (current_value >= highest_seen_value) {

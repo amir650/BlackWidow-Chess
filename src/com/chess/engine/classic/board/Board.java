@@ -88,23 +88,6 @@ public final class Board {
         return this.enPassantPawn;
     }
 
-    public MoveTransition makeMove(final Move move) {
-           if(!this.currentPlayer.isMoveLegal(move)) {
-            return new MoveTransition(this, MoveStatus.ILLEGAL_MOVE);
-        }
-        final Board transitionedBoard = move.execute();
-        final List<Move> kingAttacks = transitionedBoard.currentPlayer().calculateAttacksOnPiece(
-                transitionedBoard.currentPlayer().getOpponent().getPlayerKing());
-        if (!kingAttacks.isEmpty()) {
-            return new MoveTransition(this, MoveStatus.LEAVES_PLAYER_IN_CHECK);
-        }
-        return new MoveTransition(transitionedBoard, MoveStatus.DONE);
-    }
-
-    public MoveTransition unMakeMove(final Move move) {
-        return new MoveTransition(move.undo(), MoveStatus.DONE);
-    }
-
     public static Board createStandardBoard() {
         final Builder builder = new Builder();
         // Black Layout
@@ -157,19 +140,19 @@ public final class Board {
 
     private List<Move> calculateLegalMoves(final List<Piece> pieces) {
         final ImmutableList.Builder<Move> legalMoves = ImmutableList.builder();
-        for(final Piece p : pieces) {
-            legalMoves.addAll(p.calculateLegalMoves(this));
+        for(final Piece piece : pieces) {
+            legalMoves.addAll(piece.calculateLegalMoves(this));
         }
         return legalMoves.build();
     }
 
     private List<Piece> calculateActivePieces(final Alliance alliance) {
         final ImmutableList.Builder<Piece> activePieces = ImmutableList.builder();
-        for (final Tile t : this.gameBoard) {
-            if (t.isTileOccupied()) {
-                final Piece p = t.getPiece();
-                if (p.getPieceAllegiance().equals(alliance)) {
-                    activePieces.add(p);
+        for (final Tile tile : this.gameBoard) {
+            if (tile.isTileOccupied()) {
+                final Piece piece = tile.getPiece();
+                if (piece.getPieceAllegiance().equals(alliance)) {
+                    activePieces.add(piece);
                 }
             }
         }

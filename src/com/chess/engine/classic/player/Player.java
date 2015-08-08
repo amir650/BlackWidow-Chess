@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
+import com.chess.engine.classic.board.Board.MoveStatus;
 import com.chess.engine.classic.board.Move;
+import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.ai.MoveStrategy;
@@ -67,7 +69,7 @@ public abstract class Player {
                 return (King) piece;
             }
         }
-        throw new RuntimeException("Should not reach here! Black King could not be established!");
+        throw new RuntimeException("Should not reach here! " +this.getAlliance()+ " king could not be established!");
     }
 
     public List <Move> calculateAttacksOnPiece(final Piece piece) {
@@ -100,9 +102,26 @@ public abstract class Player {
         return attackMoves.build();
     }
 
+    public MoveTransition makeMove(final Move move) {
+        if (!isMoveLegal(move)) {
+            return new MoveTransition(this.board, MoveStatus.ILLEGAL_MOVE);
+        }
+        final Board transitionedBoard = move.execute();
+        final List<Move> kingAttacks = transitionedBoard.currentPlayer()
+                .calculateAttacksOnPiece(transitionedBoard.currentPlayer().getOpponent().getPlayerKing());
+        if (!kingAttacks.isEmpty()) {
+            return new MoveTransition(this.board, MoveStatus.LEAVES_PLAYER_IN_CHECK);
+        }
+        return new MoveTransition(transitionedBoard, MoveStatus.DONE);
+    }
+
+    public MoveTransition unMakeMove(final Move move) {
+        return new MoveTransition(move.undo(), MoveStatus.DONE);
+    }
+
     public abstract List<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
     protected abstract List<Move> calculateKingCastles(List<Move> playerLegals, List<Move> opponentLegals);
-    //protected abstract King establishKing();
+
 }

@@ -37,8 +37,9 @@ public class TestStaleMate {
 
         assertFalse(board.currentPlayer().isInStaleMate());
 
-        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("e4"),
-                BoardUtils.getCoordinateAtPosition("f5")));
+        final MoveTransition t1 = board.currentPlayer()
+                .makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("e4"),
+                        BoardUtils.getCoordinateAtPosition("f5")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
         assertTrue(t1.getTransitionBoard().currentPlayer().isInStaleMate());
@@ -62,8 +63,9 @@ public class TestStaleMate {
 
         assertFalse(board.currentPlayer().isInStaleMate());
 
-        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("c5"),
-                BoardUtils.getCoordinateAtPosition("c6")));
+        final MoveTransition t1 = board.currentPlayer()
+                .makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("c5"),
+                        BoardUtils.getCoordinateAtPosition("c6")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
         assertTrue(t1.getTransitionBoard().currentPlayer().isInStaleMate());
@@ -88,8 +90,9 @@ public class TestStaleMate {
 
         assertFalse(board.currentPlayer().isInStaleMate());
 
-        final MoveTransition t1 = board.makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("a6"),
-                BoardUtils.getCoordinateAtPosition("a7")));
+        final MoveTransition t1 = board.currentPlayer()
+                .makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("a6"),
+                        BoardUtils.getCoordinateAtPosition("a7")));
 
         assertEquals(MoveStatus.DONE, t1.getMoveStatus());
         assertTrue(t1.getTransitionBoard().currentPlayer().isInStaleMate());

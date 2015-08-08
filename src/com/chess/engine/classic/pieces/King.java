@@ -1,5 +1,6 @@
 package com.chess.engine.classic.pieces;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
@@ -52,7 +53,7 @@ public final class King extends Piece {
     }
 
     @Override
-    public List<Move> calculateLegalMoves(final Board board) {
+    public Collection<Move> calculateLegalMoves(final Board board) {
         final Builder<Move> legalMoves = ImmutableList.builder();
         int candidateDestinationCoordinate;
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
@@ -101,7 +102,7 @@ public final class King extends Piece {
 
     private boolean hasEscapeMoves(final Board board) {
         for(final Move move : board.currentPlayer().getLegalMoves()) {
-            final MoveTransition transition = board.makeMove(move);
+            final MoveTransition transition = board.currentPlayer().makeMove(move);
             if (transition.getMoveStatus() == MoveStatus.DONE) {
                 return true;
             }

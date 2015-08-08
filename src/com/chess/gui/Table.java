@@ -18,11 +18,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -423,7 +419,7 @@ public final class Table extends Observable {
     private void undoAllMoves() {
         for(int i = Table.get().getMoveLog().size() - 1; i >= 0; i--) {
             final Move lastMove = Table.get().getMoveLog().removeMove(Table.get().getMoveLog().size() - 1);
-            this.chessBoard = this.chessBoard.unMakeMove(lastMove).getTransitionBoard();
+            this.chessBoard = this.chessBoard.currentPlayer().unMakeMove(lastMove).getTransitionBoard();
         }
         Table.get().getMoveLog().clear();
         Table.get().getGameHistoryPanel().redo(Table.get().getMoveLog());
@@ -451,7 +447,7 @@ public final class Table extends Observable {
 
     private void undoLastMove() {
         final Move lastMove = Table.get().getMoveLog().removeMove(Table.get().getMoveLog().size() - 1);
-        this.chessBoard = this.chessBoard.unMakeMove(lastMove).getTransitionBoard();
+        this.chessBoard = this.chessBoard.currentPlayer().unMakeMove(lastMove).getTransitionBoard();
         Table.get().getMoveLog().removeMove(lastMove);
         Table.get().getGameHistoryPanel().redo(Table.get().getMoveLog());
         Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
@@ -501,7 +497,7 @@ public final class Table extends Observable {
                                 Table.get().getGameBoard().currentPlayer().setMoveStrategy(new AlphaBeta());
                                 bestMove = pool.submit(moveSearch).get();
                             }
-                            chessBoard = chessBoard.makeMove(bestMove).getTransitionBoard();
+                            chessBoard = chessBoard.currentPlayer().makeMove(bestMove).getTransitionBoard();
                             Table.get().getMoveLog().addMove(bestMove);
                             Table.get().getGameHistoryPanel().redo(Table.get().getMoveLog());
                             Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
@@ -660,9 +656,9 @@ public final class Table extends Observable {
                             destinationTile = chessBoard.getTile(tileId);
                             final Move move =  MoveFactory.createMove(chessBoard, sourceTile.getTileCoordinate(),
                                     destinationTile.getTileCoordinate());
-                            final MoveTransition transition = chessBoard.makeMove(move);
+                            final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
                             if(transition.getMoveStatus() == MoveStatus.DONE) {
-                                chessBoard = chessBoard.makeMove(move).getTransitionBoard();
+                                chessBoard = chessBoard.currentPlayer().makeMove(move).getTransitionBoard();
                                 moveLog.addMove(move);
                             }
                             sourceTile = null;
@@ -742,7 +738,7 @@ public final class Table extends Observable {
             }
         }
 
-        private List<Move> pieceLegalMoves(final Board board) {
+        private Collection<Move> pieceLegalMoves(final Board board) {
             if(movedPiece != null && movedPiece.getPieceAllegiance() == board.currentPlayer().getAlliance()) {
                 return movedPiece.calculateLegalMoves(board);
             }

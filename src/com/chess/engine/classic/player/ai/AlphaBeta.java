@@ -74,7 +74,7 @@ public class AlphaBeta implements MoveStrategy {
         int currentValue;
         System.out.println(board.currentPlayer() + " THINKING with depth = " + depth);
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
-            final MoveTransition moveTransition = board.makeMove(move);
+            final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             this.quiescenceCount = 0;
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 final long candidateMoveStartTime = System.nanoTime();
@@ -111,7 +111,7 @@ public class AlphaBeta implements MoveStrategy {
         }
         int currentHighest = highest;
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
-            final MoveTransition moveTransition = board.makeMove(move);
+            final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 currentHighest = Math.max(currentHighest, min(moveTransition.getTransitionBoard(),
                                           calculateQuiescenceDepth(board, move, depth), currentHighest, lowest));
@@ -133,7 +133,7 @@ public class AlphaBeta implements MoveStrategy {
         }
         int currentLowest = lowest;
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
-            final MoveTransition moveTransition = board.makeMove(move);
+            final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 currentLowest = Math.min(currentLowest, max(moveTransition.getTransitionBoard(),
                                          calculateQuiescenceDepth(board, move, depth), highest, currentLowest));

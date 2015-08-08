@@ -1,5 +1,6 @@
 package com.chess.engine.classic.pieces;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
@@ -55,7 +56,7 @@ public abstract class Piece {
         return this.pieceType == PieceType.PAWN;
     }
 
-    public abstract List<Move> calculateLegalMoves(final Board board);
+    public abstract Collection<Move> calculateLegalMoves(final Board board);
 
     @Override
     public boolean equals(final Object other) {

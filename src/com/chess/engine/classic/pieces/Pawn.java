@@ -1,6 +1,6 @@
 package com.chess.engine.classic.pieces;
 
-import java.util.List;
+import java.util.Collection;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
@@ -39,7 +39,7 @@ public final class Pawn
     }
 
     @Override
-    public List<Move> calculateLegalMoves(final Board board) {
+    public Collection<Move> calculateLegalMoves(final Board board) {
         final ImmutableList.Builder<Move> legalMoves = ImmutableList.builder();
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             int candidateDestinationCoordinate =
