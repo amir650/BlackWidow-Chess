@@ -1,5 +1,7 @@
 package com.chess.engine.classic.player;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
@@ -72,18 +74,18 @@ public abstract class Player {
         throw new RuntimeException("Should not reach here! " +this.getAlliance()+ " king could not be established!");
     }
 
-    public List <Move> calculateAttacksOnPiece(final Piece piece) {
-        final ImmutableList.Builder<Move> attackMoves = ImmutableList.builder();
+    public Collection<Move> calculateAttacksOnPiece(final Piece piece) {
+        final List<Move> attackMoves = new ArrayList<>();
         final int piecePosition = piece.getPiecePosition();
         for (final Move move : this.legalMoves) {
             if (piecePosition == move.getDestinationCoordinate()) {
                 attackMoves.add(move);
             }
         }
-        return attackMoves.build();
+        return ImmutableList.copyOf(attackMoves);
     }
 
-    public List<Move> getLegalMoves() {
+    public Collection<Move> getLegalMoves() {
         return this.legalMoves;
     }
 
@@ -91,15 +93,15 @@ public abstract class Player {
         this.strategy = strategy;
     }
 
-    public static List<Move> calculateAttacksOnTile(final int tile,
-                                                    final List<Move> moves) {
-        final ImmutableList.Builder<Move> attackMoves = ImmutableList.builder();
+    public static Collection<Move> calculateAttacksOnTile(final int tile,
+                                                          final Collection<Move> moves) {
+        final List<Move> attackMoves = new ArrayList<>();
         for (final Move move : moves) {
             if (tile == move.getDestinationCoordinate()) {
                 attackMoves.add(move);
             }
         }
-        return attackMoves.build();
+        return ImmutableList.copyOf(attackMoves);
     }
 
     public MoveTransition makeMove(final Move move) {
@@ -107,7 +109,7 @@ public abstract class Player {
             return new MoveTransition(this.board, MoveStatus.ILLEGAL_MOVE);
         }
         final Board transitionedBoard = move.execute();
-        final List<Move> kingAttacks = transitionedBoard.currentPlayer()
+        final Collection<Move> kingAttacks = transitionedBoard.currentPlayer()
                 .calculateAttacksOnPiece(transitionedBoard.currentPlayer().getOpponent().getPlayerKing());
         if (!kingAttacks.isEmpty()) {
             return new MoveTransition(this.board, MoveStatus.LEAVES_PLAYER_IN_CHECK);
@@ -119,7 +121,7 @@ public abstract class Player {
         return new MoveTransition(move.undo(), MoveStatus.DONE);
     }
 
-    public abstract List<Piece> getActivePieces();
+    public abstract Collection<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
     protected abstract List<Move> calculateKingCastles(List<Move> playerLegals, List<Move> opponentLegals);

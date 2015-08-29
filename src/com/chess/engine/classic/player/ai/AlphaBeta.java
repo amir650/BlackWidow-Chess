@@ -1,7 +1,7 @@
 package com.chess.engine.classic.player.ai;
 
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
@@ -18,19 +18,19 @@ public class AlphaBeta implements MoveStrategy {
     private long boardsEvaluated;
     private long executionTime;
     private int quiescenceCount;
-    private static final int MAX_QUIESCENCE = 2500;
+    private static final int MAX_QUIESCENCE = 0;
 
     private enum MoveSorter {
 
         SORT {
             @Override
-            List<Move> sort(final List<Move> moves) {
+            Collection<Move> sort(final Collection<Move> moves) {
                 return Ordering.from(ATTACKS_SORT).immutableSortedCopy(moves);
             }
         },
         EMPTY {
             @Override
-            List<Move> sort(final List<Move> moves) {
+            Collection<Move> sort(final Collection<Move> moves) {
                 return moves;
             }
         };
@@ -42,7 +42,7 @@ public class AlphaBeta implements MoveStrategy {
             }
         };
 
-        abstract List<Move> sort(List<Move> moves);
+        abstract Collection<Move> sort(Collection<Move> moves);
     }
 
     public AlphaBeta() {
@@ -60,6 +60,16 @@ public class AlphaBeta implements MoveStrategy {
     @Override
     public long getNumBoardsEvaluated() {
         return this.boardsEvaluated;
+    }
+
+    @Override
+    public long getNumAttacks() {
+        return 0;
+    }
+
+    @Override
+    public long getNumCastles() {
+        return 0;
     }
 
     @Override

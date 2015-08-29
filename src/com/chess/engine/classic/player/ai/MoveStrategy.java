@@ -7,6 +7,10 @@ public interface MoveStrategy {
 
     long getNumBoardsEvaluated();
 
+    long getNumAttacks();
+
+    long getNumCastles();
+
     Move execute(Board board, int depth);
 
 }

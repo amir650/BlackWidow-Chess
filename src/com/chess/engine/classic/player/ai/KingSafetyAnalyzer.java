@@ -1,5 +1,6 @@
 package com.chess.engine.classic.player.ai;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.chess.engine.classic.board.BoardUtils;
@@ -35,7 +36,7 @@ public class KingSafetyAnalyzer {
 
     public KingDistance calculateKingTropism(final Player player) {
         final int playerKingSquare = player.getPlayerKing().getPiecePosition();
-        final List<Move> enemyMoves = player.getOpponent().getLegalMoves();
+        final Collection<Move> enemyMoves = player.getOpponent().getLegalMoves();
         Piece closestPiece = null;
         int closestDistance = Integer.MAX_VALUE;
         for(final Move move : enemyMoves) {

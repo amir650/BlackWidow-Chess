@@ -1,5 +1,6 @@
 package com.chess.gui;
 
+import static com.chess.com.chess.pgn.PGNUtilities.*;
 import static javax.swing.JFrame.setDefaultLookAndFeelDecorated;
 import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
@@ -23,23 +24,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JColorChooser;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
 import com.chess.com.chess.pgn.MySqlGamePersistence;
-import com.chess.com.chess.pgn.PGNUtilities;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.MoveStatus;
 import com.chess.engine.classic.board.BoardUtils;
@@ -422,14 +410,14 @@ public final class Table extends Observable {
             this.chessBoard = this.chessBoard.currentPlayer().unMakeMove(lastMove).getTransitionBoard();
         }
         Table.get().getMoveLog().clear();
-        Table.get().getGameHistoryPanel().redo(Table.get().getMoveLog());
+        Table.get().getGameHistoryPanel().redo(chessBoard, Table.get().getMoveLog());
         Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
         Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
     }
 
     private static void loadPGNFile(final File pgnFile) {
         try {
-            PGNUtilities.persistPGNFile(pgnFile);
+            persistPGNFile(pgnFile);
         }
         catch (final IOException e) {
             e.printStackTrace();
@@ -438,7 +426,7 @@ public final class Table extends Observable {
 
     private static void savePGNFile(final File pgnFile) {
         try {
-            PGNUtilities.writeGameToPGNFile(pgnFile, Table.get().getMoveLog());
+            writeGameToPGNFile(pgnFile, Table.get().getMoveLog());
         }
         catch (final IOException e) {
             e.printStackTrace();
@@ -449,7 +437,7 @@ public final class Table extends Observable {
         final Move lastMove = Table.get().getMoveLog().removeMove(Table.get().getMoveLog().size() - 1);
         this.chessBoard = this.chessBoard.currentPlayer().unMakeMove(lastMove).getTransitionBoard();
         Table.get().getMoveLog().removeMove(lastMove);
-        Table.get().getGameHistoryPanel().redo(Table.get().getMoveLog());
+        Table.get().getGameHistoryPanel().redo(chessBoard, Table.get().getMoveLog());
         Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
         Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
     }
@@ -470,7 +458,9 @@ public final class Table extends Observable {
         final ExecutorService pool = Executors.newFixedThreadPool(1);
 
         public void update(final Observable o, final Object arg) {
-            if (gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
+            if (gameSetup.isAIPlayer(chessBoard.currentPlayer()) &&
+                    !chessBoard.currentPlayer().isInCheckMate() &&
+                    !chessBoard.currentPlayer().isInStaleMate()) {
                 System.out.println(chessBoard.currentPlayer() + " is set to AI, thinking....");
                 final Callable<Move> moveSearch = new Callable<Move>() {
                     @Override
@@ -487,10 +477,12 @@ public final class Table extends Observable {
                     public void run() {
                         try {
                             Move bestMove;
-                            final Move bookMove = MySqlGamePersistence.get()
+                            final Move bookMove = Table.get().getUseBook() ? MySqlGamePersistence.get()
                                     .getNextBestMove(Table.get().getGameBoard(),
                                             Table.get().getGameBoard().currentPlayer(),
-                                            moveLog.getMoves().toString().replaceAll("\\[", "").replaceAll("\\]", ""));
+                                            moveLog.getMoves().toString().replaceAll("\\[", "").replaceAll("\\]", "")) : Move.NULL_MOVE;
+
+
                             if (Table.get().getUseBook() && bookMove != Move.NULL_MOVE) {
                                 bestMove = bookMove;
                             } else {
@@ -499,7 +491,7 @@ public final class Table extends Observable {
                             }
                             chessBoard = chessBoard.currentPlayer().makeMove(bestMove).getTransitionBoard();
                             Table.get().getMoveLog().addMove(bestMove);
-                            Table.get().getGameHistoryPanel().redo(Table.get().getMoveLog());
+                            Table.get().getGameHistoryPanel().redo(chessBoard, Table.get().getMoveLog());
                             Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
                             Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
                             Table.get().moveMadeUpdate(PlayerType.COMPUTER);
@@ -510,10 +502,22 @@ public final class Table extends Observable {
                     }
                 });
             }
+
+            if (chessBoard.currentPlayer().isInCheckMate() || chessBoard.currentPlayer().isInStaleMate()) {
+                JOptionPane.showMessageDialog(Table.get().getBoardPanel(),
+                        "Game Over: Player " + chessBoard.currentPlayer() + " is in checkmate!", "Game Over",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+            if (chessBoard.currentPlayer().isInStaleMate() || chessBoard.currentPlayer().isInStaleMate()) {
+                JOptionPane.showMessageDialog(Table.get().getBoardPanel(),
+                        "Game Over: Player " + chessBoard.currentPlayer() + " is in stalemate!", "Game Over",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
         }
     }
 
-    public static enum PlayerType {
+    public enum PlayerType {
         HUMAN,
         COMPUTER
     }
@@ -668,7 +672,7 @@ public final class Table extends Observable {
                     }
                     invokeLater(new Runnable() {
                         public void run() {
-                            gameHistoryPanel.redo(moveLog);
+                            gameHistoryPanel.redo(chessBoard, moveLog);
                             takenPiecesPanel.redo(moveLog);
                             if(gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
                                 Table.get().moveMadeUpdate(PlayerType.HUMAN);

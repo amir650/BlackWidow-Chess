@@ -1,6 +1,8 @@
 package com.chess.engine.classic.pieces;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
@@ -33,10 +35,9 @@ public final class Rook extends Piece {
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final Builder<Move> legalMoves = ImmutableList.builder();
-        int candidateDestinationCoordinate;
+        final List<Move> legalMoves = new ArrayList<>();
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
-            candidateDestinationCoordinate = this.piecePosition;
+            int candidateDestinationCoordinate = this.piecePosition;
             while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 if (isColumnExclusion(currentCandidate, candidateDestinationCoordinate)) {
                     break;
@@ -58,7 +59,7 @@ public final class Rook extends Piece {
                 }
             }
         }
-        return legalMoves.build();
+        return ImmutableList.copyOf(legalMoves);
     }
 
     @Override

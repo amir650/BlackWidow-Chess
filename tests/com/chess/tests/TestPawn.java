@@ -54,7 +54,6 @@ public class TestPawn {
 
     }
 
-    @Ignore
     @Test
     public void testEnPassant1() {
         final Builder builder = new Builder();

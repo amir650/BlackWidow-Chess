@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
 import com.chess.gui.Table.MoveLog;
 
@@ -31,16 +32,33 @@ class GameHistoryPanel extends JPanel {
         this.setVisible(true);
     }
 
-    void redo(final MoveLog moveHistory) {
+    void redo(final Board board,
+              final MoveLog moveHistory) {
         int currentRow = 0;
         this.model.clear();
         for (final Move move : moveHistory.getMoves()) {
+            final String moveText = move.toString();
+            if(move.getMovedPiece() == null || move.getMovedPiece().getPieceAllegiance() == null) {
+                System.out.println("trap!");
+            }
             if (move.getMovedPiece().getPieceAllegiance().isWhite()) {
-                this.model.setValueAt(move, currentRow, 0);
+                this.model.setValueAt(moveText, currentRow, 0);
             }
             else if (move.getMovedPiece().getPieceAllegiance().isBlack()) {
-                this.model.setValueAt(move, currentRow, 1);
+                this.model.setValueAt(moveText, currentRow, 1);
                 currentRow++;
+            }
+        }
+
+        if(moveHistory.getMoves().size() > 0) {
+            final Move lastMove = moveHistory.getMoves().get(moveHistory.size() - 1);
+            final String moveText = lastMove.toString();
+
+            if (lastMove.getMovedPiece().getPieceAllegiance().isWhite()) {
+                this.model.setValueAt(moveText + calculateCheckMateHash(board), currentRow, 0);
+            }
+            else if (lastMove.getMovedPiece().getPieceAllegiance().isBlack()) {
+                this.model.setValueAt(moveText + calculateCheckMateHash(board), currentRow - 1, 1);
             }
         }
 
@@ -49,28 +67,32 @@ class GameHistoryPanel extends JPanel {
 
     }
 
+    private static String calculateCheckMateHash(final Board board) {
+        return board.currentPlayer().isInCheckMate() ? "#" : "";
+    }
+
     private static class Row {
 
         private int moveNumber;
-        private Move whiteMove;
-        private Move blackMove;
+        private String whiteMove;
+        private String blackMove;
 
         Row() {
         }
 
-        public Move getWhiteMove() {
+        public String getWhiteMove() {
             return this.whiteMove;
         }
 
-        public Move getBlackMove() {
+        public String getBlackMove() {
             return this.blackMove;
         }
 
-        public void setWhiteMove(final Move move) {
+        public void setWhiteMove(final String move) {
             this.whiteMove = move;
         }
 
-        public void setBlackMove(final Move move) {
+        public void setBlackMove(final String move) {
             this.blackMove = move;
         }
 
@@ -130,10 +152,10 @@ class GameHistoryPanel extends JPanel {
                 currentRow = this.values.get(row);
             }
             if(col == 0) {
-                currentRow.setWhiteMove((Move) aValue);
+                currentRow.setWhiteMove((String) aValue);
                 fireTableRowsInserted(row, row);
             } else  if(col == 1) {
-                currentRow.setBlackMove((Move)aValue);
+                currentRow.setBlackMove((String)aValue);
                 fireTableCellUpdated(row, col);
             }
         }

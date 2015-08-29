@@ -18,8 +18,8 @@ public class MySqlGamePersistence implements PGNPersistence {
     private static MySqlGamePersistence INSTANCE = new MySqlGamePersistence();
     private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     private static final String DB_URL = "jdbc:mysql://localhost/chessgames";
-    private static final String USER = "amir";
-    private static final String PASS = "x";
+    private static final String USER = "root";
+    private static final String PASS = "nyw";
     private static final String NEXT_BEST_MOVE_QUERY =
         "SELECT SUBSTR(g1.moves, LENGTH('%s') + %d, INSTR(SUBSTR(g1.moves, LENGTH('%s') + %d, LENGTH(g1.moves)), ',') - 1), " +
         "COUNT(*) FROM game g1 WHERE g1.moves LIKE '%s%%' AND (outcome = '%s') GROUP BY substr(g1.moves, LENGTH('%s') + %d, " +
@@ -66,7 +66,7 @@ public class MySqlGamePersistence implements PGNPersistence {
                                final String gameText) {
 
         String bestMove = "";
-        String count = "";
+        String count = "0";
         try {
             final int offSet = gameText.isEmpty() ? 1 : 3;
             final String sqlString = String.format(NEXT_BEST_MOVE_QUERY, gameText, offSet, gameText, offSet, gameText,
@@ -182,7 +182,6 @@ public class MySqlGamePersistence implements PGNPersistence {
             gameStatement.setString(2, game.getWinner());
             gameStatement.setString(3, game.getMoves().toString().replaceAll("\\[", "").replaceAll("\\]", ""));
             gameStatement.executeUpdate();
-            System.out.println("Finished persisting game " +game);
             gameStatement.close();
         }
         catch (final SQLException e) {

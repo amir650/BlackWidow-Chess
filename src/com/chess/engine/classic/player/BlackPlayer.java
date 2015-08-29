@@ -1,5 +1,7 @@
 package com.chess.engine.classic.player;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
@@ -25,7 +27,7 @@ public class BlackPlayer extends Player {
     protected List<Move> calculateKingCastles(final List<Move> playerLegals,
                                               final List<Move> opponentLegals) {
 
-        final ImmutableList.Builder<Move> kingCastles = ImmutableList.builder();
+        final List<Move> kingCastles = new ArrayList<>();
 
         if(this.playerKing.isFirstMove() && !this.playerKing.isInCheck(playerLegals)) {
             //blacks king side castle
@@ -53,7 +55,7 @@ public class BlackPlayer extends Player {
                 }
             }
         }
-        return kingCastles.build();
+        return ImmutableList.copyOf(kingCastles);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class BlackPlayer extends Player {
     }
 
     @Override
-    public List<Piece> getActivePieces() {
+    public Collection<Piece> getActivePieces() {
         return this.board.getBlackPieces();
     }
 

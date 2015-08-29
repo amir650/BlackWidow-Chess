@@ -1,6 +1,8 @@
 package com.chess.engine.classic.pieces;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
@@ -10,7 +12,6 @@ import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
 import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
 
 public final class Bishop extends Piece {
 
@@ -29,12 +30,12 @@ public final class Bishop extends Piece {
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final Builder<Move> legalMoves = ImmutableList.builder();
-        int candidateDestinationCoordinate;
+        final List<Move> legalMoves = new ArrayList<>();
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
-            candidateDestinationCoordinate = this.piecePosition;
+            int candidateDestinationCoordinate = this.piecePosition;
             while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
-                if (isDiagonalExclusion(currentCandidate, candidateDestinationCoordinate)) {
+                if (isFirstColumnExclusion(currentCandidate, candidateDestinationCoordinate)
+                        || isEigthColumnExclusion(currentCandidate, candidateDestinationCoordinate)) {
                     break;
                 }
                 candidateDestinationCoordinate += currentCandidate;
@@ -55,7 +56,7 @@ public final class Bishop extends Piece {
                 }
             }
         }
-        return legalMoves.build();
+        return ImmutableList.copyOf(legalMoves);
     }
 
     @Override
@@ -83,12 +84,16 @@ public final class Bishop extends Piece {
         return PieceType.BISHOP.toString();
     }
 
-    private static boolean isDiagonalExclusion(final int currentCandidate,
-                                               final int candidateDestinationCoordinate) {
+    private static boolean isFirstColumnExclusion(final int currentCandidate,
+                                                  final int candidateDestinationCoordinate) {
         return (BoardUtils.FIRST_COLUMN[candidateDestinationCoordinate] &&
-                ((currentCandidate == -9) || (currentCandidate == 7))) ||
-                (BoardUtils.EIGHTH_COLUMN[candidateDestinationCoordinate] &&
-                        ((currentCandidate == -7) || (currentCandidate == 9)));
+                ((currentCandidate == -9) || (currentCandidate == 7)));
+    }
+
+    private static boolean isEigthColumnExclusion(final int currentCandidate,
+                                                  final int candidateDestinationCoordinate) {
+        return BoardUtils.EIGHTH_COLUMN[candidateDestinationCoordinate] &&
+                        ((currentCandidate == -7) || (currentCandidate == 9));
     }
 
 }

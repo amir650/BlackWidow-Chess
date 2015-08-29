@@ -27,6 +27,8 @@ public class BoardUtils {
     public static final String[] ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
     public static final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
 
+    public static final int START_TILE_INDEX = 0;
+    public static final int NUM_TILES_PER_ROW = 8;
     public static final int NUM_TILES = 64;
 
     private BoardUtils() {
@@ -34,26 +36,26 @@ public class BoardUtils {
     }
 
     private static boolean [] initColumn(int columnNumber) {
-        final boolean[] column = new boolean[64];
+        final boolean[] column = new boolean[NUM_TILES];
         do {
             column[columnNumber] = true;
-            columnNumber += 8;
-        } while(columnNumber < 64);
+            columnNumber += NUM_TILES_PER_ROW;
+        } while(columnNumber < NUM_TILES);
         return column;
     }
 
     private static boolean [] initRow(int rowNumber) {
-        final boolean[] row = new boolean[64];
+        final boolean[] row = new boolean[NUM_TILES];
         do {
             row[rowNumber] = true;
             rowNumber++;
-        } while(rowNumber % 8 != 0);
+        } while(rowNumber % NUM_TILES_PER_ROW != 0);
         return row;
     }
 
     private static Map<String, Integer> initializePositionToCoordinateMap() {
         final Map<String, Integer> positionToCoordinate = new HashMap<>();
-        for (int i = 0; i < NUM_TILES; i++) {
+        for (int i = START_TILE_INDEX; i < NUM_TILES; i++) {
             positionToCoordinate.put(ALGEBRAIC_NOTATION[i], i);
         }
         return ImmutableMap.copyOf(positionToCoordinate);
@@ -73,7 +75,7 @@ public class BoardUtils {
     }
 
     public static boolean isValidTileCoordinate(final int coordinate) {
-        return coordinate >= 0 && coordinate < NUM_TILES;
+        return coordinate >= START_TILE_INDEX && coordinate < NUM_TILES;
     }
 
     public static int getCoordinateAtPosition(final String position) {

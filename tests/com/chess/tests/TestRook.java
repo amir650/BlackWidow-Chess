@@ -3,6 +3,7 @@ package com.chess.tests;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
@@ -31,8 +32,8 @@ public class TestRook {
 
         final Board board = builder.build();
 
-        final List<Move> whiteLegals = board.whitePlayer().getLegalMoves();
-        final List<Move> blackLegals = board.blackPlayer().getLegalMoves();
+        final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
+        final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
 
         assertEquals(whiteLegals.size(), 18);
         assertEquals(blackLegals.size(), 5);

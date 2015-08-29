@@ -39,11 +39,14 @@ public class PGNUtilities {
     private static final Pattern ATTACK_PAWN_PROMOTION_MOVE = Pattern.compile("(.*?)x(.*?)=(.*?)");
 
     public static void persistPGNFile(final File pgnFile) throws IOException {
+
+        int count = 0;
+        int validCount = 0;
+
         try (final BufferedReader br = new BufferedReader(new FileReader(pgnFile))) {
             String line;
             TagsBuilder tagsBuilder = new TagsBuilder();
             StringBuilder gameTextBuilder = new StringBuilder();
-            int count = 0;
             while((line = br.readLine()) != null) {
                 if (!line.isEmpty()) {
                     if (isTag(line)) {
@@ -59,9 +62,10 @@ public class PGNUtilities {
                         final String gameText = gameTextBuilder.toString().trim();
                         if(!gameText.isEmpty() && gameText.length() > 80) {
                             final Game game = GameFactory.createGame(tagsBuilder.build(), gameText, outcome);
-                            System.out.println("Finished parsing " +game+ " count = " + (++count));
+                            System.out.println("(" +(++count)+") Finished parsing " +game+ " count = " + (++count));
                             if(game.isValid()) {
                                 MySqlGamePersistence.get().persistGame(game);
+                                validCount++;
                             }
                         }
                         gameTextBuilder = new StringBuilder();
@@ -74,7 +78,7 @@ public class PGNUtilities {
             }
             br.readLine();
         }
-        System.out.println("Finished building book " + pgnFile);
+        System.out.println("Finished building book from pgn file: " + pgnFile + " Parsed " +count+ " games, valid = " +validCount);
     }
 
     public static void writeGameToPGNFile(final File pgnFile,

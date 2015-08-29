@@ -1,5 +1,6 @@
 package com.chess.engine.classic.pieces;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -14,7 +15,6 @@ import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.board.Tile;
 import com.chess.engine.classic.player.Player;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
 
 public final class King extends Piece {
 
@@ -34,7 +34,7 @@ public final class King extends Piece {
         this.isCastled = isCastled;
     }
 
-    public boolean isInCheck(final List<Move> enemyMoves) {
+    public boolean isInCheck(final Collection<Move> enemyMoves) {
         return !Player.calculateAttacksOnTile(this.piecePosition, enemyMoves).isEmpty();
     }
 
@@ -54,7 +54,7 @@ public final class King extends Piece {
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final Builder<Move> legalMoves = ImmutableList.builder();
+        final List<Move> legalMoves = new ArrayList<>();
         int candidateDestinationCoordinate;
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             if (isFirstColumnExclusion(this.piecePosition, currentCandidate) ||
@@ -77,7 +77,7 @@ public final class King extends Piece {
                 }
             }
         }
-        return legalMoves.build();
+        return ImmutableList.copyOf(legalMoves);
     }
 
     @Override

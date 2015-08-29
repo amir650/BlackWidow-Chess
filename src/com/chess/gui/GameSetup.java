@@ -79,13 +79,14 @@ public class GameSetup
         myPanel.add(cancelButton);
         myPanel.add(okButton);
 
-        pack();
         setLocationRelativeTo(frame);
+        pack();
         setVisible(false);
     }
 
     void promptUser() {
         setVisible(true);
+        repaint();
     }
 
     boolean isAIPlayer(final Player player) {
