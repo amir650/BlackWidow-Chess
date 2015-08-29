@@ -2,6 +2,7 @@ package com.chess.engine.classic.player.ai;
 
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.MoveStatus;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.MoveTransition;
 
@@ -14,8 +15,8 @@ public class MiniMax implements MoveStrategy {
     private long numEnPassants;
     private long executionTime;
 
-    static int[] freqTable;
-    static int freqTableIndex;
+    private static FreqTableRow[] freqTable;
+    private static int freqTableIndex;
 
     public MiniMax() {
         this.evaluator = new SimpleBoardEvaluator();
@@ -50,7 +51,7 @@ public class MiniMax implements MoveStrategy {
         int lowest_seen_value = Integer.MAX_VALUE;
         int current_value;
         System.out.println(board.currentPlayer() + " THINKING with depth = " +depth);
-        freqTable = new int[board.currentPlayer().getLegalMoves().size()];
+        freqTable = new FreqTableRow[board.currentPlayer().getLegalMoves().size()];
         freqTableIndex = 0;
         for (final Move move : board.currentPlayer().getLegalMoves()) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
@@ -58,7 +59,9 @@ public class MiniMax implements MoveStrategy {
                 current_value = board.currentPlayer().getAlliance().isWhite() ?
                                 min(moveTransition.getTransitionBoard(), depth - 1) :
                                 max(moveTransition.getTransitionBoard(), depth - 1);
-                freqTable[freqTableIndex] += 1;
+                FreqTableRow row = new FreqTableRow(move);
+                row.increment();
+                freqTable[freqTableIndex] = row;
                 System.out.println("\t" + toString() + " analyzing move " + move + " scores " + current_value + " " +freqTable[freqTableIndex]);
                 freqTableIndex++;
                 if (board.currentPlayer().getAlliance().isWhite() &&
@@ -86,9 +89,7 @@ public class MiniMax implements MoveStrategy {
 
     public int min(final Board board,
                    final int depth) {
-        if (depth == 0 ||
-            board.currentPlayer().isInCheckMate() ||
-            board.currentPlayer().getOpponent().isInCheckMate()) {
+        if (depth == 0 || isEndGameScenario(board)) {
             this.boardsEvaluated++;
             return this.evaluator.evaluate(board, depth);
         }
@@ -106,7 +107,7 @@ public class MiniMax implements MoveStrategy {
                 if(move.isCastle()) {
                     this.numCastles++;
                 }
-                freqTable[freqTableIndex] += 1;
+                freqTable[freqTableIndex].increment();
             }
         }
         return lowest_seen_value;
@@ -114,9 +115,7 @@ public class MiniMax implements MoveStrategy {
 
     public int max(final Board board,
                    final int depth) {
-        if (depth == 0 ||
-            board.currentPlayer().isInCheckMate() ||
-            board.currentPlayer().getOpponent().isInCheckMate()) {
+        if (depth == 0 || isEndGameScenario(board)) {
             this.boardsEvaluated++;
             return this.evaluator.evaluate(board, depth);
         }
@@ -135,9 +134,35 @@ public class MiniMax implements MoveStrategy {
             if(move.isCastle()) {
                 this.numCastles++;
             }
-            freqTable[freqTableIndex] += 1;
+            freqTable[freqTableIndex].increment();
         }
         return highest_seen_value;
+    }
+
+    private static boolean isEndGameScenario(final Board board) {
+        return  board.currentPlayer().isInCheckMate() ||
+                board.currentPlayer().isInStaleMate() ||
+                board.currentPlayer().getOpponent().isInCheckMate() ||
+                board.currentPlayer().getOpponent().isInStaleMate();
+    }
+
+    static class FreqTableRow {
+        int count;
+        Move move;
+
+        FreqTableRow(final Move move) {
+            this.count = 0;
+            this.move = move;
+        }
+
+        public void increment() {
+            this.count++;
+        }
+
+        @Override
+        public String toString() {
+            return BoardUtils.getPositionAtCoordinate(move.getCurrentCoordinate()) + BoardUtils.getPositionAtCoordinate(move.getDestinationCoordinate()) + " : " +count;
+        }
     }
 
 }

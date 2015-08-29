@@ -69,10 +69,10 @@ public class TestMiniMax {
         final Player currentPlayer = board.currentPlayer();
         final MoveStrategy minMax = new MiniMax();
         currentPlayer.setMoveStrategy(minMax);
-        board.currentPlayer().getMoveStrategy().execute(board, 4);
+        board.currentPlayer().getMoveStrategy().execute(board, 5);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-        //assertEquals(numBoardsEvaluated, 4865609L);
-        assertEquals(minMax.getNumAttacks(), 0);
+        assertEquals(numBoardsEvaluated, 4865609L);
+        //assertEquals(minMax.getNumAttacks(), 0);
     }
 
     @Test

@@ -326,8 +326,9 @@ public abstract class Move {
             for (final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()) {
                 builder.setPiece(piece);
             }
-            builder.setPiece(this.movedPiece.movePiece(this));
-            builder.setEnPassantPawn((Pawn)movedPiece);
+            final Pawn movedPawn = (Pawn)this.movedPiece.movePiece(this);
+            builder.setPiece(movedPawn);
+            builder.setEnPassantPawn(movedPawn);
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
             return builder.build();
         }

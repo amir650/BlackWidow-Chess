@@ -83,7 +83,7 @@ public final class Pawn
                     }
                 }
                 else if (board.getEnPassantPawn() != null) {
-                    if(board.getEnPassantPawn().getPiecePosition() == (this.piecePosition + 1)) {
+                    if(board.getEnPassantPawn().getPiecePosition() == (this.piecePosition + (1 * this.pieceAlliance.getDirection()))) {
                         final Piece pieceOnCandidate = board.getEnPassantPawn();
                         if (this.pieceAlliance != pieceOnCandidate.getPieceAllegiance()) {
                             if (this.pieceAlliance.isPawnPromotionSquare(candidateDestinationCoordinate)) {
@@ -118,7 +118,7 @@ public final class Pawn
                     }
                 }
                 else if (board.getEnPassantPawn() != null) {
-                    if(board.getEnPassantPawn().getPiecePosition() == (this.piecePosition - 1)) {
+                    if(board.getEnPassantPawn().getPiecePosition() == (this.piecePosition - (1 * this.pieceAlliance.getDirection()))) {
                         final Piece pieceOnCandidate = board.getEnPassantPawn();
                         if (this.pieceAlliance != pieceOnCandidate.getPieceAllegiance()) {
                             if (this.pieceAlliance.isPawnPromotionSquare(candidateDestinationCoordinate)) {
