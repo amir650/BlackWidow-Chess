@@ -19,12 +19,12 @@ public abstract class Player {
 
     protected final Board board;
     protected final King playerKing;
-    protected final List<Move> legalMoves;
+    protected final Collection<Move> legalMoves;
     private MoveStrategy strategy;
 
     Player(final Board board,
-           final List<Move> playerLegals,
-           final List<Move> opponentLegals) {
+           final Collection<Move> playerLegals,
+           final Collection<Move> opponentLegals) {
         this.board = board;
         this.playerKing = establishKing();
         this.legalMoves = ImmutableList.copyOf(
@@ -124,6 +124,6 @@ public abstract class Player {
     public abstract Collection<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
-    protected abstract List<Move> calculateKingCastles(List<Move> playerLegals, List<Move> opponentLegals);
+    protected abstract Collection<Move> calculateKingCastles(Collection<Move> playerLegals, Collection<Move> opponentLegals);
 
 }

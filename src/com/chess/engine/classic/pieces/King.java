@@ -40,7 +40,7 @@ public final class King extends Piece {
 
     public boolean isInCheckMate(final Board board) {
         return !Player.calculateAttacksOnTile(this.piecePosition, board.currentPlayer().getOpponent().getLegalMoves())
-                .isEmpty() && !(hasEscapeMoves(board));
+                .isEmpty() && !hasEscapeMoves(board);
     }
 
     public boolean isInStaleMate(final Board board) {
@@ -100,7 +100,7 @@ public final class King extends Piece {
         return new King(this.pieceAlliance, move.getDestinationCoordinate(), false, move.isCastle());
     }
 
-    private boolean hasEscapeMoves(final Board board) {
+    private static boolean hasEscapeMoves(final Board board) {
         for(final Move move : board.currentPlayer().getLegalMoves()) {
             final MoveTransition transition = board.currentPlayer().makeMove(move);
             if (transition.getMoveStatus() == MoveStatus.DONE) {

@@ -31,8 +31,8 @@ public final class Board {
         this.whitePieces = calculateActivePieces(Alliance.WHITE);
         this.blackPieces = calculateActivePieces(Alliance.BLACK);
         this.enPassantPawn = builder.enPassantPawn;
-        final List<Move> whiteStandardMoves = calculateLegalMoves(this.whitePieces);
-        final List<Move> blackStandardMoves = calculateLegalMoves(this.blackPieces);
+        final Collection<Move> whiteStandardMoves = calculateLegalMoves(this.whitePieces);
+        final Collection<Move> blackStandardMoves = calculateLegalMoves(this.blackPieces);
         this.whitePlayer = new WhitePlayer(this, whiteStandardMoves, blackStandardMoves);
         this.blackPlayer = new BlackPlayer(this, whiteStandardMoves, blackStandardMoves);
         this.currentPlayer = builder.nextMoveMaker == Alliance.WHITE ? this.whitePlayer : this.blackPlayer;

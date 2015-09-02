@@ -18,14 +18,14 @@ import com.google.common.collect.ImmutableList;
 public class BlackPlayer extends Player {
 
     public BlackPlayer(final Board board,
-                       final List<Move> whiteStandardLegals,
-                       final List<Move> blackStandardLegals) {
+                       final Collection<Move> whiteStandardLegals,
+                       final Collection<Move> blackStandardLegals) {
         super(board, blackStandardLegals, whiteStandardLegals);
     }
 
     @Override
-    protected List<Move> calculateKingCastles(final List<Move> playerLegals,
-                                              final List<Move> opponentLegals) {
+    protected Collection<Move> calculateKingCastles(final Collection<Move> playerLegals,
+                                                    final Collection<Move> opponentLegals) {
 
         final List<Move> kingCastles = new ArrayList<>();
 

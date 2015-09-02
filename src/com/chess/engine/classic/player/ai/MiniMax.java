@@ -6,7 +6,7 @@ import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.MoveTransition;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class MiniMax implements MoveStrategy {
 
@@ -49,7 +49,8 @@ public class MiniMax implements MoveStrategy {
                 current_value = board.currentPlayer().getAlliance().isWhite() ?
                                 min(moveTransition.getTransitionBoard(), depth - 1) :
                                 max(moveTransition.getTransitionBoard(), depth - 1);
-                System.out.println("\t" + toString() + " analyzing move " + move + " scores " + current_value + " " +freqTable[freqTableIndex]);
+                System.out.println("\t" + toString() + " analyzing move " + move +
+                                   " scores " + current_value + " " +this.freqTable[this.freqTableIndex]);
                 freqTableIndex++;
                 if (board.currentPlayer().getAlliance().isWhite() &&
                         current_value >= highest_seen_value) {
@@ -65,13 +66,15 @@ public class MiniMax implements MoveStrategy {
         this.executionTime = System.currentTimeMillis() - startTime;
         System.out.printf("%s SELECTS %s [#boards = %d time taken = %d ms, rate = %.1f\n", board.currentPlayer(),
                 best_move, this.boardsEvaluated, this.executionTime, (1000 * ((double)this.boardsEvaluated/this.executionTime)));
-        int total = 0;
+        long total = 0;
         for (FreqTableRow aFreqTable : freqTable) {
             if(aFreqTable != null) {
                 total += aFreqTable.getCount();
             }
         }
-        System.out.println("minMou totaww = " +total);
+        if(this.boardsEvaluated != total) {
+            System.out.println("somethings wrong with the # of boards evaluated!");
+        }
         return best_move;
     }
 
@@ -131,14 +134,14 @@ public class MiniMax implements MoveStrategy {
     private static class FreqTableRow {
 
         private final Move move;
-        private final AtomicInteger count;
+        private final AtomicLong count;
 
         FreqTableRow(final Move move) {
-            this.count = new AtomicInteger();
+            this.count = new AtomicLong();
             this.move = move;
         }
 
-        public int getCount() {
+        public long getCount() {
             return this.count.get();
         }
 
@@ -148,7 +151,8 @@ public class MiniMax implements MoveStrategy {
 
         @Override
         public String toString() {
-            return BoardUtils.getPositionAtCoordinate(move.getCurrentCoordinate()) + BoardUtils.getPositionAtCoordinate(move.getDestinationCoordinate()) + " : " +count;
+            return BoardUtils.getPositionAtCoordinate(move.getCurrentCoordinate()) +
+                   BoardUtils.getPositionAtCoordinate(move.getDestinationCoordinate()) + " : " +count;
         }
     }
 

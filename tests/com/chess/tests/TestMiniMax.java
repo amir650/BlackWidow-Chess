@@ -85,6 +85,18 @@ public class TestMiniMax {
         assertEquals(numBoardsEvaluated, 119060324L);
     }
 
+    @Ignore
+    @Test
+    public void testOpeningDepth7() {
+        final Board board = Board.createStandardBoard();
+        final Player currentPlayer = board.currentPlayer();
+        final MoveStrategy minMax = new MiniMax();
+        currentPlayer.setMoveStrategy(minMax);
+        board.currentPlayer().getMoveStrategy().execute(board, 7);
+        final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
+        assertEquals(numBoardsEvaluated, 3195901860L);
+    }
+
     @Test
     public void testKiwiPeteDepth1() {
         final Board.Builder builder = new Board.Builder();
