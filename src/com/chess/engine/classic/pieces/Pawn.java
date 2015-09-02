@@ -88,11 +88,11 @@ public final class Pawn
                         if (this.pieceAlliance != pieceOnCandidate.getPieceAllegiance()) {
                             if (this.pieceAlliance.isPawnPromotionSquare(candidateDestinationCoordinate)) {
                                 legalMoves.add(new PawnPromotion(
-                                        new PawnEnPassanAttack(board, this, candidateDestinationCoordinate, pieceOnCandidate)));
+                                        new PawnEnPassantAttack(board, this, candidateDestinationCoordinate, pieceOnCandidate)));
                             }
                             else {
                                 legalMoves.add(
-                                        new PawnEnPassanAttack(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                                        new PawnEnPassantAttack(board, this, candidateDestinationCoordinate, pieceOnCandidate));
                             }
                         }
                     }
@@ -123,11 +123,11 @@ public final class Pawn
                         if (this.pieceAlliance != pieceOnCandidate.getPieceAllegiance()) {
                             if (this.pieceAlliance.isPawnPromotionSquare(candidateDestinationCoordinate)) {
                                 legalMoves.add(new PawnPromotion(
-                                        new PawnEnPassanAttack(board, this, candidateDestinationCoordinate, pieceOnCandidate)));
+                                        new PawnEnPassantAttack(board, this, candidateDestinationCoordinate, pieceOnCandidate)));
                             }
                             else {
                                 legalMoves.add(
-                                        new PawnEnPassanAttack(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                                        new PawnEnPassantAttack(board, this, candidateDestinationCoordinate, pieceOnCandidate));
                             }
                         }
                     }

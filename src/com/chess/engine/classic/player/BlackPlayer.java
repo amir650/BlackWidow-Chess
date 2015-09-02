@@ -46,7 +46,6 @@ public class BlackPlayer extends Player {
                !this.board.getTile(3).isTileOccupied()) {
                 final Tile rookTile = this.board.getTile(0);
                 if(rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove() &&
-                   Player.calculateAttacksOnTile(1, opponentLegals).isEmpty() &&
                    Player.calculateAttacksOnTile(2, opponentLegals).isEmpty() &&
                    Player.calculateAttacksOnTile(3, opponentLegals).isEmpty() &&
                    rookTile.getPiece().getPieceType() == PieceType.ROOK) {

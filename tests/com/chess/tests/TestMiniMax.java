@@ -2,6 +2,7 @@ package com.chess.tests;
 
 import static org.junit.Assert.assertEquals;
 
+import com.chess.com.chess.pgn.FenUtilities;
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
@@ -62,7 +63,6 @@ public class TestMiniMax {
         assertEquals(numBoardsEvaluated, 197281L);
     }
 
-    @Ignore
     @Test
     public void testOpeningDepth5() {
         final Board board = Board.createStandardBoard();
@@ -72,7 +72,17 @@ public class TestMiniMax {
         board.currentPlayer().getMoveStrategy().execute(board, 5);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         assertEquals(numBoardsEvaluated, 4865609L);
-        //assertEquals(minMax.getNumAttacks(), 0);
+    }
+
+    @Test
+    public void testOpeningDepth6() {
+        final Board board = Board.createStandardBoard();
+        final Player currentPlayer = board.currentPlayer();
+        final MoveStrategy minMax = new MiniMax();
+        currentPlayer.setMoveStrategy(minMax);
+        board.currentPlayer().getMoveStrategy().execute(board, 6);
+        final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
+        assertEquals(numBoardsEvaluated, 119060324L);
     }
 
     @Test
@@ -129,10 +139,8 @@ public class TestMiniMax {
         board.currentPlayer().getMoveStrategy().execute(board, 1);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         assertEquals(numBoardsEvaluated, 48);
-        assertEquals(minMax.getNumAttacks(), 8);
     }
 
-    @Ignore
     @Test
     public void testKiwiPeteDepth2() {
         final Board.Builder builder = new Board.Builder();
@@ -185,11 +193,25 @@ public class TestMiniMax {
         final MoveStrategy minMax = new MiniMax();
         currentPlayer.setMoveStrategy(minMax);
         board.currentPlayer().getMoveStrategy().execute(board, 2);
-        final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         assertEquals(minMax.getNumBoardsEvaluated(), 2039);
-        //assertEquals(minMax.getNumAttacks(), 351);
-        //assertEquals(minMax.getNumCastles(), 0);
     }
+
+    @Test
+    public void testKiwiPeteDepth2Bug2() {
+
+        final Board board = FenUtilities.createGameFromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -");
+
+        final MoveTransition t1 = board.currentPlayer()
+                .makeMove(Move.MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("e5"),
+                        BoardUtils.getCoordinateAtPosition("d7")));
+
+        final Player currentPlayer = t1.getTransitionBoard().currentPlayer();
+        final MoveStrategy minMax = new MiniMax();
+        currentPlayer.setMoveStrategy(minMax);
+        currentPlayer.getMoveStrategy().execute(t1.getTransitionBoard(), 1);
+        assertEquals(minMax.getNumBoardsEvaluated(), 45);
+    }
+
 
     @Test
     public void testKiwiPeteDebug() {
@@ -284,11 +306,8 @@ public class TestMiniMax {
         board.currentPlayer().getMoveStrategy().execute(board, 1);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         assertEquals(numBoardsEvaluated, 14);
-        assertEquals(minMax.getNumAttacks(), 1);
-        assertEquals(minMax.getNumCastles(), 0);
     }
 
-    @Ignore
     @Test
     public void testPosition3Depth2() {
         final Board.Builder builder = new Board.Builder();
@@ -319,8 +338,6 @@ public class TestMiniMax {
         board.currentPlayer().getMoveStrategy().execute(board, 2);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         assertEquals(numBoardsEvaluated, 191);
-        assertEquals(minMax.getNumAttacks(), 14);
-        assertEquals(minMax.getNumCastles(), 0);
     }
 
 }

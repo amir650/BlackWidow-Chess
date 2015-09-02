@@ -27,6 +27,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
+import com.chess.com.chess.pgn.FenUtilities;
 import com.chess.com.chess.pgn.MySqlGamePersistence;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.MoveStatus;
@@ -167,6 +168,18 @@ public final class Table extends Observable {
             }
         });
         filesMenu.add(openPGN);
+
+        final JMenuItem openFEN = new JMenuItem("Load FEN File", KeyEvent.VK_F);
+        openFEN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                String fenString = JOptionPane.showInputDialog("Input FEN");
+                undoAllMoves();
+                chessBoard = FenUtilities.createGameFromFEN(fenString);
+                Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
+            }
+        });
+        filesMenu.add(openFEN);
 
         final JMenuItem saveToPGN = new JMenuItem("Save Game", KeyEvent.VK_S);
         saveToPGN.addActionListener(new ActionListener() {

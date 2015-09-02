@@ -2,6 +2,7 @@ package com.chess.tests;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.chess.engine.classic.Alliance;
@@ -77,7 +78,6 @@ public class TestAlphaBeta {
     public void advancedLevelProblem2NakamuraShirov() {
 
         final Builder builder = new Builder();
-
         // Black Layout
         builder.setPiece(new King(Alliance.BLACK, 5));
         builder.setPiece(new Pawn(Alliance.BLACK, 10));
@@ -96,7 +96,7 @@ public class TestAlphaBeta {
 
         final Player currentPlayer = board.currentPlayer();
         currentPlayer.setMoveStrategy(new AlphaBeta());
-        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 6);
+        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 4);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.getCoordinateAtPosition("d5"), BoardUtils.getCoordinateAtPosition("c7")));
     }

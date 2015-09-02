@@ -18,7 +18,7 @@ public class AlphaBeta implements MoveStrategy {
     private long boardsEvaluated;
     private long executionTime;
     private int quiescenceCount;
-    private static final int MAX_QUIESCENCE = 0;
+    private static final int MAX_QUIESCENCE = 10000;
 
     private enum MoveSorter {
 
@@ -60,16 +60,6 @@ public class AlphaBeta implements MoveStrategy {
     @Override
     public long getNumBoardsEvaluated() {
         return this.boardsEvaluated;
-    }
-
-    @Override
-    public long getNumAttacks() {
-        return 0;
-    }
-
-    @Override
-    public long getNumCastles() {
-        return 0;
     }
 
     @Override

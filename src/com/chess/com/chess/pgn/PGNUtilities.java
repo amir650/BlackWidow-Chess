@@ -38,6 +38,10 @@ public class PGNUtilities {
     private static final Pattern PLAIN_PAWN_PROMOTION_MOVE = Pattern.compile("(.*?)=(.*?)");
     private static final Pattern ATTACK_PAWN_PROMOTION_MOVE = Pattern.compile("(.*?)x(.*?)=(.*?)");
 
+    private PGNUtilities() {
+        throw new RuntimeException("Not Instantiable!");
+    }
+
     public static void persistPGNFile(final File pgnFile) throws IOException {
 
         int count = 0;
