@@ -7,11 +7,12 @@ import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
 import com.google.common.collect.ImmutableList.Builder;
 
-public class PawnStructureAnalyzer {
+public final class PawnStructureAnalyzer {
 
     private static final PawnStructureAnalyzer INSTANCE = new PawnStructureAnalyzer();
     private static final List<boolean[]> BOARD_COLUMNS = initColumns();
-    private static final int ISOLATED_PAWN_PENALTY = 25;
+    private static final int ISOLATED_PAWN_PENALTY = 0;
+    private static final int STACKED_PAWN_PENALTY = 0;
 
     private PawnStructureAnalyzer() {
     }
@@ -41,7 +42,7 @@ public class PawnStructureAnalyzer {
     private static List<Integer> calculatePawnLocations(final Player player) {
         final Builder<Integer> playerPawnLocations = new Builder<>();
         for(final Piece piece : player.getActivePieces()) {
-            if(piece.isPawn()) {
+            if(piece.getPieceType().isPawn()) {
                 playerPawnLocations.add(piece.getPiecePosition());
             }
         }
@@ -53,7 +54,7 @@ public class PawnStructureAnalyzer {
         int stackedPawnPenalty = 0;
         for(final int pawnsOnColumn : pawnsOnColumnTable) {
             if(pawnsOnColumn > 1) {
-                stackedPawnPenalty += (10 * pawnsOnColumn);
+                stackedPawnPenalty += (STACKED_PAWN_PENALTY * pawnsOnColumn);
             }
         }
         return -stackedPawnPenalty;
@@ -63,7 +64,7 @@ public class PawnStructureAnalyzer {
         final int[] pawnsOnColumnTable = createPawnsOnColumnTable(pawnLocations);
         int isolatedPawnPenalty = 0;
         if(pawnsOnColumnTable[0] > 0 && pawnsOnColumnTable[1] == 0) {
-            isolatedPawnPenalty += 25;
+            isolatedPawnPenalty += ISOLATED_PAWN_PENALTY;
         }
         for(int i = 1; i < BOARD_COLUMNS.size() - 1; i++) {
             if(pawnsOnColumnTable[i] > 0 && (pawnsOnColumnTable[i-1] == 0 && pawnsOnColumnTable[i+1] == 0)) {

@@ -2,7 +2,7 @@ package com.chess.engine.classic.board;
 
 import com.chess.engine.classic.board.Board.MoveStatus;
 
-public class MoveTransition {
+public final class MoveTransition {
 
     private final Board transitionBoard;
     private final MoveStatus moveStatus;

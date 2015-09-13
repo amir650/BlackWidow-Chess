@@ -39,7 +39,7 @@ public final class Pawn
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final List<Move> legalMoves = new ArrayList<>();
+        final List<Move> legalMoves = new ArrayList<>(8);
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             int candidateDestinationCoordinate =
                     this.piecePosition + (this.pieceAlliance.getDirection() * currentCandidate * -1);
@@ -83,7 +83,7 @@ public final class Pawn
                     }
                 }
                 else if (board.getEnPassantPawn() != null) {
-                    if(board.getEnPassantPawn().getPiecePosition() == (this.piecePosition + (1 * this.pieceAlliance.getDirection()))) {
+                    if(board.getEnPassantPawn().getPiecePosition() == (this.piecePosition + (this.pieceAlliance.getDirection()))) {
                         final Piece pieceOnCandidate = board.getEnPassantPawn();
                         if (this.pieceAlliance != pieceOnCandidate.getPieceAllegiance()) {
                             if (this.pieceAlliance.isPawnPromotionSquare(candidateDestinationCoordinate)) {
@@ -118,7 +118,7 @@ public final class Pawn
                     }
                 }
                 else if (board.getEnPassantPawn() != null) {
-                    if(board.getEnPassantPawn().getPiecePosition() == (this.piecePosition - (1 * this.pieceAlliance.getDirection()))) {
+                    if(board.getEnPassantPawn().getPiecePosition() == (this.piecePosition - (this.pieceAlliance.getDirection()))) {
                         final Piece pieceOnCandidate = board.getEnPassantPawn();
                         if (this.pieceAlliance != pieceOnCandidate.getPieceAllegiance()) {
                             if (this.pieceAlliance.isPawnPromotionSquare(candidateDestinationCoordinate)) {

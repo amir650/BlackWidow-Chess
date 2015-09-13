@@ -9,14 +9,13 @@ import org.junit.Test;
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
-import com.chess.engine.classic.board.Board.MoveStatus;
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.board.Tile;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Pawn;
-import com.chess.engine.classic.player.ai.SimpleBoardEvaluator;
+import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
 
 public class TestBoard {
 
@@ -31,7 +30,7 @@ public class TestBoard {
         assertFalse(board.currentPlayer().getOpponent().isInCheckMate());
         assertEquals(board.currentPlayer(), board.whitePlayer());
         assertEquals(board.currentPlayer().getOpponent(), board.blackPlayer());
-        assertEquals(new SimpleBoardEvaluator().evaluate(board, 0), 0);
+        assertEquals(new StandardBoardEvaluator().evaluate(board, 0), 0);
     }
 
     @Test
@@ -56,13 +55,13 @@ public class TestBoard {
         assertFalse(board.currentPlayer().getOpponent().isInCheckMate());
         assertEquals(board.currentPlayer(), board.whitePlayer());
         assertEquals(board.currentPlayer().getOpponent(), board.blackPlayer());
-        assertEquals(new SimpleBoardEvaluator().evaluate(board, 0), 0);
+        assertEquals(new StandardBoardEvaluator().evaluate(board, 0), 0);
 
         final MoveTransition moveTransition = board.currentPlayer()
                 .makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("e1"),
                                 BoardUtils.getCoordinateAtPosition("f1")));
 
-        assertEquals(MoveStatus.DONE, moveTransition.getMoveStatus());
+        assertTrue(moveTransition.getMoveStatus().isDone());
         assertEquals(moveTransition.getTransitionBoard().whitePlayer().getPlayerKing().getPiecePosition(), 61);
     }
 

@@ -25,20 +25,21 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import javax.swing.filechooser.FileFilter;
 
 import com.chess.com.chess.pgn.FenUtilities;
 import com.chess.com.chess.pgn.MySqlGamePersistence;
 import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Board.MoveStatus;
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.board.Tile;
 import com.chess.engine.classic.pieces.Piece;
-import com.chess.engine.classic.player.ai.AlphaBeta;
-import com.chess.engine.classic.player.ai.SimpleBoardEvaluator;
+import com.chess.engine.classic.player.ai.AlphaBetaSmarterWindow;
+import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
+import com.chess.engine.classic.player.ai.StockAlphaBeta;
 import com.google.common.collect.Lists;
 
 public final class Table extends Observable {
@@ -53,7 +54,8 @@ public final class Table extends Observable {
     private Board chessBoard;
     private Tile sourceTile;
     private Tile destinationTile;
-    private Piece movedPiece;
+    private Piece humanMovedPiece;
+    private Move computerMove;
     private BoardDirection boardDirection;
     private String pieceIconPath;
     private boolean highlightLegalMoves;
@@ -236,7 +238,7 @@ public final class Table extends Observable {
         evaluateBoardMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                System.out.println(new SimpleBoardEvaluator().evaluate(Table.get().getGameBoard(), gameSetup.getSearchDepth()));
+                System.out.println(new StandardBoardEvaluator().evaluate(Table.get().getGameBoard(), gameSetup.getSearchDepth()));
 
             }
         });
@@ -499,10 +501,13 @@ public final class Table extends Observable {
                             if (Table.get().getUseBook() && bookMove != Move.NULL_MOVE) {
                                 bestMove = bookMove;
                             } else {
-                                Table.get().getGameBoard().currentPlayer().setMoveStrategy(new AlphaBeta());
+                                final int moveNumber = Table.get().getMoveLog().size();
+                                final int quiescenceFactor = 1800 + (25 * moveNumber);
+                                Table.get().getGameBoard().currentPlayer().setMoveStrategy(new StockAlphaBeta(quiescenceFactor));
                                 bestMove = pool.submit(moveSearch).get();
                             }
                             chessBoard = chessBoard.currentPlayer().makeMove(bestMove).getTransitionBoard();
+                            computerMove = bestMove;
                             Table.get().getMoveLog().addMove(bestMove);
                             Table.get().getGameHistoryPanel().redo(chessBoard, Table.get().getMoveLog());
                             Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
@@ -528,6 +533,7 @@ public final class Table extends Observable {
             }
 
         }
+
     }
 
     public enum PlayerType {
@@ -657,37 +663,36 @@ public final class Table extends Observable {
             addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(final MouseEvent event) {
-                    if(isRightMouseButton(event)) {
+                    if (isRightMouseButton(event)) {
                         sourceTile = null;
                         destinationTile = null;
-                        movedPiece = null;
-                    } else if(isLeftMouseButton(event)) {
+                        humanMovedPiece = null;
+                    } else if (isLeftMouseButton(event)) {
                         if (sourceTile == null) {
                             sourceTile = chessBoard.getTile(tileId);
-                            movedPiece = sourceTile.getPiece();
-                            if(movedPiece == null) {
+                            humanMovedPiece = sourceTile.getPiece();
+                            if (humanMovedPiece == null) {
                                 sourceTile = null;
                             }
-                        }
-                        else {
+                        } else {
                             destinationTile = chessBoard.getTile(tileId);
-                            final Move move =  MoveFactory.createMove(chessBoard, sourceTile.getTileCoordinate(),
+                            final Move move = MoveFactory.createMove(chessBoard, sourceTile.getTileCoordinate(),
                                     destinationTile.getTileCoordinate());
                             final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
-                            if(transition.getMoveStatus() == MoveStatus.DONE) {
+                            if (transition.getMoveStatus().isDone()) {
                                 chessBoard = chessBoard.currentPlayer().makeMove(move).getTransitionBoard();
                                 moveLog.addMove(move);
                             }
                             sourceTile = null;
                             destinationTile = null;
-                            movedPiece = null;
+                            humanMovedPiece = null;
                         }
                     }
                     invokeLater(new Runnable() {
                         public void run() {
                             gameHistoryPanel.redo(chessBoard, moveLog);
                             takenPiecesPanel.redo(moveLog);
-                            if(gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
+                            if (gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
                                 Table.get().moveMadeUpdate(PlayerType.HUMAN);
                             }
                             boardPanel.drawBoard(chessBoard);
@@ -719,6 +724,7 @@ public final class Table extends Observable {
             assignTilePieceIcon(board);
             highlightTileBorder(board);
             highlightLegals(board);
+            highlightAIMove();
             validate();
             repaint();
         }
@@ -732,11 +738,21 @@ public final class Table extends Observable {
         }
 
         private void highlightTileBorder(final Board board) {
-            if(movedPiece != null && movedPiece.getPieceAllegiance() == board.currentPlayer().getAlliance() &&
-                    movedPiece.getPiecePosition() == this.tileId) {
+            if(humanMovedPiece != null && humanMovedPiece.getPieceAllegiance() == board.currentPlayer().getAlliance() &&
+                    humanMovedPiece.getPiecePosition() == this.tileId) {
                 setBorder(BorderFactory.createLineBorder(Color.cyan));
             } else {
                 setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            }
+        }
+
+        private void highlightAIMove() {
+            if(computerMove != null) {
+                if(this.tileId == computerMove.getCurrentCoordinate()) {
+                    setBorder(BorderFactory.createEtchedBorder(BevelBorder.RAISED, Color.blue, Color.blue));
+                } else if(this.tileId == computerMove.getDestinationCoordinate()) {
+                    setBorder(BorderFactory.createEtchedBorder(BevelBorder.RAISED, Color.red, Color.red));
+                }
             }
         }
 
@@ -756,8 +772,8 @@ public final class Table extends Observable {
         }
 
         private Collection<Move> pieceLegalMoves(final Board board) {
-            if(movedPiece != null && movedPiece.getPieceAllegiance() == board.currentPlayer().getAlliance()) {
-                return movedPiece.calculateLegalMoves(board);
+            if(humanMovedPiece != null && humanMovedPiece.getPieceAllegiance() == board.currentPlayer().getAlliance()) {
+                return humanMovedPiece.calculateLegalMoves(board);
             }
             return Collections.emptyList();
         }

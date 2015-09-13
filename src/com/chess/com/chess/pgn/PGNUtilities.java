@@ -88,7 +88,7 @@ public class PGNUtilities {
     public static void writeGameToPGNFile(final File pgnFile,
                                           final MoveLog moveLog) throws IOException {
         final StringBuilder builder = new StringBuilder();
-        builder.append(calculateEventString());
+        builder.append(calculateEventString() + "\n");
         builder.append(calculateDateString() + "\n");
         builder.append(calculatePlyCountString(moveLog) + "\n");
         for(final Move move : moveLog.getMoves()) {
@@ -105,7 +105,7 @@ public class PGNUtilities {
 
     private static String calculateDateString() {
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
-        return dateFormat.format(new Date());
+        return "[Date \"" + dateFormat.format(new Date()) + "\"]";
     }
 
     private static String calculatePlyCountString(final MoveLog moveLog) {
@@ -256,9 +256,9 @@ public class PGNUtilities {
                                                final String disambiguationFile) throws RuntimeException {
         final List<Move> currentCandidates = new ArrayList<>();
         final int destinationCoordinate =  BoardUtils.getCoordinateAtPosition(destinationSquare);
-        for (final Move m : board.currentPlayer().getLegalMoves()) {
-            if (m.getDestinationCoordinate() == destinationCoordinate && m.getMovedPiece().toString().equals(movedPiece)) {
-                currentCandidates.add(m);
+        for (final Move move : board.currentPlayer().getLegalMoves()) {
+            if (move.getDestinationCoordinate() == destinationCoordinate && move.getMovedPiece().toString().equals(movedPiece)) {
+                currentCandidates.add(move);
             }
         }
 
@@ -278,9 +278,9 @@ public class PGNUtilities {
 
         final List<Move> currentCandidates = new ArrayList<>();
 
-        for(final Move m : candidateMoves) {
-            if(m.getMovedPiece().getPieceType().toString().equals(movedPiece)) {
-                currentCandidates.add(m);
+        for(final Move move : candidateMoves) {
+            if(move.getMovedPiece().getPieceType().toString().equals(movedPiece)) {
+                currentCandidates.add(move);
             }
         }
 
@@ -290,10 +290,10 @@ public class PGNUtilities {
 
         final List<Move> candidatesRefined = new ArrayList<>();
 
-        for (final Move m : currentCandidates) {
-            final String pos = BoardUtils.getPositionAtCoordinate(m.getCurrentCoordinate());
+        for (final Move move : currentCandidates) {
+            final String pos = BoardUtils.getPositionAtCoordinate(move.getCurrentCoordinate());
             if (pos.contains(disambiguationFile)) {
-                candidatesRefined.add(m);
+                candidatesRefined.add(move);
             }
         }
 

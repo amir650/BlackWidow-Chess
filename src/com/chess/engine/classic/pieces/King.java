@@ -54,7 +54,7 @@ public final class King extends Piece {
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final List<Move> legalMoves = new ArrayList<>();
+        final List<Move> legalMoves = new ArrayList<>(8);
         int candidateDestinationCoordinate;
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             if (isFirstColumnExclusion(this.piecePosition, currentCandidate) ||
@@ -103,7 +103,7 @@ public final class King extends Piece {
     private static boolean hasEscapeMoves(final Board board) {
         for(final Move move : board.currentPlayer().getLegalMoves()) {
             final MoveTransition transition = board.currentPlayer().makeMove(move);
-            if (transition.getMoveStatus() == MoveStatus.DONE) {
+            if (transition.getMoveStatus().isDone()) {
                 return true;
             }
         }

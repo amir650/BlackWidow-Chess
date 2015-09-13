@@ -1,8 +1,11 @@
 package com.chess.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
+import com.chess.com.chess.pgn.FenUtilities;
+import com.chess.engine.classic.board.MoveTransition;
+import com.chess.engine.classic.player.ai.StockAlphaBeta;
 import org.junit.Test;
 
 import com.chess.engine.classic.Alliance;
@@ -17,7 +20,6 @@ import com.chess.engine.classic.pieces.Pawn;
 import com.chess.engine.classic.pieces.Queen;
 import com.chess.engine.classic.pieces.Rook;
 import com.chess.engine.classic.player.Player;
-import com.chess.engine.classic.player.ai.AlphaBeta;
 import com.chess.engine.classic.player.ai.MoveStrategy;
 
 public class TestAlphaBeta {
@@ -67,7 +69,7 @@ public class TestAlphaBeta {
         final Board board = builder.build();
 
         final Player currentPlayer = board.currentPlayer();
-        final MoveStrategy alphaBeta = new AlphaBeta();
+        final MoveStrategy alphaBeta = new StockAlphaBeta();
         currentPlayer.setMoveStrategy(alphaBeta);
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 4);
         assertEquals(bestMove, Move.MoveFactory
@@ -95,8 +97,8 @@ public class TestAlphaBeta {
         final Board board = builder.build();
 
         final Player currentPlayer = board.currentPlayer();
-        currentPlayer.setMoveStrategy(new AlphaBeta());
-        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 4);
+        currentPlayer.setMoveStrategy(new StockAlphaBeta());
+        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 6);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.getCoordinateAtPosition("d5"), BoardUtils.getCoordinateAtPosition("c7")));
     }
@@ -135,9 +137,11 @@ public class TestAlphaBeta {
         // Set the current player
         builder.setMoveMaker(Alliance.BLACK);
         final Board board = builder.build();
+        final String fen = FenUtilities.createFENFromGame(board);
+        System.out.println(fen);
         final Player currentPlayer = board.currentPlayer();
-        currentPlayer.setMoveStrategy(new AlphaBeta());
-        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 6);
+        currentPlayer.setMoveStrategy(new StockAlphaBeta());
+        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 8);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.getCoordinateAtPosition("c5"), BoardUtils.getCoordinateAtPosition("d4")));
     }
@@ -176,7 +180,7 @@ public class TestAlphaBeta {
         builder.setMoveMaker(Alliance.WHITE);
         final Board board = builder.build();
         final Player currentPlayer = board.currentPlayer();
-        currentPlayer.setMoveStrategy(new AlphaBeta());
+        currentPlayer.setMoveStrategy(new StockAlphaBeta());
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 8);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.getCoordinateAtPosition("g5"), BoardUtils.getCoordinateAtPosition("h7")));
@@ -206,10 +210,24 @@ public class TestAlphaBeta {
         builder.setMoveMaker(Alliance.WHITE);
         final Board board = builder.build();
         final Player currentPlayer = board.currentPlayer();
-        currentPlayer.setMoveStrategy(new AlphaBeta());
+        currentPlayer.setMoveStrategy(new StockAlphaBeta());
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 8);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.getCoordinateAtPosition("g3"), BoardUtils.getCoordinateAtPosition("g6")));
+    }
+
+    @Test
+    public void blackWidowLoss1() {
+
+        final Board board = FenUtilities.createGameFromFEN("r2qkb1r/3p1pp1/p1n1p2p/1p1bP3/P2p4/1PP5/5PPP/RNBQNRK1 w kq - 0 13");
+
+        final Player currentPlayer = board.currentPlayer();
+        currentPlayer.setMoveStrategy(new StockAlphaBeta());
+        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 6);
+        assertEquals(bestMove, Move.MoveFactory
+                .createMove(board, BoardUtils.getCoordinateAtPosition("a4"), BoardUtils.getCoordinateAtPosition("b5")));
+
+       // System.out.println()
     }
 
     @Test
@@ -235,7 +253,7 @@ public class TestAlphaBeta {
         builder.setMoveMaker(Alliance.WHITE);
         final Board board = builder.build();
         final Player currentPlayer = board.currentPlayer();
-        currentPlayer.setMoveStrategy(new AlphaBeta());
+        currentPlayer.setMoveStrategy(new StockAlphaBeta());
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 8);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.getCoordinateAtPosition("g2"), BoardUtils.getCoordinateAtPosition("g4")));
@@ -272,10 +290,37 @@ public class TestAlphaBeta {
         builder.setMoveMaker(Alliance.WHITE);
         final Board board = builder.build();
         final Player currentPlayer = board.currentPlayer();
-        currentPlayer.setMoveStrategy(new AlphaBeta());
+        currentPlayer.setMoveStrategy(new StockAlphaBeta());
         final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 4);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.getCoordinateAtPosition("e4"), BoardUtils.getCoordinateAtPosition("e8")));
+    }
+
+    @Test
+    public void findMate1() {
+        final Board board = FenUtilities.createGameFromFEN("r2r1n2/pp2bk2/2p1p2p/3q4/3PN1QP/2P3R1/P4PP1/5RK1 w - - 0 1");
+        final Player currentPlayer = board.currentPlayer();
+        currentPlayer.setMoveStrategy(new StockAlphaBeta());
+        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 7);
+        assertEquals(bestMove, Move.MoveFactory
+                .createMove(board, BoardUtils.getCoordinateAtPosition("g4"), BoardUtils.getCoordinateAtPosition("g7")));
+    }
+
+    @Test
+    public void findMate2() {
+        final Board board = FenUtilities.createGameFromFEN("1k2B3/1N6/1K6/8/8/8/8/8 w - -");
+        final Player currentPlayer = board.currentPlayer();
+        currentPlayer.setMoveStrategy(new StockAlphaBeta());
+        final Move bestMove = board.currentPlayer().getMoveStrategy().execute(board, 7);
+        assertEquals(bestMove, Move.MoveFactory
+                .createMove(board, BoardUtils.getCoordinateAtPosition("e8"), BoardUtils.getCoordinateAtPosition("d7")));
+
+        final MoveTransition t1 = board.currentPlayer()
+                .makeMove(bestMove);
+
+        assertTrue(t1.getMoveStatus().isDone());
+
+
     }
 
 }

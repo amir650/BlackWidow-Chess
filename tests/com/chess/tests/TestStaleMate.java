@@ -41,7 +41,7 @@ public class TestStaleMate {
                 .makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("e4"),
                         BoardUtils.getCoordinateAtPosition("f5")));
 
-        assertEquals(MoveStatus.DONE, t1.getMoveStatus());
+        assertTrue(t1.getMoveStatus().isDone());
         assertTrue(t1.getTransitionBoard().currentPlayer().isInStaleMate());
         assertFalse(t1.getTransitionBoard().currentPlayer().isInCheck());
         assertFalse(t1.getTransitionBoard().currentPlayer().isInCheckMate());
@@ -67,7 +67,7 @@ public class TestStaleMate {
                 .makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("c5"),
                         BoardUtils.getCoordinateAtPosition("c6")));
 
-        assertEquals(MoveStatus.DONE, t1.getMoveStatus());
+        assertTrue(t1.getMoveStatus().isDone());
         assertTrue(t1.getTransitionBoard().currentPlayer().isInStaleMate());
         assertFalse(t1.getTransitionBoard().currentPlayer().isInCheck());
         assertFalse(t1.getTransitionBoard().currentPlayer().isInCheckMate());
@@ -94,7 +94,7 @@ public class TestStaleMate {
                 .makeMove(MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("a6"),
                         BoardUtils.getCoordinateAtPosition("a7")));
 
-        assertEquals(MoveStatus.DONE, t1.getMoveStatus());
+        assertTrue(t1.getMoveStatus().isDone());
         assertTrue(t1.getTransitionBoard().currentPlayer().isInStaleMate());
         assertFalse(t1.getTransitionBoard().currentPlayer().isInCheck());
         assertFalse(t1.getTransitionBoard().currentPlayer().isInCheckMate());

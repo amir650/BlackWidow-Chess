@@ -19,8 +19,8 @@ import com.google.common.collect.Iterables;
 public final class Board {
 
     private final List<Tile> gameBoard;
-    private final List<Piece> whitePieces;
-    private final List<Piece> blackPieces;
+    private final Collection<Piece> whitePieces;
+    private final Collection<Piece> blackPieces;
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
@@ -71,7 +71,7 @@ public final class Board {
     }
 
     public Iterable<Move> getAllLegalMoves() {
-        return Iterables.unmodifiableIterable(Iterables.concat(this.whitePlayer().getLegalMoves(), this.blackPlayer().getLegalMoves()));
+        return Iterables.unmodifiableIterable(Iterables.concat(this.whitePlayer.getLegalMoves(), this.blackPlayer.getLegalMoves()));
     }
 
     public WhitePlayer whitePlayer() {
@@ -148,16 +148,16 @@ public final class Board {
         return ImmutableList.copyOf(tiles);
     }
 
-    private List<Move> calculateLegalMoves(final List<Piece> pieces) {
-        final List<Move> legalMoves = new ArrayList<>();
+    private Collection<Move> calculateLegalMoves(final Collection<Piece> pieces) {
+        final List<Move> legalMoves = new ArrayList<>(35);
         for(final Piece piece : pieces) {
             legalMoves.addAll(piece.calculateLegalMoves(this));
         }
         return ImmutableList.copyOf(legalMoves);
     }
 
-    private List<Piece> calculateActivePieces(final Alliance alliance) {
-        final List<Piece> activePieces = new ArrayList<>();
+    private Collection<Piece> calculateActivePieces(final Alliance alliance) {
+        final List<Piece> activePieces = new ArrayList<>(16);
         for (final Tile tile : this.gameBoard) {
             if (tile.isTileOccupied()) {
                 final Piece piece = tile.getPiece();
@@ -170,9 +170,26 @@ public final class Board {
     }
 
     public enum MoveStatus {
-        DONE,
-        ILLEGAL_MOVE,
-        LEAVES_PLAYER_IN_CHECK,
+        DONE {
+            @Override
+            public boolean isDone() {
+                return true;
+            }
+        },
+        ILLEGAL_MOVE {
+            @Override
+            public boolean isDone() {
+                return false;
+            }
+        },
+        LEAVES_PLAYER_IN_CHECK {
+            @Override
+            public boolean isDone() {
+                return false;
+            }
+        };
+
+        public abstract boolean isDone();
     }
 
     public static class Builder {

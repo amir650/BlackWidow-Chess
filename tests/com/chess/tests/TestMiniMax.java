@@ -1,6 +1,7 @@
 package com.chess.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.chess.com.chess.pgn.FenUtilities;
 import com.chess.engine.classic.Alliance;
@@ -279,7 +280,7 @@ public class TestMiniMax {
                 .makeMove(Move.MoveFactory.createMove(board, BoardUtils.getCoordinateAtPosition("a2"),
                         BoardUtils.getCoordinateAtPosition("a3")));
 
-        assertEquals(Board.MoveStatus.DONE, t1.getMoveStatus());
+        assertTrue(t1.getMoveStatus().isDone());
 
         final MoveStrategy minMax = new MiniMax();
         t1.getTransitionBoard().currentPlayer().setMoveStrategy(minMax);

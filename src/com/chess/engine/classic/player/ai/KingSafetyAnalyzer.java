@@ -9,7 +9,7 @@ import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
 import com.google.common.collect.ImmutableList.Builder;
 
-public class KingSafetyAnalyzer {
+public final class KingSafetyAnalyzer {
 
     private static final KingSafetyAnalyzer INSTANCE = new KingSafetyAnalyzer();
     private static final List<boolean[]> COLUMNS = initColumns();

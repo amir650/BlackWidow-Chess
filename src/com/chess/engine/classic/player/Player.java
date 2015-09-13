@@ -67,7 +67,7 @@ public abstract class Player {
 
     protected King establishKing() {
         for(final Piece piece : getActivePieces()) {
-            if(piece.isKing()) {
+            if(piece.getPieceType().isKing()) {
                 return (King) piece;
             }
         }

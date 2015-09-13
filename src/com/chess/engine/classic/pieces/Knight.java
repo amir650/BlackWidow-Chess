@@ -36,7 +36,7 @@ public final class Knight extends Piece {
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final List<Move> legalMoves = new ArrayList<>();
+        final List<Move> legalMoves = new ArrayList<>(8);
         int candidateDestinationCoordinate;
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             if(isFirstColumnExclusion(this.piecePosition, currentCandidate) ||

@@ -15,7 +15,7 @@ import com.chess.engine.classic.pieces.Piece.PieceType;
 import com.chess.engine.classic.pieces.Rook;
 import com.google.common.collect.ImmutableList;
 
-public class BlackPlayer extends Player {
+public final class BlackPlayer extends Player {
 
     public BlackPlayer(final Board board,
                        final Collection<Move> whiteStandardLegals,

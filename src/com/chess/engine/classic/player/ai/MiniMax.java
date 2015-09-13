@@ -1,14 +1,13 @@
 package com.chess.engine.classic.player.ai;
 
 import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Board.MoveStatus;
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.MoveTransition;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class MiniMax implements MoveStrategy {
+public final class MiniMax implements MoveStrategy {
 
     private final BoardEvaluator evaluator;
     private long boardsEvaluated;
@@ -17,7 +16,7 @@ public class MiniMax implements MoveStrategy {
     private int freqTableIndex;
 
     public MiniMax() {
-        this.evaluator = new SimpleBoardEvaluator();
+        this.evaluator = new StandardBoardEvaluator();
         this.boardsEvaluated = 0;
     }
 
@@ -43,7 +42,7 @@ public class MiniMax implements MoveStrategy {
         freqTableIndex = 0;
         for (final Move move : board.currentPlayer().getLegalMoves()) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
-            if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
+            if (moveTransition.getMoveStatus().isDone()) {
                 FreqTableRow row = new FreqTableRow(move);
                 freqTable[freqTableIndex] = row;
                 current_value = board.currentPlayer().getAlliance().isWhite() ?
@@ -91,7 +90,7 @@ public class MiniMax implements MoveStrategy {
         int lowest_seen_value = Integer.MAX_VALUE;
         for (final Move move : board.currentPlayer().getLegalMoves()) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
-            if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
+            if (moveTransition.getMoveStatus().isDone()) {
                 final int current_value = max(moveTransition.getTransitionBoard(), depth - 1);
                 if (current_value <= lowest_seen_value) {
                     lowest_seen_value = current_value;
@@ -114,7 +113,7 @@ public class MiniMax implements MoveStrategy {
         int highest_seen_value = Integer.MIN_VALUE;
         for (final Move move : board.currentPlayer().getLegalMoves()) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
-            if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
+            if (moveTransition.getMoveStatus().isDone()) {
                 final int current_value = min(moveTransition.getTransitionBoard(), depth - 1);
                 if (current_value >= highest_seen_value) {
                     highest_seen_value = current_value;
