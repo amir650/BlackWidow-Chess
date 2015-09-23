@@ -29,10 +29,10 @@ public class TestPawn {
 
         // Black Layout
         builder.setPiece(new Rook(Alliance.BLACK, 3));
-        builder.setPiece(new King(Alliance.BLACK, 22));
+        builder.setPiece(new King(Alliance.BLACK, 22, false, false));
         // White Layout
         builder.setPiece(new Pawn(Alliance.WHITE, 15));
-        builder.setPiece(new King(Alliance.WHITE, 52));
+        builder.setPiece(new King(Alliance.WHITE, 52, false, false));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
@@ -63,11 +63,11 @@ public class TestPawn {
         final Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
         builder.setPiece(new Pawn(Alliance.BLACK, 11));
         // White Layout
         builder.setPiece(new Pawn(Alliance.WHITE, 52));
-        builder.setPiece(new King(Alliance.WHITE, 60));
+        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 
@@ -110,11 +110,11 @@ public class TestPawn {
         final Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
         builder.setPiece(new Pawn(Alliance.BLACK, 11));
         // White Layout
         builder.setPiece(new Pawn(Alliance.WHITE, 52));
-        builder.setPiece(new King(Alliance.WHITE, 60));
+        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 

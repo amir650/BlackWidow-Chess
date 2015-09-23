@@ -23,10 +23,10 @@ public class TestQueen {
         final Builder builder = new Builder();
 
         // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
         // White Layout
         builder.setPiece(new Queen(Alliance.WHITE, 36));
-        builder.setPiece(new King(Alliance.WHITE, 60));
+        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
         // Set the current player
         builder.setMoveMaker(Alliance.WHITE);
 

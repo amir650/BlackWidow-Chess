@@ -13,6 +13,7 @@ import com.chess.engine.classic.board.Move.MajorMove;
 import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import org.magicwerk.brownies.collections.GapList;
 
 public final class Rook extends Piece {
 
@@ -35,7 +36,7 @@ public final class Rook extends Piece {
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final List<Move> legalMoves = new ArrayList<>();
+        final List<Move> legalMoves = new GapList<>();
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             int candidateDestinationCoordinate = this.piecePosition;
             while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {

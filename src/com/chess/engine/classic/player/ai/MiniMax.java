@@ -40,6 +40,8 @@ public final class MiniMax implements MoveStrategy {
         System.out.println(board.currentPlayer() + " THINKING with depth = " +depth);
         freqTable = new FreqTableRow[board.currentPlayer().getLegalMoves().size()];
         freqTableIndex = 0;
+        int moveCounter = 1;
+        int numMoves = board.currentPlayer().getLegalMoves().size();
         for (final Move move : board.currentPlayer().getLegalMoves()) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
@@ -48,7 +50,7 @@ public final class MiniMax implements MoveStrategy {
                 current_value = board.currentPlayer().getAlliance().isWhite() ?
                                 min(moveTransition.getTransitionBoard(), depth - 1) :
                                 max(moveTransition.getTransitionBoard(), depth - 1);
-                System.out.println("\t" + toString() + " analyzing move " + move +
+                System.out.println("\t" + toString() + " analyzing move (" +moveCounter + "/" +numMoves+ ") " + move +
                                    " scores " + current_value + " " +this.freqTable[this.freqTableIndex]);
                 freqTableIndex++;
                 if (board.currentPlayer().getAlliance().isWhite() &&
@@ -60,8 +62,12 @@ public final class MiniMax implements MoveStrategy {
                     lowest_seen_value = current_value;
                     best_move = move;
                 }
+            } else {
+                System.out.println("\t" + toString() + " can't execute move (" +moveCounter+ "/" +numMoves+ ") " + move);
             }
+            moveCounter++;
         }
+
         this.executionTime = System.currentTimeMillis() - startTime;
         System.out.printf("%s SELECTS %s [#boards = %d time taken = %d ms, rate = %.1f\n", board.currentPlayer(),
                 best_move, this.boardsEvaluated, this.executionTime, (1000 * ((double)this.boardsEvaluated/this.executionTime)));

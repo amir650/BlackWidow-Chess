@@ -243,7 +243,7 @@ public class PGNUtilities {
     private static Move extractCastleMove(final Board board,
                                           final String castleMove) {
         for (final Move move : board.currentPlayer().getLegalMoves()) {
-            if (move.isCastle() && move.toString().equals(castleMove)) {
+            if (move.isCastlingMove() && move.toString().equals(castleMove)) {
                 return move;
             }
         }

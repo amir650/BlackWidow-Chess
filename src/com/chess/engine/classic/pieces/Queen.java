@@ -12,6 +12,7 @@ import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
 import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList;
+import org.magicwerk.brownies.collections.GapList;
 
 public final class Queen extends Piece {
 
@@ -35,7 +36,7 @@ public final class Queen extends Piece {
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final List<Move> legalMoves = new ArrayList<>();
+        final List<Move> legalMoves = new GapList<>();
         int candidateDestinationCoordinate;
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             candidateDestinationCoordinate = this.piecePosition;

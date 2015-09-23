@@ -13,6 +13,7 @@ import com.chess.engine.classic.board.Move.MajorMove;
 import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import org.magicwerk.brownies.collections.GapList;
 
 public final class Knight extends Piece {
 
@@ -36,7 +37,7 @@ public final class Knight extends Piece {
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final List<Move> legalMoves = new ArrayList<>(8);
+        final List<Move> legalMoves = new GapList<>();
         int candidateDestinationCoordinate;
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             if(isFirstColumnExclusion(this.piecePosition, currentCandidate) ||

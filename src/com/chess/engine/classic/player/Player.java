@@ -14,6 +14,7 @@ import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.ai.MoveStrategy;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import org.magicwerk.brownies.collections.GapList;
 
 public abstract class Player {
 
@@ -32,6 +33,9 @@ public abstract class Player {
     }
 
     public boolean isMoveLegal(final Move move) {
+        if(move.isCastlingMove() && isInCheck()) {
+            return false;
+        }
         return this.legalMoves.contains(move);
     }
 
@@ -49,6 +53,14 @@ public abstract class Player {
 
     public boolean isCastled() {
         return this.playerKing.isCastled();
+    }
+
+    public boolean isKingSideCastleCapable() {
+        return this.playerKing.isKingSideCastleCapable();
+    }
+
+    public boolean isQueenSideCastleCapable() {
+        return this.playerKing.isQueenSideCastleCapable();
     }
 
     public MoveStrategy getMoveStrategy() {
@@ -75,7 +87,7 @@ public abstract class Player {
     }
 
     public Collection<Move> calculateAttacksOnPiece(final Piece piece) {
-        final List<Move> attackMoves = new ArrayList<>();
+        final List<Move> attackMoves = new GapList<>();
         final int piecePosition = piece.getPiecePosition();
         for (final Move move : this.legalMoves) {
             if (piecePosition == move.getDestinationCoordinate()) {
@@ -95,7 +107,7 @@ public abstract class Player {
 
     public static Collection<Move> calculateAttacksOnTile(final int tile,
                                                           final Collection<Move> moves) {
-        final List<Move> attackMoves = new ArrayList<>();
+        final List<Move> attackMoves = new GapList<>();
         for (final Move move : moves) {
             if (tile == move.getDestinationCoordinate()) {
                 attackMoves.add(move);

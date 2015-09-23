@@ -22,14 +22,20 @@ public class TestBoard {
     @Test
     public void initialBoard() {
         final Board board = Board.createStandardBoard();
-        assertEquals(board.whitePlayer().getLegalMoves().size(), 20);
-        assertEquals(board.blackPlayer().getLegalMoves().size(), 20);
+        assertEquals(board.currentPlayer().getLegalMoves().size(), 20);
+        assertEquals(board.currentPlayer().getOpponent().getLegalMoves().size(), 20);
         assertFalse(board.currentPlayer().isInCheck());
         assertFalse(board.currentPlayer().isInCheckMate());
-        assertFalse(board.currentPlayer().getOpponent().isInCheck());
-        assertFalse(board.currentPlayer().getOpponent().isInCheckMate());
+        assertFalse(board.currentPlayer().isCastled());
+        assertTrue(board.currentPlayer().isKingSideCastleCapable());
+        assertTrue(board.currentPlayer().isQueenSideCastleCapable());
         assertEquals(board.currentPlayer(), board.whitePlayer());
         assertEquals(board.currentPlayer().getOpponent(), board.blackPlayer());
+        assertFalse(board.currentPlayer().getOpponent().isInCheck());
+        assertFalse(board.currentPlayer().getOpponent().isInCheckMate());
+        assertFalse(board.currentPlayer().getOpponent().isCastled());
+        assertTrue(board.currentPlayer().getOpponent().isKingSideCastleCapable());
+        assertTrue(board.currentPlayer().getOpponent().isQueenSideCastleCapable());
         assertEquals(new StandardBoardEvaluator().evaluate(board, 0), 0);
     }
 
@@ -38,11 +44,11 @@ public class TestBoard {
 
         final Builder builder = new Builder();
         // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
         builder.setPiece(new Pawn(Alliance.BLACK, 12));
         // White Layout
         builder.setPiece(new Pawn(Alliance.WHITE, 52));
-        builder.setPiece(new King(Alliance.WHITE, 60));
+        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
         builder.setMoveMaker(Alliance.WHITE);
         // Set the current player
         final Board board = builder.build();

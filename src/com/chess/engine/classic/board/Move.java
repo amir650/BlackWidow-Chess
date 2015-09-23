@@ -76,7 +76,7 @@ public abstract class Move {
         return false;
     }
 
-    public boolean isCastle() {
+    public boolean isCastlingMove() {
         return false;
     }
 
@@ -370,7 +370,7 @@ public abstract class Move {
         }
 
         @Override
-        public boolean isCastle() {
+        public boolean isCastlingMove() {
             return true;
         }
 

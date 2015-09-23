@@ -72,7 +72,7 @@ abstract public class Tile {
 
         @Override
         public String toString() {
-            return this.pieceOnTile.toString();
+            return this.pieceOnTile.getPieceAllegiance().isWhite() ? this.pieceOnTile.toString() : this.pieceOnTile.toString().toLowerCase();
         }
 
         @Override

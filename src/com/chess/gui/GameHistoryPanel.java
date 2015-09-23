@@ -38,9 +38,6 @@ class GameHistoryPanel extends JPanel {
         this.model.clear();
         for (final Move move : moveHistory.getMoves()) {
             final String moveText = move.toString();
-            if(move.getMovedPiece() == null || move.getMovedPiece().getPieceAllegiance() == null) {
-                System.out.println("trap!");
-            }
             if (move.getMovedPiece().getPieceAllegiance().isWhite()) {
                 this.model.setValueAt(moveText, currentRow, 0);
             }
@@ -55,10 +52,10 @@ class GameHistoryPanel extends JPanel {
             final String moveText = lastMove.toString();
 
             if (lastMove.getMovedPiece().getPieceAllegiance().isWhite()) {
-                this.model.setValueAt(moveText + calculateCheckMateHash(board), currentRow, 0);
+                this.model.setValueAt(moveText + calculateCheckAndCheckMateHash(board), currentRow, 0);
             }
             else if (lastMove.getMovedPiece().getPieceAllegiance().isBlack()) {
-                this.model.setValueAt(moveText + calculateCheckMateHash(board), currentRow - 1, 1);
+                this.model.setValueAt(moveText + calculateCheckAndCheckMateHash(board), currentRow - 1, 1);
             }
         }
 
@@ -67,8 +64,13 @@ class GameHistoryPanel extends JPanel {
 
     }
 
-    private static String calculateCheckMateHash(final Board board) {
-        return board.currentPlayer().isInCheckMate() ? "#" : "";
+    private static String calculateCheckAndCheckMateHash(final Board board) {
+        if(board.currentPlayer().isInCheckMate()) {
+            return "#";
+        } else if(board.currentPlayer().isInCheck()) {
+            return "+";
+        }
+        return "";
     }
 
     private static class Row {

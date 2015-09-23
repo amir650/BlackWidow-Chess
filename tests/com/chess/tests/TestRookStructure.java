@@ -32,10 +32,10 @@ public class TestRookStructure {
         final Builder builder = new Builder();
         // Black Layout
         builder.setPiece(new Rook(Alliance.BLACK, 0));
-        builder.setPiece(new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
         // White Layout
         builder.setPiece(new Rook(Alliance.WHITE, 63));
-        builder.setPiece(new King(Alliance.WHITE, 60));
+        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
         builder.setMoveMaker(Alliance.WHITE);
         // Set the current player
         final Board board = builder.build();

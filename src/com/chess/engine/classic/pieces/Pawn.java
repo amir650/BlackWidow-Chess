@@ -10,6 +10,7 @@ import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.*;
 import com.google.common.collect.ImmutableList;
+import org.magicwerk.brownies.collections.GapList;
 
 public final class Pawn
         extends Piece {
@@ -39,7 +40,7 @@ public final class Pawn
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final List<Move> legalMoves = new ArrayList<>(8);
+        final List<Move> legalMoves = new GapList<>();
         for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
             int candidateDestinationCoordinate =
                     this.piecePosition + (this.pieceAlliance.getDirection() * currentCandidate * -1);

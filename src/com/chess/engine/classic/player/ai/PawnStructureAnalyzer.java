@@ -1,18 +1,22 @@
 package com.chess.engine.classic.player.ai;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.ListMultimap;
 
 public final class PawnStructureAnalyzer {
 
     private static final PawnStructureAnalyzer INSTANCE = new PawnStructureAnalyzer();
     private static final List<boolean[]> BOARD_COLUMNS = initColumns();
-    private static final int ISOLATED_PAWN_PENALTY = 0;
-    private static final int STACKED_PAWN_PENALTY = 0;
+
+    public static final int ISOLATED_PAWN_PENALTY = -10;
+    public static final int DOUBLED_PAWN_PENALTY = -5;
 
     private PawnStructureAnalyzer() {
     }
@@ -34,59 +38,69 @@ public final class PawnStructureAnalyzer {
         return columns.build();
     }
 
-    public int pawnStructureScore(final Player player) {
-        final List<Integer> pawnLocations = calculatePawnLocations(player);
-        return calculatePawnStacksPenalty(pawnLocations) + calculateIsolatedPawnPenalty(pawnLocations);
+    public int isolatedPawnPenalty(final Player player) {
+        return calculateIsolatedPawnPenalty(createPawnsOnColumnTable(calculatePawnLocations(player)));
     }
 
-    private static List<Integer> calculatePawnLocations(final Player player) {
-        final Builder<Integer> playerPawnLocations = new Builder<>();
+    public int doubledPawnPenalty(final Player player) {
+        return calculateDoubledPawnPenalty(createPawnsOnColumnTable(calculatePawnLocations(player)));
+    }
+
+    public int pawnStructureScore(final Player player) {
+        final ListMultimap<Integer, Piece> pawnsOnColumnTable = createPawnsOnColumnTable(calculatePawnLocations(player));
+        return /*calculateDoubledPawnPenalty(pawnsOnColumnTable) + */calculateIsolatedPawnPenalty(pawnsOnColumnTable);
+    }
+
+    private static Collection<Piece> calculatePawnLocations(final Player player) {
+        final Builder<Piece> playerPawnLocations = new Builder<>();
         for(final Piece piece : player.getActivePieces()) {
             if(piece.getPieceType().isPawn()) {
-                playerPawnLocations.add(piece.getPiecePosition());
+                playerPawnLocations.add(piece);
             }
         }
         return playerPawnLocations.build();
     }
 
-    private static int calculatePawnStacksPenalty(final List<Integer> pawnLocations) {
-        final int[] pawnsOnColumnTable = createPawnsOnColumnTable(pawnLocations);
-        int stackedPawnPenalty = 0;
-        for(final int pawnsOnColumn : pawnsOnColumnTable) {
-            if(pawnsOnColumn > 1) {
-                stackedPawnPenalty += (STACKED_PAWN_PENALTY * pawnsOnColumn);
+    private static int calculateDoubledPawnPenalty(final ListMultimap<Integer, Piece> pawnsOnColumnTable) {
+        int numDoubledPawns = 0;
+        for(int i = 0; i < BOARD_COLUMNS.size(); i++) {
+            final int numPawnsOnColumn = pawnsOnColumnTable.get(i).size();
+            if(numPawnsOnColumn > 1) {
+                numDoubledPawns += pawnsOnColumnTable.get(i).size();
             }
         }
-        return -stackedPawnPenalty;
+        return numDoubledPawns * DOUBLED_PAWN_PENALTY;
     }
 
-    private static int calculateIsolatedPawnPenalty(final List<Integer> pawnLocations) {
-        final int[] pawnsOnColumnTable = createPawnsOnColumnTable(pawnLocations);
-        int isolatedPawnPenalty = 0;
-        if(pawnsOnColumnTable[0] > 0 && pawnsOnColumnTable[1] == 0) {
-            isolatedPawnPenalty += ISOLATED_PAWN_PENALTY;
+    private static int calculateIsolatedPawnPenalty(final ListMultimap<Integer, Piece> pawnsOnColumnTable) {
+        int numIsolatedPawns = 0;
+        if(!pawnsOnColumnTable.get(0).isEmpty() &&
+            pawnsOnColumnTable.get(1).isEmpty()) {
+            numIsolatedPawns += pawnsOnColumnTable.get(0).size();
         }
         for(int i = 1; i < BOARD_COLUMNS.size() - 1; i++) {
-            if(pawnsOnColumnTable[i] > 0 && (pawnsOnColumnTable[i-1] == 0 && pawnsOnColumnTable[i+1] == 0)) {
-                isolatedPawnPenalty += ISOLATED_PAWN_PENALTY;
+            if(!pawnsOnColumnTable.get(i).isEmpty() &&
+               (pawnsOnColumnTable.get(i-1).isEmpty() && pawnsOnColumnTable.get(i+1).isEmpty())) {
+                numIsolatedPawns += pawnsOnColumnTable.get(i).size();
             }
         }
-        if(pawnsOnColumnTable[BOARD_COLUMNS.size() - 1] > 0 && pawnsOnColumnTable[BOARD_COLUMNS.size() - 2] == 0) {
-            isolatedPawnPenalty += ISOLATED_PAWN_PENALTY;
+        if(!pawnsOnColumnTable.get(BOARD_COLUMNS.size() - 1).isEmpty() &&
+            pawnsOnColumnTable.get(BOARD_COLUMNS.size() - 2).isEmpty()) {
+            numIsolatedPawns += pawnsOnColumnTable.get(BOARD_COLUMNS.size() - 1).size();
         }
-        return -isolatedPawnPenalty;
+        return numIsolatedPawns * ISOLATED_PAWN_PENALTY;
     }
 
-    private static int[] createPawnsOnColumnTable(final List<Integer> pawnLocations) {
-        final int[] pawnsOnColumnTable = new int[BOARD_COLUMNS.size()];
+    private static ListMultimap<Integer, Piece> createPawnsOnColumnTable(final Collection<Piece> playerPawns) {
+        final ListMultimap<Integer, Piece> table = ArrayListMultimap.create(8, 6);
         for(int i = 0; i < BOARD_COLUMNS.size(); i++) {
-            for(final Integer location : pawnLocations) {
-                if(BOARD_COLUMNS.get(i)[location]) {
-                    pawnsOnColumnTable[i]++;
+            for(final Piece playerPawn : playerPawns) {
+                if(BOARD_COLUMNS.get(i)[playerPawn.getPiecePosition()]) {
+                    table.put(i, playerPawn);
                 }
             }
         }
-        return pawnsOnColumnTable;
+        return table;
     }
 
 }

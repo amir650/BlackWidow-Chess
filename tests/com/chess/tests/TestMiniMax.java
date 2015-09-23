@@ -104,7 +104,7 @@ public class TestMiniMax {
 
         // Black Layout
         builder.setPiece(new Rook(Alliance.BLACK, 0));
-        builder.setPiece(new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
         builder.setPiece(new Rook(Alliance.BLACK, 7));
         builder.setPiece(new Pawn(Alliance.BLACK, 8));
         builder.setPiece(new Pawn(Alliance.BLACK, 10));
@@ -138,7 +138,7 @@ public class TestMiniMax {
         builder.setPiece(new Pawn(Alliance.WHITE, 55));
 
         builder.setPiece(new Rook(Alliance.WHITE, 56));
-        builder.setPiece(new King(Alliance.WHITE, 60));
+        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
         builder.setPiece(new Rook(Alliance.WHITE, 63));
 
         // Set the current player
@@ -160,7 +160,7 @@ public class TestMiniMax {
 
         // Black Layout
         builder.setPiece(new Rook(Alliance.BLACK, 0));
-        builder.setPiece(new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
         builder.setPiece(new Rook(Alliance.BLACK, 7));
         builder.setPiece(new Pawn(Alliance.BLACK, 8));
         builder.setPiece(new Pawn(Alliance.BLACK, 10));
@@ -194,7 +194,7 @@ public class TestMiniMax {
         builder.setPiece(new Pawn(Alliance.WHITE, 55));
 
         builder.setPiece(new Rook(Alliance.WHITE, 56));
-        builder.setPiece(new King(Alliance.WHITE, 60));
+        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
         builder.setPiece(new Rook(Alliance.WHITE, 63));
 
         // Set the current player
@@ -232,7 +232,7 @@ public class TestMiniMax {
 
         // Black Layout
         builder.setPiece(new Rook(Alliance.BLACK, 0));
-        builder.setPiece(new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
         builder.setPiece(new Rook(Alliance.BLACK, 7));
         builder.setPiece(new Pawn(Alliance.BLACK, 8));
         builder.setPiece(new Pawn(Alliance.BLACK, 10));
@@ -266,7 +266,7 @@ public class TestMiniMax {
         builder.setPiece(new Pawn(Alliance.WHITE, 55));
 
         builder.setPiece(new Rook(Alliance.WHITE, 56));
-        builder.setPiece(new King(Alliance.WHITE, 60));
+        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
         builder.setPiece(new Rook(Alliance.WHITE, 63));
 
         // Set the current player
@@ -298,10 +298,10 @@ public class TestMiniMax {
         builder.setPiece(new Pawn(Alliance.BLACK, 19));
         builder.setPiece(new Rook(Alliance.BLACK, 31));
         builder.setPiece(new Pawn(Alliance.BLACK, 37));
-        builder.setPiece(new King(Alliance.BLACK, 39));
+        builder.setPiece(new King(Alliance.BLACK, 39, false, false));
 
         // White Layout
-        builder.setPiece(new King(Alliance.WHITE, 24));
+        builder.setPiece(new King(Alliance.WHITE, 24, false, false));
         builder.setPiece(new Pawn(Alliance.WHITE, 25));
         builder.setPiece(new Rook(Alliance.WHITE, 33));
 
@@ -330,10 +330,10 @@ public class TestMiniMax {
         builder.setPiece(new Pawn(Alliance.BLACK, 19));
         builder.setPiece(new Rook(Alliance.BLACK, 31));
         builder.setPiece(new Pawn(Alliance.BLACK, 37));
-        builder.setPiece(new King(Alliance.BLACK, 39));
+        builder.setPiece(new King(Alliance.BLACK, 39, false, false));
 
         // White Layout
-        builder.setPiece(new King(Alliance.WHITE, 24));
+        builder.setPiece(new King(Alliance.WHITE, 24, false, false));
         builder.setPiece(new Pawn(Alliance.WHITE, 25));
         builder.setPiece(new Rook(Alliance.WHITE, 33));
 

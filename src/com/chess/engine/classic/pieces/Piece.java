@@ -94,7 +94,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        KNIGHT(300, "N") {
+        KNIGHT(320, "N") {
             @Override
             public boolean isPawn() {
                 return false;
@@ -110,7 +110,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        BISHOP(300, "B") {
+        BISHOP(330, "B") {
             @Override
             public boolean isPawn() {
                 return false;

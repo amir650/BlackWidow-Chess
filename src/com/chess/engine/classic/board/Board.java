@@ -15,6 +15,7 @@ import com.chess.engine.classic.player.Player;
 import com.chess.engine.classic.player.WhitePlayer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import org.magicwerk.brownies.collections.GapList;
 
 public final class Board {
 
@@ -51,9 +52,10 @@ public final class Board {
         return builder.toString();
     }
 
-    private String prettyPrint(final Tile tile) {
+    private static String prettyPrint(final Tile tile) {
         if(tile.isTileOccupied()) {
-            return tile.getPiece().getPieceAllegiance().isBlack() ? tile.toString().toLowerCase() : tile.toString();
+            return tile.getPiece().getPieceAllegiance().isBlack() ?
+                    tile.toString().toLowerCase() : tile.toString();
         }
         return tile.toString();
     }
@@ -105,7 +107,7 @@ public final class Board {
         builder.setPiece(new Knight(Alliance.BLACK, 1));
         builder.setPiece(new Bishop(Alliance.BLACK, 2));
         builder.setPiece(new Queen(Alliance.BLACK, 3));
-        builder.setPiece(new King(Alliance.BLACK, 4));
+        builder.setPiece(new King(Alliance.BLACK, 4, true, true));
         builder.setPiece(new Bishop(Alliance.BLACK, 5));
         builder.setPiece(new Knight(Alliance.BLACK, 6));
         builder.setPiece(new Rook(Alliance.BLACK, 7));
@@ -130,7 +132,7 @@ public final class Board {
         builder.setPiece(new Knight(Alliance.WHITE, 57));
         builder.setPiece(new Bishop(Alliance.WHITE, 58));
         builder.setPiece(new Queen(Alliance.WHITE, 59));
-        builder.setPiece(new King(Alliance.WHITE, 60));
+        builder.setPiece(new King(Alliance.WHITE, 60, true, true));
         builder.setPiece(new Bishop(Alliance.WHITE, 61));
         builder.setPiece(new Knight(Alliance.WHITE, 62));
         builder.setPiece(new Rook(Alliance.WHITE, 63));
@@ -149,7 +151,7 @@ public final class Board {
     }
 
     private Collection<Move> calculateLegalMoves(final Collection<Piece> pieces) {
-        final List<Move> legalMoves = new ArrayList<>(35);
+        final List<Move> legalMoves = new GapList<>(35);
         for(final Piece piece : pieces) {
             legalMoves.addAll(piece.calculateLegalMoves(this));
         }
@@ -157,7 +159,7 @@ public final class Board {
     }
 
     private Collection<Piece> calculateActivePieces(final Alliance alliance) {
-        final List<Piece> activePieces = new ArrayList<>(16);
+        final List<Piece> activePieces = new GapList<>(16);
         for (final Tile tile : this.gameBoard) {
             if (tile.isTileOccupied()) {
                 final Piece piece = tile.getPiece();
@@ -170,6 +172,7 @@ public final class Board {
     }
 
     public enum MoveStatus {
+
         DONE {
             @Override
             public boolean isDone() {
@@ -190,6 +193,7 @@ public final class Board {
         };
 
         public abstract boolean isDone();
+
     }
 
     public static class Builder {
@@ -199,7 +203,7 @@ public final class Board {
         Pawn enPassantPawn;
 
         public Builder() {
-            this.boardConfig = new HashMap<>();
+            this.boardConfig = new HashMap<>(33, 1.0f);
         }
 
         public Builder setPiece(final Piece piece) {

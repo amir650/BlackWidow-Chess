@@ -10,7 +10,8 @@ public final class StandardBoardEvaluator
 
     private final static int CHECK_MATE_BONUS = 10000;
     private final static int CHECK_BONUS = 20;
-    private final static int CASTLE_BONUS = 25;
+    private final static int CASTLED_BONUS = 60;
+    private final static int CASTLE_CAPABLE_BONUS = 25;
 
     @Override
     public int evaluate(final Board board,
@@ -21,18 +22,16 @@ public final class StandardBoardEvaluator
     private static int scorePlayer(final Board board,
                                    final Player player,
                                    final int depth) {
-        final int score = mobility(player) +
-                          checkmate(player, depth) +
-                          check(player) +
-                          castling(player) +
-                          pawnStructure(player) +
-                          pieceValuation(player);
-                          //rookStructure(board, player);
-                          //+ kingSafety(player);
-        return score;
+        return mobility(player) +
+               checkmate(player, depth) +
+               check(player) +
+               castled(player) +
+               castleCapable(player) +
+               pieceValueAndLocationBonus(player) +
+               pawnStructure(player);
     }
 
-    private static int pieceValuation(final Player player) {
+    private static int pieceValueAndLocationBonus(final Player player) {
         int pieceValuationScore = 0;
         for (final Piece piece : player.getActivePieces()) {
             pieceValuationScore += piece.getPieceValue() + piece.locationBonus();
@@ -57,8 +56,12 @@ public final class StandardBoardEvaluator
         return depth == 0 ? 1 : 100 * depth;
     }
 
-    private static int castling(final Player player) {
-        return player.isCastled() ? CASTLE_BONUS : 0;
+    private static int castleCapable(final Player player) {
+        return (player.isKingSideCastleCapable() || player.isQueenSideCastleCapable()) ? CASTLE_CAPABLE_BONUS : 0;
+    }
+
+    private static int castled(final Player player) {
+        return player.isCastled() ? CASTLED_BONUS : 0;
     }
 
     private static int pawnStructure(final Player player) {
