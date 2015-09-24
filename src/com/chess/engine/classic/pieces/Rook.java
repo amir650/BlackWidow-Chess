@@ -1,6 +1,5 @@
 package com.chess.engine.classic.pieces;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
 import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
 import org.magicwerk.brownies.collections.GapList;
 
 public final class Rook extends Piece {

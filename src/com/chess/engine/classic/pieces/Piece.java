@@ -1,7 +1,6 @@
 package com.chess.engine.classic.pieces;
 
 import java.util.Collection;
-import java.util.List;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;

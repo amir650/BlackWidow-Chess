@@ -11,7 +11,6 @@ import com.chess.engine.classic.board.Move.KingSideCastleMove;
 import com.chess.engine.classic.board.Move.QueenSideCastleMove;
 import com.chess.engine.classic.board.Tile;
 import com.chess.engine.classic.pieces.Piece;
-import com.chess.engine.classic.pieces.Piece.PieceType;
 import com.chess.engine.classic.pieces.Rook;
 import com.google.common.collect.ImmutableList;
 

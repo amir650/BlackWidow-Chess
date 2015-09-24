@@ -104,8 +104,7 @@ class TakenPiecesPanel extends JPanel {
                         ic.getIconWidth() - 15, ic.getIconWidth() - 15, Image.SCALE_SMOOTH)));
                 this.northPanel.add(imageLabel);
 
-            }
-            catch (final IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace();
             }
         }
