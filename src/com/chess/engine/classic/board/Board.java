@@ -29,14 +29,14 @@ public final class Board {
 
     public Board(final Builder builder) {
         this.gameBoard = createGameBoard(builder);
-        this.whitePieces = calculateActivePieces(Alliance.WHITE);
-        this.blackPieces = calculateActivePieces(Alliance.BLACK);
+        this.whitePieces = calculateActivePieces(this.gameBoard, Alliance.WHITE);
+        this.blackPieces = calculateActivePieces(this.gameBoard, Alliance.BLACK);
         this.enPassantPawn = builder.enPassantPawn;
         final Collection<Move> whiteStandardMoves = calculateLegalMoves(this.whitePieces);
         final Collection<Move> blackStandardMoves = calculateLegalMoves(this.blackPieces);
         this.whitePlayer = new WhitePlayer(this, whiteStandardMoves, blackStandardMoves);
         this.blackPlayer = new BlackPlayer(this, whiteStandardMoves, blackStandardMoves);
-        this.currentPlayer = builder.nextMoveMaker == Alliance.WHITE ? this.whitePlayer : this.blackPlayer;
+        this.currentPlayer = builder.nextMoveMaker.choosePlayerByAlliance(this.whitePlayer, this.blackPlayer);
     }
 
     @Override
@@ -158,9 +158,10 @@ public final class Board {
         return ImmutableList.copyOf(legalMoves);
     }
 
-    private Collection<Piece> calculateActivePieces(final Alliance alliance) {
+    private static Collection<Piece> calculateActivePieces(final List<Tile> gameBoard,
+                                                           final Alliance alliance) {
         final List<Piece> activePieces = new GapList<>(16);
-        for (final Tile tile : this.gameBoard) {
+        for (final Tile tile : gameBoard) {
             if (tile.isTileOccupied()) {
                 final Piece piece = tile.getPiece();
                 if (piece.getPieceAllegiance().equals(alliance)) {

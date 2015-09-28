@@ -24,8 +24,6 @@ public class AlphaBetaWithMoveOrdering extends Observable implements MoveStrateg
     private int quiescenceCount;
     private int cutOffsProduced;
 
-    private Move bestMove;
-
     private enum MoveSorter {
 
         SORT {
@@ -56,11 +54,6 @@ public class AlphaBetaWithMoveOrdering extends Observable implements MoveStrateg
         this.boardsEvaluated = 0;
         this.quiescenceCount = 0;
         this.cutOffsProduced = 0;
-        this.bestMove = Move.NULL_MOVE;
-    }
-
-    public Move getBestMove() {
-        return this.bestMove;
     }
 
     @Override
@@ -79,39 +72,45 @@ public class AlphaBetaWithMoveOrdering extends Observable implements MoveStrateg
         final long startTime = System.currentTimeMillis();
         final Player currentPlayer = board.currentPlayer();
         final Alliance alliance = currentPlayer.getAlliance();
+        Move bestMove = Move.NULL_MOVE;
         int highestSeenValue = Integer.MIN_VALUE;
         int lowestSeenValue = Integer.MAX_VALUE;
         int currentValue;
         int moveCounter = 1;
-        int numMoves = board.currentPlayer().getLegalMoves().size();
         final List<Move> orderedMoves = MoveOrdering.get().orderMoves(board);
+        int numMoves = orderedMoves.size();
         System.out.println(board.currentPlayer() + " THINKING with depth = " + depth);
         System.out.println("\tOrdered moves! : " + orderedMoves);
         for (final Move move : orderedMoves) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             this.quiescenceCount = 0;
+            final String s;
             if (moveTransition.getMoveStatus().isDone()) {
                 final long candidateMoveStartTime = System.nanoTime();
                 currentValue = alliance.isWhite() ?
                         min(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue) :
                         max(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue);
-                final String quiescenceInfo = " [hi = " +highestSeenValue+ " low = " +lowestSeenValue+ "] quiescenceCount = " +this.quiescenceCount;
-                System.out.println("\t" + toString() + " analyzing move (" +moveCounter+ "/" +numMoves+ ") " + move + " (best move so far is:  " + bestMove
-                        + quiescenceInfo + " took " +calculateTimeTaken(candidateMoveStartTime, System.nanoTime()));
                 if (alliance.isWhite() && currentValue > highestSeenValue) {
                     highestSeenValue = currentValue;
-                    setBestMove(move);
+                    bestMove = move;
+                    setChanged();
+                    notifyObservers(bestMove);
                 }
                 else if (alliance.isBlack() && currentValue < lowestSeenValue) {
                     lowestSeenValue = currentValue;
-                    setBestMove(move);
+                    bestMove = move;
+                    setChanged();
+                    notifyObservers(bestMove);
                 }
+                final String quiescenceInfo = " [hi = " +highestSeenValue+ " low = " +lowestSeenValue+ "] quiescenceCount = " +this.quiescenceCount;
+                s = "\t" + toString() + " analyzing move (" +moveCounter+ "/" +numMoves+ ") " + move + " (best move so far is:  " + bestMove
+                        + quiescenceInfo + " took " +calculateTimeTaken(candidateMoveStartTime, System.nanoTime());
             } else {
-                System.out.println("\t" + toString() + " analyzing move (" +moveCounter+ "/" +numMoves+ ") " + move + " is ILLEGAL!");
+                s = "\t" + toString() + " analyzing move (" +moveCounter+ "/" +numMoves+ ") " + move + " is ILLEGAL!";
             }
+            System.out.println(s);
             moveCounter++;
         }
-
         this.executionTime = System.currentTimeMillis() - startTime;
         System.out.printf("%s SELECTS %s [#boards evaluated = %d, time taken = %d ms, eval rate = %.1f cutoffCount = %d prune percent = %.2f\n", board.currentPlayer(),
                 bestMove, this.boardsEvaluated, this.executionTime, (1000 * ((double)this.boardsEvaluated/this.executionTime)), this.cutOffsProduced, 100 * ((double)this.cutOffsProduced/this.boardsEvaluated));
@@ -162,12 +161,6 @@ public class AlphaBetaWithMoveOrdering extends Observable implements MoveStrateg
             }
         }
         return currentLowest;
-    }
-
-    private void setBestMove(final Move move) {
-        this.bestMove = move;
-        setChanged();
-        notifyObservers();
     }
 
     private int calculateQuiescenceDepth(final Board board,

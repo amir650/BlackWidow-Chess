@@ -75,7 +75,6 @@ class GameHistoryPanel extends JPanel {
 
     private static class Row {
 
-        private int moveNumber;
         private String whiteMove;
         private String blackMove;
 
@@ -96,10 +95,6 @@ class GameHistoryPanel extends JPanel {
 
         public void setBlackMove(final String move) {
             this.blackMove = move;
-        }
-
-        public void setMoveNumber(final int moveNumber) {
-            this.moveNumber = moveNumber;
         }
 
     }

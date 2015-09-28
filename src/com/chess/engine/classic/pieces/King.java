@@ -128,20 +128,6 @@ public final class King extends Piece {
         return false;
     }
 
-    private static boolean isFirstColumnExclusion(final int currentCandidate,
-                                                  final int candidateDestinationCoordinate) {
-        return BoardUtils.FIRST_COLUMN[currentCandidate]
-                && ((candidateDestinationCoordinate == -9) || (candidateDestinationCoordinate == -1) ||
-                   (candidateDestinationCoordinate == 7));
-    }
-
-    private static boolean isEighthColumnExclusion(final int currentCandidate,
-                                                   final int candidateDestinationCoordinate) {
-        return BoardUtils.EIGHTH_COLUMN[currentCandidate]
-                && ((candidateDestinationCoordinate == -7) || (candidateDestinationCoordinate == 1) ||
-                   (candidateDestinationCoordinate == 9));
-    }
-
     @Override
     public boolean equals(final Object other) {
         if (this == other) {
@@ -162,5 +148,19 @@ public final class King extends Piece {
         int result = super.hashCode();
         result = 31 * result + (isCastled ? 1 : 0);
         return result;
+    }
+
+    private static boolean isFirstColumnExclusion(final int currentCandidate,
+                                                  final int candidateDestinationCoordinate) {
+        return BoardUtils.FIRST_COLUMN[currentCandidate]
+                && ((candidateDestinationCoordinate == -9) || (candidateDestinationCoordinate == -1) ||
+                (candidateDestinationCoordinate == 7));
+    }
+
+    private static boolean isEighthColumnExclusion(final int currentCandidate,
+                                                   final int candidateDestinationCoordinate) {
+        return BoardUtils.EIGHTH_COLUMN[currentCandidate]
+                && ((candidateDestinationCoordinate == -7) || (candidateDestinationCoordinate == 1) ||
+                (candidateDestinationCoordinate == 9));
     }
 }

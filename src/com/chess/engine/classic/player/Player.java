@@ -1,6 +1,5 @@
 package com.chess.engine.classic.player;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,10 +32,7 @@ public abstract class Player {
     }
 
     public boolean isMoveLegal(final Move move) {
-        if(move.isCastlingMove() && isInCheck()) {
-            return false;
-        }
-        return this.legalMoves.contains(move);
+        return !(move.isCastlingMove() && isInCheck()) && this.legalMoves.contains(move);
     }
 
     public boolean isInCheck() {

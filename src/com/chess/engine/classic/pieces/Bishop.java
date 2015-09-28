@@ -35,7 +35,7 @@ public final class Bishop extends Piece {
             int candidateDestinationCoordinate = this.piecePosition;
             while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 if (isFirstColumnExclusion(currentCandidate, candidateDestinationCoordinate) ||
-                    isEigthColumnExclusion(currentCandidate, candidateDestinationCoordinate)) {
+                    isEighthColumnExclusion(currentCandidate, candidateDestinationCoordinate)) {
                     break;
                 }
                 candidateDestinationCoordinate += currentCandidate;
@@ -90,8 +90,8 @@ public final class Bishop extends Piece {
                 ((currentCandidate == -9) || (currentCandidate == 7)));
     }
 
-    private static boolean isEigthColumnExclusion(final int currentCandidate,
-                                                  final int candidateDestinationCoordinate) {
+    private static boolean isEighthColumnExclusion(final int currentCandidate,
+                                                   final int candidateDestinationCoordinate) {
         return BoardUtils.EIGHTH_COLUMN[candidateDestinationCoordinate] &&
                         ((currentCandidate == -7) || (currentCandidate == 9));
     }

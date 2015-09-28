@@ -48,7 +48,7 @@ public final class PawnStructureAnalyzer {
 
     public int pawnStructureScore(final Player player) {
         final ListMultimap<Integer, Piece> pawnsOnColumnTable = createPawnsOnColumnTable(calculatePawnLocations(player));
-        return /*calculateDoubledPawnPenalty(pawnsOnColumnTable) + */calculateIsolatedPawnPenalty(pawnsOnColumnTable);
+        return calculateDoubledPawnPenalty(pawnsOnColumnTable) + calculateIsolatedPawnPenalty(pawnsOnColumnTable);
     }
 
     private static Collection<Piece> calculatePawnLocations(final Player player) {

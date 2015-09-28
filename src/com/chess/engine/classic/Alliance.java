@@ -1,6 +1,9 @@
 package com.chess.engine.classic;
 
 import com.chess.engine.classic.board.BoardUtils;
+import com.chess.engine.classic.player.BlackPlayer;
+import com.chess.engine.classic.player.Player;
+import com.chess.engine.classic.player.WhitePlayer;
 
 public enum Alliance {
 
@@ -24,6 +27,12 @@ public enum Alliance {
         @Override
         public boolean isPawnPromotionSquare(final int position) {
             return BoardUtils.FIRST_ROW[position];
+        }
+
+        @Override
+        public Player choosePlayerByAlliance(final WhitePlayer whitePlayer,
+                                             final BlackPlayer blackPlayer) {
+            return whitePlayer;
         }
 
         @Override
@@ -85,6 +94,12 @@ public enum Alliance {
         }
 
         @Override
+        public Player choosePlayerByAlliance(final WhitePlayer whitePlayer,
+                                             final BlackPlayer blackPlayer) {
+            return blackPlayer;
+        }
+
+        @Override
         public String toString() {
             return "Black";
         }
@@ -139,6 +154,8 @@ public enum Alliance {
     public abstract boolean isBlack();
 
     public abstract boolean isPawnPromotionSquare(int position);
+
+    public abstract Player choosePlayerByAlliance(final WhitePlayer whitePlayer, final BlackPlayer blackPlayer);
 
     private final static int[] WHITE_PAWN_PREFERRED_COORDINATES = {
             0,  0,  0,  0,  0,  0,  0,  0,
