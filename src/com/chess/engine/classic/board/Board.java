@@ -29,8 +29,8 @@ public final class Board {
 
     public Board(final Builder builder) {
         this.gameBoard = createGameBoard(builder);
-        this.whitePieces = calculateActivePieces(this.gameBoard, Alliance.WHITE);
-        this.blackPieces = calculateActivePieces(this.gameBoard, Alliance.BLACK);
+        this.whitePieces = calculateActivePieces(builder, Alliance.WHITE);
+        this.blackPieces = calculateActivePieces(builder, Alliance.BLACK);
         this.enPassantPawn = builder.enPassantPawn;
         final Collection<Move> whiteStandardMoves = calculateLegalMoves(this.whitePieces);
         final Collection<Move> blackStandardMoves = calculateLegalMoves(this.blackPieces);
@@ -158,43 +158,29 @@ public final class Board {
         return ImmutableList.copyOf(legalMoves);
     }
 
+    private static Collection<Piece> calculateActivePieces(final Builder builder,
+                                                           final Alliance alliance) {
+        final List<Piece> activePieces = new GapList<>(16);
+        for (final Piece piece : builder.boardConfig.values()) {
+            if (piece.getPieceAllegiance() == alliance) {
+                activePieces.add(piece);
+            }
+        }
+        return ImmutableList.copyOf(activePieces);
+    }
+    
     private static Collection<Piece> calculateActivePieces(final List<Tile> gameBoard,
                                                            final Alliance alliance) {
         final List<Piece> activePieces = new GapList<>(16);
         for (final Tile tile : gameBoard) {
             if (tile.isTileOccupied()) {
                 final Piece piece = tile.getPiece();
-                if (piece.getPieceAllegiance().equals(alliance)) {
+                if (piece.getPieceAllegiance() == alliance) {
                     activePieces.add(piece);
                 }
             }
         }
         return ImmutableList.copyOf(activePieces);
-    }
-
-    public enum MoveStatus {
-
-        DONE {
-            @Override
-            public boolean isDone() {
-                return true;
-            }
-        },
-        ILLEGAL_MOVE {
-            @Override
-            public boolean isDone() {
-                return false;
-            }
-        },
-        LEAVES_PLAYER_IN_CHECK {
-            @Override
-            public boolean isDone() {
-                return false;
-            }
-        };
-
-        public abstract boolean isDone();
-
     }
 
     public static class Builder {

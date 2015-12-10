@@ -27,8 +27,8 @@ public final class StandardBoardEvaluator
                check(player) +
                castled(player) +
                castleCapable(player) +
-               pieceValueAndLocationBonus(player) +
-               pawnStructure(player);
+               pieceValueAndLocationBonus(player);// +
+               //pawnStructure(player);
     }
 
     private static int pieceValueAndLocationBonus(final Player player) {

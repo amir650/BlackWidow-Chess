@@ -118,6 +118,31 @@ public abstract class Move {
         return "";
     }
 
+    public enum MoveStatus {
+
+        DONE {
+            @Override
+            public boolean isDone() {
+                return true;
+            }
+        },
+        ILLEGAL_MOVE {
+            @Override
+            public boolean isDone() {
+                return false;
+            }
+        },
+        LEAVES_PLAYER_IN_CHECK {
+            @Override
+            public boolean isDone() {
+                return false;
+            }
+        };
+
+        public abstract boolean isDone();
+
+    }
+
     public static class PawnPromotion
             extends Move {
 
@@ -539,6 +564,7 @@ public abstract class Move {
     public static class MoveFactory {
 
         private MoveFactory() {
+            throw new RuntimeException("Not instantiatable!");
         }
 
         public static Move createMove(final Board board,

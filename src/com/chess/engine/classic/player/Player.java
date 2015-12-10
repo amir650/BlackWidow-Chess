@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Board.MoveStatus;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.King;
@@ -82,17 +81,6 @@ public abstract class Player {
         throw new RuntimeException("Should not reach here! " +this.getAlliance()+ " king could not be established!");
     }
 
-    public Collection<Move> calculateAttacksOnPiece(final Piece piece) {
-        final List<Move> attackMoves = new GapList<>();
-        final int piecePosition = piece.getPiecePosition();
-        for (final Move move : this.legalMoves) {
-            if (piecePosition == move.getDestinationCoordinate()) {
-                attackMoves.add(move);
-            }
-        }
-        return ImmutableList.copyOf(attackMoves);
-    }
-
     public Collection<Move> getLegalMoves() {
         return this.legalMoves;
     }
@@ -114,19 +102,20 @@ public abstract class Player {
 
     public MoveTransition makeMove(final Move move) {
         if (!isMoveLegal(move)) {
-            return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE);
+            return new MoveTransition(this.board, move, Move.MoveStatus.ILLEGAL_MOVE);
         }
         final Board transitionedBoard = move.execute();
-        final Collection<Move> kingAttacks = transitionedBoard.currentPlayer()
-                .calculateAttacksOnPiece(transitionedBoard.currentPlayer().getOpponent().getPlayerKing());
+        final Collection<Move> kingAttacks = Player.calculateAttacksOnTile(
+                transitionedBoard.currentPlayer().getOpponent().getPlayerKing().getPiecePosition(),
+                transitionedBoard.currentPlayer().getLegalMoves());
         if (!kingAttacks.isEmpty()) {
-            return new MoveTransition(this.board, move, MoveStatus.LEAVES_PLAYER_IN_CHECK);
+            return new MoveTransition(this.board, move, Move.MoveStatus.LEAVES_PLAYER_IN_CHECK);
         }
-        return new MoveTransition(transitionedBoard, move, MoveStatus.DONE);
+        return new MoveTransition(transitionedBoard, move, Move.MoveStatus.DONE);
     }
 
     public MoveTransition unMakeMove(final Move move) {
-        return new MoveTransition(move.undo(), move, MoveStatus.DONE);
+        return new MoveTransition(move.undo(), move, Move.MoveStatus.DONE);
     }
 
     public abstract Collection<Piece> getActivePieces();

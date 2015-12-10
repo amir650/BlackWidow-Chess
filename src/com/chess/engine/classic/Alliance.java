@@ -21,6 +21,11 @@ public enum Alliance {
 
         @Override
         public int getDirection() {
+            return UP_DIRECTION;
+        }
+
+        @Override
+        public int getOppositeDirection() {
             return DOWN_DIRECTION;
         }
 
@@ -85,6 +90,11 @@ public enum Alliance {
 
         @Override
         public int getDirection() {
+            return DOWN_DIRECTION;
+        }
+
+        @Override
+        public int getOppositeDirection() {
             return UP_DIRECTION;
         }
 
@@ -136,6 +146,8 @@ public enum Alliance {
     };
 
     public abstract int getDirection();
+
+    public abstract int getOppositeDirection();
 
     public abstract int pawnBonus(int position);
 

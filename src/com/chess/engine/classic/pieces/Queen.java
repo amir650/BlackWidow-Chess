@@ -37,14 +37,14 @@ public final class Queen extends Piece {
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new GapList<>();
         int candidateDestinationCoordinate;
-        for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
+        for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) {
             candidateDestinationCoordinate = this.piecePosition;
             while (true) {
-                if (isFirstColumnExclusion(currentCandidate, candidateDestinationCoordinate) ||
-                    isEightColumnExclusion(currentCandidate, candidateDestinationCoordinate)) {
+                if (isFirstColumnExclusion(currentCandidateOffset, candidateDestinationCoordinate) ||
+                    isEightColumnExclusion(currentCandidateOffset, candidateDestinationCoordinate)) {
                     break;
                 }
-                candidateDestinationCoordinate += currentCandidate;
+                candidateDestinationCoordinate += currentCandidateOffset;
                 if (!BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     break;
                 } else {
@@ -68,7 +68,7 @@ public final class Queen extends Piece {
 
     @Override
     public int getPieceValue() {
-        return PieceType.QUEEN.getPieceValue();
+        return this.pieceType.getPieceValue();
     }
 
     @Override
@@ -83,7 +83,7 @@ public final class Queen extends Piece {
 
     @Override
     public String toString() {
-        return PieceType.QUEEN.toString();
+        return this.pieceType.toString();
     }
 
     private static boolean isFirstColumnExclusion(final int currentPosition,

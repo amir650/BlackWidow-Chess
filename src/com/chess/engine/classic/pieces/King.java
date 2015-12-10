@@ -73,13 +73,12 @@ public final class King extends Piece {
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new GapList<>();
-        int candidateDestinationCoordinate;
-        for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
-            if (isFirstColumnExclusion(this.piecePosition, currentCandidate) ||
-                isEighthColumnExclusion(this.piecePosition, currentCandidate)) {
+        for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) {
+            if (isFirstColumnExclusion(this.piecePosition, currentCandidateOffset) ||
+                isEighthColumnExclusion(this.piecePosition, currentCandidateOffset)) {
                 continue;
             }
-            candidateDestinationCoordinate = this.piecePosition + currentCandidate;
+            final int candidateDestinationCoordinate = this.piecePosition + currentCandidateOffset;
             if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                 if (!candidateDestinationTile.isTileOccupied()) {
@@ -100,12 +99,12 @@ public final class King extends Piece {
 
     @Override
     public int getPieceValue() {
-        return PieceType.KING.getPieceValue();
+        return this.pieceType.getPieceValue();
     }
 
     @Override
     public String toString() {
-        return PieceType.KING.toString();
+        return this.pieceType.toString();
     }
 
     @Override

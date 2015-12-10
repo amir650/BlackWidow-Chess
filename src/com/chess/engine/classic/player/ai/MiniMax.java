@@ -38,8 +38,8 @@ public final class MiniMax implements MoveStrategy {
         int lowestSeenValue = Integer.MAX_VALUE;
         int currentValue;
         System.out.println(board.currentPlayer() + " THINKING with depth = " +depth);
-        freqTable = new FreqTableRow[board.currentPlayer().getLegalMoves().size()];
-        freqTableIndex = 0;
+        this.freqTable = new FreqTableRow[board.currentPlayer().getLegalMoves().size()];
+        this.freqTableIndex = 0;
         int moveCounter = 1;
         int numMoves = board.currentPlayer().getLegalMoves().size();
         for (final Move move : board.currentPlayer().getLegalMoves()) {

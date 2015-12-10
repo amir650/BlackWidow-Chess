@@ -31,14 +31,14 @@ public final class Bishop extends Piece {
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new GapList<>();
-        for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
+        for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) {
             int candidateDestinationCoordinate = this.piecePosition;
             while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
-                if (isFirstColumnExclusion(currentCandidate, candidateDestinationCoordinate) ||
-                    isEighthColumnExclusion(currentCandidate, candidateDestinationCoordinate)) {
+                if (isFirstColumnExclusion(currentCandidateOffset, candidateDestinationCoordinate) ||
+                    isEighthColumnExclusion(currentCandidateOffset, candidateDestinationCoordinate)) {
                     break;
                 }
-                candidateDestinationCoordinate += currentCandidate;
+                candidateDestinationCoordinate += currentCandidateOffset;
                 if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                     if (!candidateDestinationTile.isTileOccupied()) {
@@ -46,8 +46,8 @@ public final class Bishop extends Piece {
                     }
                     else {
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
-                        final Alliance piece_at_destination_allegiance = pieceAtDestination.getPieceAllegiance();
-                        if (this.pieceAlliance != piece_at_destination_allegiance) {
+                        final Alliance pieceAlliance = pieceAtDestination.getPieceAllegiance();
+                        if (this.pieceAlliance != pieceAlliance) {
                             legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate,
                                     pieceAtDestination));
                         }
@@ -66,7 +66,7 @@ public final class Bishop extends Piece {
 
     @Override
     public int getPieceValue() {
-        return PieceType.BISHOP.getPieceValue();
+        return this.pieceType.getPieceValue();
     }
 
     @Override
@@ -81,7 +81,7 @@ public final class Bishop extends Piece {
 
     @Override
     public String toString() {
-        return PieceType.BISHOP.toString();
+        return this.pieceType.toString();
     }
 
     private static boolean isFirstColumnExclusion(final int currentCandidate,

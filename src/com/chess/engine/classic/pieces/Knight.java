@@ -36,15 +36,14 @@ public final class Knight extends Piece {
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new GapList<>();
-        int candidateDestinationCoordinate;
-        for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
-            if(isFirstColumnExclusion(this.piecePosition, currentCandidate) ||
-               isSecondColumnExclusion(this.piecePosition, currentCandidate) ||
-               isSeventhColumnExclusion(this.piecePosition, currentCandidate) ||
-               isEighthColumnExclusion(this.piecePosition, currentCandidate)) {
+        for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) {
+            if(isFirstColumnExclusion(this.piecePosition, currentCandidateOffset) ||
+               isSecondColumnExclusion(this.piecePosition, currentCandidateOffset) ||
+               isSeventhColumnExclusion(this.piecePosition, currentCandidateOffset) ||
+               isEighthColumnExclusion(this.piecePosition, currentCandidateOffset)) {
                 continue;
             }
-            candidateDestinationCoordinate = this.piecePosition + currentCandidate;
+            final int candidateDestinationCoordinate = this.piecePosition + currentCandidateOffset;
             if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                 if (!candidateDestinationTile.isTileOccupied()) {
@@ -64,7 +63,7 @@ public final class Knight extends Piece {
 
     @Override
     public int getPieceValue() {
-        return PieceType.KNIGHT.getPieceValue();
+        return this.pieceType.getPieceValue();
     }
 
     @Override
@@ -79,29 +78,29 @@ public final class Knight extends Piece {
 
     @Override
     public String toString() {
-        return PieceType.KNIGHT.toString();
+        return this.pieceType.toString();
     }
 
     private static boolean isFirstColumnExclusion(final int currentPosition,
-                                                  final int candidatePosition) {
-        return BoardUtils.FIRST_COLUMN[currentPosition] && ((candidatePosition == -17) ||
-                (candidatePosition == -10) || (candidatePosition == 6) || (candidatePosition == 15));
+                                                  final int candidateOffset) {
+        return BoardUtils.FIRST_COLUMN[currentPosition] && ((candidateOffset == -17) ||
+                (candidateOffset == -10) || (candidateOffset == 6) || (candidateOffset == 15));
     }
 
     private static boolean isSecondColumnExclusion(final int currentPosition,
-                                                   final int candidatePosition) {
-        return BoardUtils.SECOND_COLUMN[currentPosition] && ((candidatePosition == -10) || (candidatePosition == 6));
+                                                   final int candidateOffset) {
+        return BoardUtils.SECOND_COLUMN[currentPosition] && ((candidateOffset == -10) || (candidateOffset == 6));
     }
 
     private static boolean isSeventhColumnExclusion(final int currentPosition,
-                                                    final int candidatePosition) {
-        return BoardUtils.SEVENTH_COLUMN[currentPosition] && ((candidatePosition == -6) || (candidatePosition == 10));
+                                                    final int candidateOffset) {
+        return BoardUtils.SEVENTH_COLUMN[currentPosition] && ((candidateOffset == -6) || (candidateOffset == 10));
     }
 
     private static boolean isEighthColumnExclusion(final int currentPosition,
-                                                   final int candidatePosition) {
-        return BoardUtils.EIGHTH_COLUMN[currentPosition] && ((candidatePosition == -15) || (candidatePosition == -6) ||
-                (candidatePosition == 10) || (candidatePosition == 17));
+                                                   final int candidateOffset) {
+        return BoardUtils.EIGHTH_COLUMN[currentPosition] && ((candidateOffset == -15) || (candidateOffset == -6) ||
+                (candidateOffset == 10) || (candidateOffset == 17));
     }
 
 }

@@ -35,13 +35,13 @@ public final class Rook extends Piece {
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new GapList<>();
-        for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES) {
+        for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) {
             int candidateDestinationCoordinate = this.piecePosition;
             while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
-                if (isColumnExclusion(currentCandidate, candidateDestinationCoordinate)) {
+                if (isColumnExclusion(currentCandidateOffset, candidateDestinationCoordinate)) {
                     break;
                 }
-                candidateDestinationCoordinate += currentCandidate;
+                candidateDestinationCoordinate += currentCandidateOffset;
                 if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                     if (!candidateDestinationTile.isTileOccupied()) {
@@ -63,7 +63,7 @@ public final class Rook extends Piece {
 
     @Override
     public int getPieceValue() {
-        return PieceType.ROOK.getPieceValue();
+        return this.pieceType.getPieceValue();
     }
 
     @Override
@@ -78,7 +78,7 @@ public final class Rook extends Piece {
 
     @Override
     public String toString() {
-        return PieceType.ROOK.toString();
+        return this.pieceType.toString();
     }
 
     private static boolean isColumnExclusion(final int currentCandidate,

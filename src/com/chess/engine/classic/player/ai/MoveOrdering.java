@@ -17,7 +17,7 @@ public final class MoveOrdering {
     private final BoardEvaluator evaluator;
 
     private static final MoveOrdering INSTANCE = new MoveOrdering();
-    private static final int ORDER_SEARCH_DEPTH = 1;
+    private static final int ORDER_SEARCH_DEPTH = 2;
 
     private MoveOrdering() {
         this.evaluator = new StandardBoardEvaluator();
@@ -28,19 +28,20 @@ public final class MoveOrdering {
     }
 
     public List<Move> orderMoves(final Board board) {
-        return go(board, ORDER_SEARCH_DEPTH);
+        return orderImpl(board, ORDER_SEARCH_DEPTH);
     }
 
     private static class MoveOrderEntry {
         final Move move;
         final int score;
 
-        MoveOrderEntry(final Move move, final int score) {
+        MoveOrderEntry(final Move move,
+                       final int score) {
             this.move = move;
             this.score = score;
         }
 
-        final com.chess.engine.classic.board.Move getMove() {
+        final Move getMove() {
             return this.move;
         }
 
@@ -54,17 +55,17 @@ public final class MoveOrdering {
         }
     }
 
-    private List<Move> go(final Board board,
-                          final int depth) {
+    private List<Move> orderImpl(final Board board,
+                                 final int depth) {
         final List<MoveOrderEntry> moveOrderEntries = new ArrayList<>();
         final boolean SORT_DESCENDING = board.currentPlayer().getAlliance().isWhite();
         for (final Move move : board.currentPlayer().getLegalMoves()) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                final int current_value = board.currentPlayer().getAlliance().isWhite() ?
+                final int currentValue = board.currentPlayer().getAlliance().isWhite() ?
                         min(moveTransition.getTransitionBoard(), depth - 1) :
                         max(moveTransition.getTransitionBoard(), depth - 1);
-                moveOrderEntries.add(new MoveOrderEntry(move, current_value));
+                moveOrderEntries.add(new MoveOrderEntry(move, currentValue));
             }
         }
 
@@ -87,7 +88,7 @@ public final class MoveOrdering {
         }
 
         final List<Move> orderedMoves = new ArrayList<>();
-        for(MoveOrderEntry entry : moveOrderEntries) {
+        for(final MoveOrderEntry entry : moveOrderEntries) {
             orderedMoves.add(entry.getMove());
         }
 
@@ -99,17 +100,17 @@ public final class MoveOrdering {
         if(depth == 0 || isEndGameScenario(board)) {
             return this.evaluator.evaluate(board, depth);
         }
-        int lowest_seen_value = Integer.MAX_VALUE;
+        int lowestSeenValue = Integer.MAX_VALUE;
         for (final Move move : board.currentPlayer().getLegalMoves()) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                final int current_value = max(moveTransition.getTransitionBoard(), depth - 1);
-                if (current_value <= lowest_seen_value) {
-                    lowest_seen_value = current_value;
+                final int currentValue = max(moveTransition.getTransitionBoard(), depth - 1);
+                if (currentValue <= lowestSeenValue) {
+                    lowestSeenValue = currentValue;
                 }
             }
         }
-        return lowest_seen_value;
+        return lowestSeenValue;
     }
 
     public int max(final Board board,
@@ -117,17 +118,17 @@ public final class MoveOrdering {
         if(depth == 0 || isEndGameScenario(board)) {
             return this.evaluator.evaluate(board, depth);
         }
-        int highest_seen_value = Integer.MIN_VALUE;
+        int highestSeenValue = Integer.MIN_VALUE;
         for (final Move move : board.currentPlayer().getLegalMoves()) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                final int current_value = min(moveTransition.getTransitionBoard(), depth - 1);
-                if (current_value >= highest_seen_value) {
-                    highest_seen_value = current_value;
+                final int currentValue = min(moveTransition.getTransitionBoard(), depth - 1);
+                if (currentValue >= highestSeenValue) {
+                    highestSeenValue = currentValue;
                 }
             }
         }
-        return highest_seen_value;
+        return highestSeenValue;
     }
 
     private static boolean isEndGameScenario(final Board board) {

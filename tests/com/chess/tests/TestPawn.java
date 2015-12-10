@@ -3,22 +3,17 @@ package com.chess.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.chess.engine.classic.pieces.Piece;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
-import com.chess.engine.classic.board.Board.MoveStatus;
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Pawn;
 import com.chess.engine.classic.pieces.Rook;
-
-import java.util.Iterator;
 
 public class TestPawn {
 

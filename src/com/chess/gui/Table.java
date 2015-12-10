@@ -34,8 +34,7 @@ import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.board.Tile;
 import com.chess.engine.classic.pieces.Piece;
-import com.chess.engine.classic.player.ai.AlphaBetaWithMoveOrdering;
-import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
+import com.chess.engine.classic.player.ai.*;
 import com.google.common.collect.Lists;
 
 public final class Table extends Observable {
@@ -562,8 +561,8 @@ public final class Table extends Observable {
             else {
                 final int moveNumber = Table.get().getMoveLog().size();
                 final int quiescenceFactor = 2000 + (100 * moveNumber);
-                final AlphaBetaWithMoveOrdering strategy = new AlphaBetaWithMoveOrdering(quiescenceFactor);
-                strategy.addObserver(Table.get().getDebugPanel());
+                final StockAlphaBeta strategy = new StockAlphaBeta(/*quiescenceFactor*/);
+                //strategy.addObserver(Table.get().getDebugPanel());
                 Table.get().getGameBoard().currentPlayer().setMoveStrategy(strategy);
                 bestMove = Table.get().getGameBoard().currentPlayer().getMoveStrategy().execute(
                         Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());

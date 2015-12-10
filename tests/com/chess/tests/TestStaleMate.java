@@ -9,7 +9,6 @@ import org.junit.Test;
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
-import com.chess.engine.classic.board.Board.MoveStatus;
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.board.MoveTransition;

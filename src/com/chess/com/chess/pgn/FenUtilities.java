@@ -154,7 +154,7 @@ public class FenUtilities {
         final Pawn enPassantPawn = board.getEnPassantPawn();
         if(enPassantPawn != null) {
             return BoardUtils.getPositionAtCoordinate(enPassantPawn.getPiecePosition() +
-                    (8) * enPassantPawn.getPieceAllegiance().getDirection());
+                    (8) * enPassantPawn.getPieceAllegiance().getOppositeDirection());
         }
         return "-";
     }

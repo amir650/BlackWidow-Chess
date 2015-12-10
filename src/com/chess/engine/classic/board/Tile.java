@@ -65,14 +65,16 @@ abstract public class Tile {
         private final Piece pieceOnTile;
 
         private OccupiedTile(final int coordinate,
-                     final Piece pieceOnTile) {
+                             final Piece pieceOnTile) {
             super(coordinate);
             this.pieceOnTile = pieceOnTile;
         }
 
         @Override
         public String toString() {
-            return this.pieceOnTile.getPieceAllegiance().isWhite() ? this.pieceOnTile.toString() : this.pieceOnTile.toString().toLowerCase();
+            return this.pieceOnTile.getPieceAllegiance().isWhite() ?
+                    this.pieceOnTile.toString() :
+                    this.pieceOnTile.toString().toLowerCase();
         }
 
         @Override
