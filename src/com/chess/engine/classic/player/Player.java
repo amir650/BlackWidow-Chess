@@ -20,6 +20,7 @@ public abstract class Player {
     protected final King playerKing;
     protected final Collection<Move> legalMoves;
     private MoveStrategy strategy;
+    private final boolean isInCheck;
 
     Player(final Board board,
            final Collection<Move> playerLegals,
@@ -28,6 +29,7 @@ public abstract class Player {
         this.playerKing = establishKing();
         this.legalMoves = ImmutableList.copyOf(
                 Iterables.concat(playerLegals, calculateKingCastles(playerLegals, opponentLegals)));
+        this.isInCheck = !Player.calculateAttacksOnTile(this.getPlayerKing().getPiecePosition(), opponentLegals).isEmpty();
     }
 
     public boolean isMoveLegal(final Move move) {
@@ -35,15 +37,15 @@ public abstract class Player {
     }
 
     public boolean isInCheck() {
-        return this.playerKing.isInCheck(getOpponent().getLegalMoves());
+        return this.isInCheck;
     }
 
     public boolean isInCheckMate() {
-       return this.playerKing.isInCheckMate(this.board);
+       return this.isInCheck && !hasEscapeMoves();
     }
 
     public boolean isInStaleMate() {
-        return this.playerKing.isInStaleMate(this.board);
+        return !this.isInCheck && !hasEscapeMoves();
     }
 
     public boolean isCastled() {
@@ -79,6 +81,16 @@ public abstract class Player {
             }
         }
         throw new RuntimeException("Should not reach here! " +this.getAlliance()+ " king could not be established!");
+    }
+
+    protected boolean hasEscapeMoves() {
+        for(final Move move : getLegalMoves()) {
+            final MoveTransition transition = makeMove(move);
+            if (transition.getMoveStatus().isDone()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Collection<Move> getLegalMoves() {

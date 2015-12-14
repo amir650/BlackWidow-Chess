@@ -131,9 +131,7 @@ public final class MiniMax implements MoveStrategy {
 
     private static boolean isEndGameScenario(final Board board) {
         return  board.currentPlayer().isInCheckMate() ||
-                board.currentPlayer().isInStaleMate() ||
-                board.currentPlayer().getOpponent().isInCheckMate() ||
-                board.currentPlayer().getOpponent().isInStaleMate();
+                board.currentPlayer().isInStaleMate();
     }
 
     private static class FreqTableRow {

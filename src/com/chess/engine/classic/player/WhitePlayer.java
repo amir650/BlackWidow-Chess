@@ -28,7 +28,7 @@ public final class WhitePlayer extends Player {
 
         final List<Move> kingCastles = new ArrayList<>();
 
-        if(this.playerKing.isFirstMove() && !this.playerKing.isInCheck(opponentLegals)) {
+        if(this.playerKing.isFirstMove() && !this.isInCheck()) {
             //whites king side castle
             if(!this.board.getTile(61).isTileOccupied() && !this.board.getTile(62).isTileOccupied()) {
                 final Tile rookTile = this.board.getTile(63);

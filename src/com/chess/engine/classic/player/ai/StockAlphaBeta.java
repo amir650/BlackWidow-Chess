@@ -161,9 +161,7 @@ public class StockAlphaBeta implements MoveStrategy {
 
     private static boolean isEndGameScenario(final Board board) {
         return board.currentPlayer().isInCheckMate() ||
-               board.currentPlayer().getOpponent().isInCheckMate() ||
-               board.currentPlayer().isInStaleMate() ||
-               board.currentPlayer().getOpponent().isInStaleMate();
+               board.currentPlayer().isInStaleMate();
     }
 
     private static String calculateTimeTaken(final long start, final long end) {

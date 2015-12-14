@@ -44,20 +44,6 @@ public final class King extends Piece {
         this.queenSideCastleCapable = queenSideCastleCapable;
     }
 
-    public boolean isInCheck(final Collection<Move> enemyMoves) {
-        return !Player.calculateAttacksOnTile(this.piecePosition, enemyMoves).isEmpty();
-    }
-
-    public boolean isInCheckMate(final Board board) {
-        return !Player.calculateAttacksOnTile(this.piecePosition, board.currentPlayer().getOpponent().getLegalMoves())
-                .isEmpty() && !hasEscapeMoves(board);
-    }
-
-    public boolean isInStaleMate(final Board board) {
-        return Player.calculateAttacksOnTile(this.piecePosition, board.currentPlayer().getOpponent().getLegalMoves())
-                .isEmpty() && !hasEscapeMoves(board);
-    }
-
     public boolean isCastled() {
         return this.isCastled;
     }
@@ -115,16 +101,6 @@ public final class King extends Piece {
     @Override
     public King movePiece(final Move move) {
         return new King(this.pieceAlliance, move.getDestinationCoordinate(), false, move.isCastlingMove(), false, false);
-    }
-
-    private static boolean hasEscapeMoves(final Board board) {
-        for(final Move move : board.currentPlayer().getLegalMoves()) {
-            final MoveTransition transition = board.currentPlayer().makeMove(move);
-            if (transition.getMoveStatus().isDone()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

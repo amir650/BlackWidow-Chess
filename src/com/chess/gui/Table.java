@@ -561,8 +561,8 @@ public final class Table extends Observable {
             else {
                 final int moveNumber = Table.get().getMoveLog().size();
                 final int quiescenceFactor = 2000 + (100 * moveNumber);
-                final StockAlphaBeta strategy = new StockAlphaBeta(/*quiescenceFactor*/);
-                //strategy.addObserver(Table.get().getDebugPanel());
+                final AlphaBetaWithMoveOrdering strategy = new AlphaBetaWithMoveOrdering(0/*quiescenceFactor*/);
+                strategy.addObserver(Table.get().getDebugPanel());
                 Table.get().getGameBoard().currentPlayer().setMoveStrategy(strategy);
                 bestMove = Table.get().getGameBoard().currentPlayer().getMoveStrategy().execute(
                         Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());
