@@ -1,26 +1,25 @@
 package com.chess.engine.classic.player;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
+import com.chess.engine.classic.board.Move.MoveStatus;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Piece;
-import com.chess.engine.classic.player.ai.MoveStrategy;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import org.magicwerk.brownies.collections.GapList;
 
 public abstract class Player {
 
     protected final Board board;
     protected final King playerKing;
     protected final Collection<Move> legalMoves;
-    private MoveStrategy strategy;
-    private final boolean isInCheck;
+    protected final boolean isInCheck;
 
     Player(final Board board,
            final Collection<Move> playerLegals,
@@ -29,7 +28,7 @@ public abstract class Player {
         this.playerKing = establishKing();
         this.legalMoves = ImmutableList.copyOf(
                 Iterables.concat(playerLegals, calculateKingCastles(playerLegals, opponentLegals)));
-        this.isInCheck = !Player.calculateAttacksOnTile(this.getPlayerKing().getPiecePosition(), opponentLegals).isEmpty();
+        this.isInCheck = !Player.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegals).isEmpty();
     }
 
     public boolean isMoveLegal(final Move move) {
@@ -60,18 +59,8 @@ public abstract class Player {
         return this.playerKing.isQueenSideCastleCapable();
     }
 
-    public MoveStrategy getMoveStrategy() {
-        return this.strategy;
-    }
-
     public King getPlayerKing() {
         return this.playerKing;
-    }
-
-    public String playerInfo() {
-        return ("Player is: " +this.getAlliance() + "\nlegal moves =" + getLegalMoves() + "\ninCheck = " +
-                isInCheck() + "\nisInCheckMate = " +isInCheckMate() +
-                "\nisCastled = " +isCastled())+ "\n";
     }
 
     protected King establishKing() {
@@ -97,13 +86,9 @@ public abstract class Player {
         return this.legalMoves;
     }
 
-    public void setMoveStrategy(final MoveStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    public static Collection<Move> calculateAttacksOnTile(final int tile,
-                                                          final Collection<Move> moves) {
-        final List<Move> attackMoves = new GapList<>();
+    static Collection<Move> calculateAttacksOnTile(final int tile,
+                                                   final Collection<Move> moves) {
+        final List<Move> attackMoves = new ArrayList<>();
         for (final Move move : moves) {
             if (tile == move.getDestinationCoordinate()) {
                 attackMoves.add(move);
@@ -114,20 +99,20 @@ public abstract class Player {
 
     public MoveTransition makeMove(final Move move) {
         if (!isMoveLegal(move)) {
-            return new MoveTransition(this.board, move, Move.MoveStatus.ILLEGAL_MOVE);
+            return new MoveTransition(this.board, this.board, move, MoveStatus.ILLEGAL_MOVE);
         }
         final Board transitionedBoard = move.execute();
         final Collection<Move> kingAttacks = Player.calculateAttacksOnTile(
                 transitionedBoard.currentPlayer().getOpponent().getPlayerKing().getPiecePosition(),
                 transitionedBoard.currentPlayer().getLegalMoves());
         if (!kingAttacks.isEmpty()) {
-            return new MoveTransition(this.board, move, Move.MoveStatus.LEAVES_PLAYER_IN_CHECK);
+            return new MoveTransition(this.board, this.board, move, MoveStatus.LEAVES_PLAYER_IN_CHECK);
         }
-        return new MoveTransition(transitionedBoard, move, Move.MoveStatus.DONE);
+        return new MoveTransition(this.board, transitionedBoard, move, MoveStatus.DONE);
     }
 
     public MoveTransition unMakeMove(final Move move) {
-        return new MoveTransition(move.undo(), move, Move.MoveStatus.DONE);
+        return new MoveTransition(this.board, move.undo(), move, MoveStatus.DONE);
     }
 
     public abstract Collection<Piece> getActivePieces();

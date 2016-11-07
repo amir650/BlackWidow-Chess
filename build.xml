@@ -1,9 +1,10 @@
-<project name="com.thingz.Thingz" basedir=".">
+<project name="BlackWidow" basedir=".">
 
     <description>Build file for BlackWidow Chess</description>
 
-    <property name="build.dir" value="build/" />
+    <property name="build.dir" value="build" />
     <property name="lib.dir" value="lib" />
+    <property name="resources.dir" value="art" />
     <property name="dist.dir" value="dist" />
     <property name="manifest.file" value="${jar.dir}/MANIFEST.MF" />
     <property name="main.class" value="com.chess.BlackWidow" />
@@ -43,6 +44,7 @@
             description="builds jar file">
         <jar destfile="${dist.dir}/BlackWidow.jar" basedir="${build.dir}">
             <fileset dir="${build.dir}" includes="**/*.class" />
+            <fileset dir="${resources.dir}" />
             <zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
             <manifest>
                 <attribute name="built-by" value="amir.afghani" />

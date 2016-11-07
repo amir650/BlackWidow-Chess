@@ -1,5 +1,6 @@
 package com.chess.engine.classic.pieces;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
 import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList;
-import org.magicwerk.brownies.collections.GapList;
 
 public final class Rook extends Piece {
 
@@ -28,13 +28,8 @@ public final class Rook extends Piece {
     }
 
     @Override
-    public boolean equals(final Object other) {
-        return this == other || other instanceof Rook && (super.equals(other));
-    }
-
-    @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final List<Move> legalMoves = new GapList<>();
+        final List<Move> legalMoves = new ArrayList<>();
         for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) {
             int candidateDestinationCoordinate = this.piecePosition;
             while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
@@ -62,18 +57,13 @@ public final class Rook extends Piece {
     }
 
     @Override
-    public int getPieceValue() {
-        return this.pieceType.getPieceValue();
-    }
-
-    @Override
     public int locationBonus() {
         return this.pieceAlliance.rookBonus(this.piecePosition);
     }
 
     @Override
     public Rook movePiece(final Move move) {
-        return PieceUtils.getMovedRook(move);
+        return PieceUtils.INSTANCE.getMovedRook(move);
     }
 
     @Override
@@ -83,8 +73,8 @@ public final class Rook extends Piece {
 
     private static boolean isColumnExclusion(final int currentCandidate,
                                              final int candidateDestinationCoordinate) {
-        return (BoardUtils.FIRST_COLUMN[candidateDestinationCoordinate] && (currentCandidate == -1)) ||
-               (BoardUtils.EIGHTH_COLUMN[candidateDestinationCoordinate] && (currentCandidate == 1));
+        return (BoardUtils.INSTANCE.FIRST_COLUMN.get(candidateDestinationCoordinate) && (currentCandidate == -1)) ||
+               (BoardUtils.INSTANCE.EIGHTH_COLUMN.get(candidateDestinationCoordinate) && (currentCandidate == 1));
     }
 
 }

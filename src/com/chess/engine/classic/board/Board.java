@@ -1,7 +1,5 @@
 package com.chess.engine.classic.board;
 
-import java.util.*;
-
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.pieces.Bishop;
 import com.chess.engine.classic.pieces.King;
@@ -15,7 +13,8 @@ import com.chess.engine.classic.player.Player;
 import com.chess.engine.classic.player.WhitePlayer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import org.magicwerk.brownies.collections.GapList;
+
+import java.util.*;
 
 public final class Board {
 
@@ -25,7 +24,9 @@ public final class Board {
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
+    //
     private final Pawn enPassantPawn;
+    private final Move transitionMove;
 
     public Board(final Builder builder) {
         this.gameBoard = createGameBoard(builder);
@@ -37,6 +38,7 @@ public final class Board {
         this.whitePlayer = new WhitePlayer(this, whiteStandardMoves, blackStandardMoves);
         this.blackPlayer = new BlackPlayer(this, whiteStandardMoves, blackStandardMoves);
         this.currentPlayer = builder.nextMoveMaker.choosePlayerByAlliance(this.whitePlayer, this.blackPlayer);
+        this.transitionMove = builder.transitionMove != null ? builder.transitionMove : Move.NULL_MOVE;
     }
 
     @Override
@@ -73,7 +75,8 @@ public final class Board {
     }
 
     public Iterable<Move> getAllLegalMoves() {
-        return Iterables.unmodifiableIterable(Iterables.concat(this.whitePlayer.getLegalMoves(), this.blackPlayer.getLegalMoves()));
+        return Iterables.unmodifiableIterable(Iterables.concat(this.whitePlayer.getLegalMoves(),
+                                                               this.blackPlayer.getLegalMoves()));
     }
 
     public WhitePlayer whitePlayer() {
@@ -98,6 +101,10 @@ public final class Board {
 
     public Pawn getEnPassantPawn() {
         return this.enPassantPawn;
+    }
+
+    public Move getTransitionMove() {
+        return this.transitionMove;
     }
 
     public static Board createStandardBoard() {
@@ -138,7 +145,7 @@ public final class Board {
         builder.setPiece(new Rook(Alliance.WHITE, 63));
         //white to move
         builder.setMoveMaker(Alliance.WHITE);
-
+        //build the board
         return builder.build();
     }
 
@@ -151,8 +158,8 @@ public final class Board {
     }
 
     private Collection<Move> calculateLegalMoves(final Collection<Piece> pieces) {
-        final List<Move> legalMoves = new GapList<>(35);
-        for(final Piece piece : pieces) {
+        final List<Move> legalMoves = new ArrayList<>(35);
+        for (final Piece piece : pieces) {
             legalMoves.addAll(piece.calculateLegalMoves(this));
         }
         return ImmutableList.copyOf(legalMoves);
@@ -160,24 +167,10 @@ public final class Board {
 
     private static Collection<Piece> calculateActivePieces(final Builder builder,
                                                            final Alliance alliance) {
-        final List<Piece> activePieces = new GapList<>(16);
+        final List<Piece> activePieces = new ArrayList<>(16);
         for (final Piece piece : builder.boardConfig.values()) {
             if (piece.getPieceAllegiance() == alliance) {
                 activePieces.add(piece);
-            }
-        }
-        return ImmutableList.copyOf(activePieces);
-    }
-    
-    private static Collection<Piece> calculateActivePieces(final List<Tile> gameBoard,
-                                                           final Alliance alliance) {
-        final List<Piece> activePieces = new GapList<>(16);
-        for (final Tile tile : gameBoard) {
-            if (tile.isTileOccupied()) {
-                final Piece piece = tile.getPiece();
-                if (piece.getPieceAllegiance() == alliance) {
-                    activePieces.add(piece);
-                }
             }
         }
         return ImmutableList.copyOf(activePieces);
@@ -188,6 +181,7 @@ public final class Board {
         Map<Integer, Piece> boardConfig;
         Alliance nextMoveMaker;
         Pawn enPassantPawn;
+        Move transitionMove;
 
         public Builder() {
             this.boardConfig = new HashMap<>(33, 1.0f);
@@ -205,6 +199,11 @@ public final class Board {
 
         public Builder setEnPassantPawn(final Pawn enPassantPawn) {
             this.enPassantPawn = enPassantPawn;
+            return this;
+        }
+
+        public Builder setMoveTransition(final Move transitionMove) {
+            this.transitionMove = transitionMove;
             return this;
         }
 

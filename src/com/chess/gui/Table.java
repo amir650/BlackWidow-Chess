@@ -1,6 +1,6 @@
 package com.chess.gui;
 
-import static com.chess.com.chess.pgn.PGNUtilities.*;
+import static com.chess.pgn.PGNUtilities.*;
 import static javax.swing.JFrame.setDefaultLookAndFeelDecorated;
 import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
@@ -25,15 +25,12 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
-import com.chess.com.chess.pgn.FenUtilities;
-import com.chess.com.chess.pgn.MySqlGamePersistence;
-import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.BoardUtils;
-import com.chess.engine.classic.board.Move;
+import com.chess.engine.classic.board.*;
+import com.chess.pgn.FenUtilities;
+import com.chess.pgn.MySqlGamePersistence;
 import com.chess.engine.classic.board.Move.MoveFactory;
-import com.chess.engine.classic.board.MoveTransition;
-import com.chess.engine.classic.board.Tile;
 import com.chess.engine.classic.pieces.Piece;
+import com.chess.engine.classic.player.Player;
 import com.chess.engine.classic.player.ai.*;
 import com.google.common.collect.Lists;
 
@@ -73,7 +70,7 @@ public final class Table extends Observable {
         this.chessBoard = Board.createStandardBoard();
         this.boardDirection = BoardDirection.NORMAL;
         this.highlightLegalMoves = false;
-        this.useBook = true;
+        this.useBook = false;
         this.pieceIconPath = "art/holywarriors/";
         this.gameHistoryPanel = new GameHistoryPanel();
         this.debugPanel = new DebugPanel();
@@ -101,39 +98,39 @@ public final class Table extends Observable {
         return this.gameFrame;
     }
 
-    Board getGameBoard() {
+    private Board getGameBoard() {
         return this.chessBoard;
     }
 
-    MoveLog getMoveLog() {
+    private MoveLog getMoveLog() {
         return this.moveLog;
     }
 
-    BoardPanel getBoardPanel() {
+    private BoardPanel getBoardPanel() {
         return this.boardPanel;
     }
 
-    GameHistoryPanel getGameHistoryPanel() {
+    private GameHistoryPanel getGameHistoryPanel() {
         return this.gameHistoryPanel;
     }
 
-    TakenPiecesPanel getTakenPiecesPanel() {
+    private TakenPiecesPanel getTakenPiecesPanel() {
         return this.takenPiecesPanel;
     }
 
-    DebugPanel getDebugPanel() {
+    private DebugPanel getDebugPanel() {
         return this.debugPanel;
     }
 
-    GameSetup getGameSetup() {
+    private GameSetup getGameSetup() {
         return this.gameSetup;
     }
 
-    boolean getHighlightLegalMoves() {
+    private boolean getHighlightLegalMoves() {
         return this.highlightLegalMoves;
     }
 
-    boolean getUseBook() {
+    private boolean getUseBook() {
         return this.useBook;
     }
 
@@ -145,13 +142,13 @@ public final class Table extends Observable {
         Table.get().getDebugPanel().redo();
     }
 
-    void populateMenuBar(final JMenuBar tableMenuBar) {
+    private void populateMenuBar(final JMenuBar tableMenuBar) {
         tableMenuBar.add(createFileMenu());
         tableMenuBar.add(createPreferencesMenu());
         tableMenuBar.add(createOptionsMenu());
     }
 
-    static void center(final JFrame frame) {
+    private static void center(final JFrame frame) {
         final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         final int w = frame.getSize().width;
         final int h = frame.getSize().height;
@@ -160,7 +157,7 @@ public final class Table extends Observable {
         frame.setLocation(x, y);
     }
 
-    JMenu createFileMenu() {
+    private JMenu createFileMenu() {
         final JMenu filesMenu = new JMenu("File");
         filesMenu.setMnemonic(KeyEvent.VK_F);
 
@@ -225,7 +222,7 @@ public final class Table extends Observable {
         return filesMenu;
     }
 
-    JMenu createOptionsMenu() {
+    private JMenu createOptionsMenu() {
 
         final JMenu optionsMenu = new JMenu("Options");
         optionsMenu.setMnemonic(KeyEvent.VK_O);
@@ -250,14 +247,27 @@ public final class Table extends Observable {
         });
         optionsMenu.add(evaluateBoardMenuItem);
 
+        final JMenuItem escapeAnalysis = new JMenuItem("Escape Analysis Score", KeyEvent.VK_S);
+        escapeAnalysis.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final Move lastMove = moveLog.getMoves().get(moveLog.size() - 1);
+                if(lastMove != null) {
+                    System.out.println(MoveUtils.exchangeScore(lastMove));
+                }
+
+            }
+        });
+        optionsMenu.add(escapeAnalysis);
+
         final JMenuItem legalMovesMenuItem = new JMenuItem("Current State", KeyEvent.VK_L);
         legalMovesMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 System.out.println(chessBoard.getWhitePieces());
                 System.out.println(chessBoard.getBlackPieces());
-                System.out.println(chessBoard.currentPlayer().playerInfo());
-                System.out.println(chessBoard.currentPlayer().getOpponent().playerInfo());
+                System.out.println(playerInfo(chessBoard.currentPlayer()));
+                System.out.println(playerInfo(chessBoard.currentPlayer().getOpponent()));
             }
         });
         optionsMenu.add(legalMovesMenuItem);
@@ -286,7 +296,7 @@ public final class Table extends Observable {
         return optionsMenu;
     }
 
-    JMenu createPreferencesMenu() {
+    private JMenu createPreferencesMenu() {
 
         final JMenu preferencesMenu = new JMenu("Preferences");
 
@@ -445,18 +455,24 @@ public final class Table extends Observable {
 
     }
 
-    void updateGameBoard(final Board board) {
+    private static String playerInfo(final Player player) {
+        return ("Player is: " +player.getAlliance() + "\nlegal moves =" + player.getLegalMoves() + "\ninCheck = " +
+                player.isInCheck() + "\nisInCheckMate = " +player.isInCheckMate() +
+                "\nisCastled = " +player.isCastled())+ "\n";
+    }
+
+    private void updateGameBoard(final Board board) {
         this.chessBoard = board;
     }
 
-    void updateComputerMove(final Move move) {
+    private void updateComputerMove(final Move move) {
         this.computerMove = move;
     }
 
-    void undoAllMoves() {
+    private void undoAllMoves() {
         for(int i = Table.get().getMoveLog().size() - 1; i >= 0; i--) {
             final Move lastMove = Table.get().getMoveLog().removeMove(Table.get().getMoveLog().size() - 1);
-            this.chessBoard = this.chessBoard.currentPlayer().unMakeMove(lastMove).getTransitionBoard();
+            this.chessBoard = this.chessBoard.currentPlayer().unMakeMove(lastMove).getToBoard();
         }
         this.computerMove = null;
         Table.get().getMoveLog().clear();
@@ -466,7 +482,7 @@ public final class Table extends Observable {
         Table.get().getDebugPanel().redo();
     }
 
-    static void loadPGNFile(final File pgnFile) {
+    private static void loadPGNFile(final File pgnFile) {
         try {
             persistPGNFile(pgnFile);
         }
@@ -486,7 +502,7 @@ public final class Table extends Observable {
 
     private void undoLastMove() {
         final Move lastMove = Table.get().getMoveLog().removeMove(Table.get().getMoveLog().size() - 1);
-        this.chessBoard = this.chessBoard.currentPlayer().unMakeMove(lastMove).getTransitionBoard();
+        this.chessBoard = this.chessBoard.currentPlayer().unMakeMove(lastMove).getToBoard();
         this.computerMove = null;
         Table.get().getMoveLog().removeMove(lastMove);
         Table.get().getGameHistoryPanel().redo(chessBoard, Table.get().getMoveLog());
@@ -495,12 +511,12 @@ public final class Table extends Observable {
         Table.get().getDebugPanel().redo();
     }
 
-    public void moveMadeUpdate(final PlayerType playerType) {
+    private void moveMadeUpdate(final PlayerType playerType) {
         setChanged();
         notifyObservers(playerType);
     }
 
-    public void setupUpdate(final GameSetup gameSetup) {
+    private void setupUpdate(final GameSetup gameSetup) {
         setChanged();
         notifyObservers(gameSetup);
     }
@@ -537,7 +553,7 @@ public final class Table extends Observable {
 
     }
 
-    public enum PlayerType {
+    enum PlayerType {
         HUMAN,
         COMPUTER
     }
@@ -561,10 +577,10 @@ public final class Table extends Observable {
             else {
                 final int moveNumber = Table.get().getMoveLog().size();
                 final int quiescenceFactor = 2000 + (100 * moveNumber);
-                final AlphaBetaWithMoveOrdering strategy = new AlphaBetaWithMoveOrdering(0/*quiescenceFactor*/);
+                final AlphaBetaWithMoveOrdering strategy = new AlphaBetaWithMoveOrdering(1500);
                 strategy.addObserver(Table.get().getDebugPanel());
-                Table.get().getGameBoard().currentPlayer().setMoveStrategy(strategy);
-                bestMove = Table.get().getGameBoard().currentPlayer().getMoveStrategy().execute(
+                //Table.get().getGameBoard().currentPlayer().setMoveStrategy(strategy);
+                bestMove = strategy.execute(
                         Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());
             }
             return bestMove;
@@ -575,7 +591,7 @@ public final class Table extends Observable {
             try {
                 final Move bestMove = get();
                 Table.get().updateComputerMove(bestMove);
-                Table.get().updateGameBoard(Table.get().getGameBoard().currentPlayer().makeMove(bestMove).getTransitionBoard());
+                Table.get().updateGameBoard(Table.get().getGameBoard().currentPlayer().makeMove(bestMove).getToBoard());
                 Table.get().getMoveLog().addMove(bestMove);
                 Table.get().getGameHistoryPanel().redo(Table.get().getGameBoard(), Table.get().getMoveLog());
                 Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
@@ -665,7 +681,7 @@ public final class Table extends Observable {
 
     public static class MoveLog {
 
-        private final ArrayList<Move> moves;
+        private final List<Move> moves;
 
         MoveLog() {
             this.moves = new ArrayList<>();
@@ -729,7 +745,7 @@ public final class Table extends Observable {
                                     destinationTile.getTileCoordinate());
                             final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
-                                chessBoard = chessBoard.currentPlayer().makeMove(move).getTransitionBoard();
+                                chessBoard = transition.getToBoard();
                                 moveLog.addMove(move);
                             }
                             sourceTile = null;
@@ -775,7 +791,6 @@ public final class Table extends Observable {
             highlightTileBorder(board);
             highlightLegals(board);
             highlightAIMove();
-            //showRankAndFileInfo();
             validate();
             repaint();
         }
@@ -806,51 +821,6 @@ public final class Table extends Observable {
                     setBackground(Color.red);
                 }
             }
-        }
-
-        private void showRankAndFileInfo() {
-
-            final JLabel rankLabel = new JLabel();
-            rankLabel.setFont(new Font("TimesRoman", Font.PLAIN, 8));
-
-            final JLabel fileLabel = new JLabel();
-            fileLabel.setFont(new Font("TimesRoman", Font.PLAIN, 8));
-
-            if(this.tileId == 0) {
-                rankLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(1, 2));
-            } else if(this.tileId == 8) {
-                rankLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(1, 2));
-            } else if(this.tileId == 16) {
-                rankLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(1, 2));
-            } else if(this.tileId == 24) {
-                rankLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(1, 2));
-            } else if(this.tileId == 32) {
-                rankLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(1, 2));
-            } else if(this.tileId == 40) {
-                rankLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(1, 2));
-            } else if(this.tileId == 48) {
-                rankLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(1, 2));
-            } else if(this.tileId == 56) {
-                rankLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(1, 2));
-                fileLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(0, 1));
-            } else if(this.tileId == 57) {
-                fileLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(0, 1));
-            } else if(this.tileId == 58) {
-                fileLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(0, 1));
-            } else if(this.tileId == 59) {
-                fileLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(0, 1));
-            } else if(this.tileId == 60) {
-                fileLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(0, 1));
-            } else if(this.tileId == 61) {
-                fileLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(0, 1));
-            } else if(this.tileId == 62) {
-                fileLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(0, 1));
-            } else if(this.tileId == 63) {
-                fileLabel.setText(BoardUtils.getPositionAtCoordinate(this.tileId).substring(0, 1));
-            }
-            add(fileLabel);
-            add(rankLabel);
-            repaint();
         }
 
         private void highlightLegals(final Board board) {
@@ -891,15 +861,15 @@ public final class Table extends Observable {
         }
 
         private void assignTileColor() {
-            if (BoardUtils.FIRST_ROW[this.tileId] ||
-                    BoardUtils.THIRD_ROW[this.tileId] ||
-                    BoardUtils.FIFTH_ROW[this.tileId] ||
-                    BoardUtils.SEVENTH_ROW[this.tileId]) {
+            if (BoardUtils.INSTANCE.FIRST_ROW.get(this.tileId) ||
+                BoardUtils.INSTANCE.THIRD_ROW.get(this.tileId) ||
+                BoardUtils.INSTANCE.FIFTH_ROW.get(this.tileId) ||
+                BoardUtils.INSTANCE.SEVENTH_ROW.get(this.tileId)) {
                 setBackground(this.tileId % 2 == 0 ? lightTileColor : darkTileColor);
-            } else if(BoardUtils.SECOND_ROW[this.tileId] ||
-                    BoardUtils.FOURTH_ROW[this.tileId] ||
-                    BoardUtils.SIXTH_ROW[this.tileId]  ||
-                    BoardUtils.EIGHTH_ROW[this.tileId]) {
+            } else if(BoardUtils.INSTANCE.SECOND_ROW.get(this.tileId) ||
+                      BoardUtils.INSTANCE.FOURTH_ROW.get(this.tileId) ||
+                      BoardUtils.INSTANCE.SIXTH_ROW.get(this.tileId)  ||
+                      BoardUtils.INSTANCE.EIGHTH_ROW.get(this.tileId)) {
                 setBackground(this.tileId % 2 != 0 ? lightTileColor : darkTileColor);
             }
         }

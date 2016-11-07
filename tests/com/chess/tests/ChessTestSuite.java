@@ -4,10 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TestKnight.class,
-                     TestBishop.class,
-                     TestRook.class,
-                     TestQueen.class,
+@Suite.SuiteClasses({TestPieces.class,
                      TestBoard.class,
                      TestStaleMate.class,
                      TestPlayer.class,
@@ -15,7 +12,6 @@ import org.junit.runners.Suite;
                      TestMiniMax.class,
                      TestAlphaBeta.class,
                      TestCastling.class,
-                     TestPawn.class,
                      TestPawnStructure.class,
                      TestFENParser.class
                      /*TestPGNParser.class*/})

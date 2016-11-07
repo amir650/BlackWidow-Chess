@@ -8,9 +8,11 @@ public class Move {
 	final int destinationLocation;
 	final Piece movedPiece;
 
-	public Move(final int current, final int destination, final Piece moved) {
-		this.currentLocation = current;
-		this.destinationLocation = destination;
+	public Move(final int currentLocation,
+                final int destinationLocation,
+                final Piece moved) {
+		this.currentLocation = currentLocation;
+		this.destinationLocation = destinationLocation;
 		this.movedPiece = moved;
 	}
 
@@ -22,28 +24,23 @@ public class Move {
 
 	@Override
 	public int hashCode() {
-		int hash = 1;
-		hash = hash * 31 + this.movedPiece.hashCode() + this.currentLocation
-		        + this.destinationLocation;
-		return hash;
+		return this.movedPiece.hashCode() +
+			   this.currentLocation +
+               this.destinationLocation;
 	}
 
 	@Override
 	public boolean equals(final Object other) {
-
 		if (this == other) {
 			return true;
 		}
 		if (!(other instanceof Move)) {
 			return false;
 		}
-
 		final Move otherMove = (Move) other;
-
 		return (this.movedPiece == otherMove.getMovedPiece())
 		        && (this.currentLocation == otherMove.getCurrentLocation())
 		        && (this.destinationLocation == otherMove.getDestinationLocation());
-
 	}
 
 	public int getDestinationLocation() {

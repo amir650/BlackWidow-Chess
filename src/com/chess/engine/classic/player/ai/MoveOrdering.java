@@ -4,13 +4,12 @@ package com.chess.engine.classic.player.ai;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.MoveTransition;
+import com.chess.engine.classic.player.Player;
 import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.Booleans;
 import com.google.common.primitives.Ints;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public final class MoveOrdering {
 
@@ -58,35 +57,22 @@ public final class MoveOrdering {
     private List<Move> orderImpl(final Board board,
                                  final int depth) {
         final List<MoveOrderEntry> moveOrderEntries = new ArrayList<>();
-        final boolean SORT_DESCENDING = board.currentPlayer().getAlliance().isWhite();
         for (final Move move : board.currentPlayer().getLegalMoves()) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                final int currentValue = board.currentPlayer().getAlliance().isWhite() ?
-                        min(moveTransition.getTransitionBoard(), depth - 1) :
-                        max(moveTransition.getTransitionBoard(), depth - 1);
+                final int attackBonus = calculateAttackBonus(board.currentPlayer(), move);
+                final int currentValue = attackBonus + (board.currentPlayer().getAlliance().isWhite() ?
+                        min(moveTransition.getToBoard(), depth - 1) :
+                        max(moveTransition.getToBoard(), depth - 1));
                 moveOrderEntries.add(new MoveOrderEntry(move, currentValue));
             }
         }
-
-        if (SORT_DESCENDING) {
-            Collections.sort(moveOrderEntries, new Comparator<MoveOrderEntry>() {
-                @Override
-                public int compare(final MoveOrderEntry o1,
-                                   final MoveOrderEntry o2) {
-                    return Ints.compare(o2.getScore(), o1.getScore());
-                }
-            });
-        } else {
-            Collections.sort(moveOrderEntries, new Comparator<MoveOrderEntry>() {
-                @Override
-                public int compare(final MoveOrderEntry o1,
-                                   final MoveOrderEntry o2) {
-                    return Ints.compare(o1.getScore(), o2.getScore());
-                }
-            });
-        }
-
+        Collections.sort(moveOrderEntries, new Comparator<MoveOrderEntry>() {
+            @Override
+            public int compare(final MoveOrderEntry o1, final MoveOrderEntry o2) {
+                return Ints.compare(o2.getScore(), o1.getScore());
+            }
+        });
         final List<Move> orderedMoves = new ArrayList<>();
         for(final MoveOrderEntry entry : moveOrderEntries) {
             orderedMoves.add(entry.getMove());
@@ -95,16 +81,36 @@ public final class MoveOrdering {
         return ImmutableList.copyOf(orderedMoves);
     }
 
+    private int calculateAttackBonus(final Player player,
+                                     final Move move) {
+        final int attackBonus = move.isAttack() ? 1000 : 0;
+        return attackBonus * (player.getAlliance().isWhite() ? 1 : -1);
+    }
+
+    private static Collection<Move> calculateSimpleMoveOrder(final Collection<Move> moves) {
+
+        final List<Move> sortedMoves = new ArrayList<>();
+        sortedMoves.addAll(moves);
+        Collections.sort(sortedMoves, new Comparator<Move>() {
+            @Override
+            public int compare(final Move m1, final Move m2) {
+                return Booleans.compare(m2.isAttack(), m1.isAttack());
+            }
+        });
+
+        return sortedMoves;
+    }
+
     public int min(final Board board,
                    final int depth) {
         if(depth == 0 || isEndGameScenario(board)) {
             return this.evaluator.evaluate(board, depth);
         }
         int lowestSeenValue = Integer.MAX_VALUE;
-        for (final Move move : board.currentPlayer().getLegalMoves()) {
+        for (final Move move : calculateSimpleMoveOrder(board.currentPlayer().getLegalMoves())) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                final int currentValue = max(moveTransition.getTransitionBoard(), depth - 1);
+                final int currentValue = max(moveTransition.getToBoard(), depth - 1);
                 if (currentValue <= lowestSeenValue) {
                     lowestSeenValue = currentValue;
                 }
@@ -119,10 +125,10 @@ public final class MoveOrdering {
             return this.evaluator.evaluate(board, depth);
         }
         int highestSeenValue = Integer.MIN_VALUE;
-        for (final Move move : board.currentPlayer().getLegalMoves()) {
+        for (final Move move : calculateSimpleMoveOrder(board.currentPlayer().getLegalMoves())) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                final int currentValue = min(moveTransition.getTransitionBoard(), depth - 1);
+                final int currentValue = min(moveTransition.getToBoard(), depth - 1);
                 if (currentValue >= highestSeenValue) {
                     highestSeenValue = currentValue;
                 }
@@ -133,9 +139,7 @@ public final class MoveOrdering {
 
     private static boolean isEndGameScenario(final Board board) {
         return  board.currentPlayer().isInCheckMate() ||
-                board.currentPlayer().isInStaleMate() ||
-                board.currentPlayer().getOpponent().isInCheckMate() ||
-                board.currentPlayer().getOpponent().isInStaleMate();
+                board.currentPlayer().isInStaleMate();
     }
 
 }

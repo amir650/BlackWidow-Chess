@@ -1,5 +1,6 @@
 package com.chess.engine.classic.pieces;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -9,11 +10,8 @@ import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
-import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.board.Tile;
-import com.chess.engine.classic.player.Player;
 import com.google.common.collect.ImmutableList;
-import org.magicwerk.brownies.collections.GapList;
 
 public final class King extends Piece {
 
@@ -58,7 +56,7 @@ public final class King extends Piece {
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final List<Move> legalMoves = new GapList<>();
+        final List<Move> legalMoves = new ArrayList<>();
         for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) {
             if (isFirstColumnExclusion(this.piecePosition, currentCandidateOffset) ||
                 isEighthColumnExclusion(this.piecePosition, currentCandidateOffset)) {
@@ -81,11 +79,6 @@ public final class King extends Piece {
             }
         }
         return ImmutableList.copyOf(legalMoves);
-    }
-
-    @Override
-    public int getPieceValue() {
-        return this.pieceType.getPieceValue();
     }
 
     @Override
@@ -120,21 +113,19 @@ public final class King extends Piece {
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (isCastled ? 1 : 0);
-        return result;
+        return (31 * super.hashCode()) + (isCastled ? 1 : 0);
     }
 
     private static boolean isFirstColumnExclusion(final int currentCandidate,
                                                   final int candidateDestinationCoordinate) {
-        return BoardUtils.FIRST_COLUMN[currentCandidate]
+        return BoardUtils.INSTANCE.FIRST_COLUMN.get(currentCandidate)
                 && ((candidateDestinationCoordinate == -9) || (candidateDestinationCoordinate == -1) ||
                 (candidateDestinationCoordinate == 7));
     }
 
     private static boolean isEighthColumnExclusion(final int currentCandidate,
                                                    final int candidateDestinationCoordinate) {
-        return BoardUtils.EIGHTH_COLUMN[currentCandidate]
+        return BoardUtils.INSTANCE.EIGHTH_COLUMN.get(currentCandidate)
                 && ((candidateDestinationCoordinate == -7) || (candidateDestinationCoordinate == 1) ||
                 (candidateDestinationCoordinate == 9));
     }

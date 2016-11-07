@@ -1,5 +1,6 @@
 package com.chess.engine.classic.pieces;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
 import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList;
-import org.magicwerk.brownies.collections.GapList;
 
 public final class Queen extends Piece {
 
@@ -29,13 +29,8 @@ public final class Queen extends Piece {
     }
 
     @Override
-    public boolean equals(final Object other) {
-        return this == other || other instanceof Queen && (super.equals(other));
-    }
-
-    @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final List<Move> legalMoves = new GapList<>();
+        final List<Move> legalMoves = new ArrayList<>();
         int candidateDestinationCoordinate;
         for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) {
             candidateDestinationCoordinate = this.piecePosition;
@@ -67,18 +62,13 @@ public final class Queen extends Piece {
     }
 
     @Override
-    public int getPieceValue() {
-        return this.pieceType.getPieceValue();
-    }
-
-    @Override
     public int locationBonus() {
         return this.pieceAlliance.queenBonus(this.piecePosition);
     }
 
     @Override
     public Queen movePiece(final Move move) {
-        return PieceUtils.getMovedQueen(move);
+        return PieceUtils.INSTANCE.getMovedQueen(move);
     }
 
     @Override
@@ -88,13 +78,13 @@ public final class Queen extends Piece {
 
     private static boolean isFirstColumnExclusion(final int currentPosition,
                                                   final int candidatePosition) {
-        return BoardUtils.FIRST_COLUMN[candidatePosition] && ((currentPosition == -9)
+        return BoardUtils.INSTANCE.FIRST_COLUMN.get(candidatePosition) && ((currentPosition == -9)
                 || (currentPosition == -1) || (currentPosition == 7));
     }
 
     private static boolean isEightColumnExclusion(final int currentPosition,
                                                   final int candidatePosition) {
-        return BoardUtils.EIGHTH_COLUMN[candidatePosition] && ((currentPosition == -7)
+        return BoardUtils.INSTANCE.EIGHTH_COLUMN.get(candidatePosition) && ((currentPosition == -7)
                 || (currentPosition == 1) || (currentPosition == 9));
     }
 

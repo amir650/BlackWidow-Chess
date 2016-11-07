@@ -1,5 +1,7 @@
 package com.chess.engine.classic.player.ai;
 
+import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.List;
 
@@ -7,16 +9,17 @@ import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ListMultimap;
 
 public final class PawnStructureAnalyzer {
 
     private static final PawnStructureAnalyzer INSTANCE = new PawnStructureAnalyzer();
-    private static final List<boolean[]> BOARD_COLUMNS = initColumns();
+    private static final List<List<Boolean>> BOARD_COLUMNS = initColumns();
 
     public static final int ISOLATED_PAWN_PENALTY = -10;
-    public static final int DOUBLED_PAWN_PENALTY = -5;
+    public static final int DOUBLED_PAWN_PENALTY = -10;
 
     private PawnStructureAnalyzer() {
     }
@@ -25,33 +28,35 @@ public final class PawnStructureAnalyzer {
         return INSTANCE;
     }
 
-    private static List<boolean[]> initColumns() {
-        final Builder<boolean[]> columns = new Builder<>();
-        columns.add(BoardUtils.FIRST_COLUMN);
-        columns.add(BoardUtils.SECOND_COLUMN);
-        columns.add(BoardUtils.THIRD_COLUMN);
-        columns.add(BoardUtils.FOURTH_COLUMN);
-        columns.add(BoardUtils.FIFTH_COLUMN);
-        columns.add(BoardUtils.SIXTH_COLUMN);
-        columns.add(BoardUtils.SEVENTH_COLUMN);
-        columns.add(BoardUtils.EIGHTH_COLUMN);
-        return columns.build();
+    private static List<List<Boolean>> initColumns() {
+        final List<List<Boolean>> columns = new ArrayList<>();
+        columns.add(BoardUtils.INSTANCE.FIRST_COLUMN);
+        columns.add(BoardUtils.INSTANCE.SECOND_COLUMN);
+        columns.add(BoardUtils.INSTANCE.THIRD_COLUMN);
+        columns.add(BoardUtils.INSTANCE.FOURTH_COLUMN);
+        columns.add(BoardUtils.INSTANCE.FIFTH_COLUMN);
+        columns.add(BoardUtils.INSTANCE.SIXTH_COLUMN);
+        columns.add(BoardUtils.INSTANCE.SEVENTH_COLUMN);
+        columns.add(BoardUtils.INSTANCE.EIGHTH_COLUMN);
+        return ImmutableList.copyOf(columns);
     }
 
     public int isolatedPawnPenalty(final Player player) {
-        return calculateIsolatedPawnPenalty(createPawnsOnColumnTable(calculatePawnLocations(player)));
+        return calculateIsolatedPawnPenalty(createPawnsOnColumnTable(calculatePlayerPawns(player)));
     }
 
     public int doubledPawnPenalty(final Player player) {
-        return calculateDoubledPawnPenalty(createPawnsOnColumnTable(calculatePawnLocations(player)));
+        return calculateDoubledPawnPenalty(createPawnsOnColumnTable(calculatePlayerPawns(player)));
     }
 
     public int pawnStructureScore(final Player player) {
-        final ListMultimap<Integer, Piece> pawnsOnColumnTable = createPawnsOnColumnTable(calculatePawnLocations(player));
-        return calculateDoubledPawnPenalty(pawnsOnColumnTable) + calculateIsolatedPawnPenalty(pawnsOnColumnTable);
+        final Collection<Piece> playerPawns = calculatePlayerPawns(player);
+        final ListMultimap<Integer, Piece> pawnsOnColumnTable = createPawnsOnColumnTable(playerPawns);
+        //final int overlyAdvanced = calculateOverlyAdvancedPawnsPenalty(playerPawns);
+        return /* calculateDoubledPawnPenalty(pawnsOnColumnTable) + */ calculateIsolatedPawnPenalty(pawnsOnColumnTable);
     }
 
-    private static Collection<Piece> calculatePawnLocations(final Player player) {
+    private static Collection<Piece> calculatePlayerPawns(final Player player) {
         final Builder<Piece> playerPawnLocations = new Builder<>();
         for(final Piece piece : player.getActivePieces()) {
             if(piece.getPieceType().isPawn()) {
@@ -95,12 +100,21 @@ public final class PawnStructureAnalyzer {
         final ListMultimap<Integer, Piece> table = ArrayListMultimap.create(8, 6);
         for(int i = 0; i < BOARD_COLUMNS.size(); i++) {
             for(final Piece playerPawn : playerPawns) {
-                if(BOARD_COLUMNS.get(i)[playerPawn.getPiecePosition()]) {
+                if(BOARD_COLUMNS.get(i).get(playerPawn.getPiecePosition())) {
                     table.put(i, playerPawn);
                 }
             }
         }
         return table;
+    }
+
+    private static BitSet createPawnBitSet(final Collection<Piece> playerPawns) {
+        final BitSet result = new BitSet(64);
+        for(final Piece piece : playerPawns) {
+            result.set(piece.getPiecePosition());
+        }
+
+        return result;
     }
 
 }

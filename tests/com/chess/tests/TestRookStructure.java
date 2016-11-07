@@ -4,25 +4,18 @@ import static junit.framework.Assert.assertEquals;
 
 import com.chess.engine.classic.pieces.Rook;
 import com.chess.engine.classic.player.ai.RookStructureAnalyzer;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import com.chess.com.chess.pgn.FenUtilities;
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.pieces.King;
-import com.chess.engine.classic.pieces.Pawn;
-import com.chess.engine.classic.player.ai.PawnStructureAnalyzer;
-import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
 
 public class TestRookStructure {
 
     @Test
     public void test1() {
-
         final Board board = Board.createStandardBoard();
-
         assertEquals(RookStructureAnalyzer.get().rookStructureScore(board, board.whitePlayer()), 0);
         assertEquals(RookStructureAnalyzer.get().rookStructureScore(board, board.whitePlayer()), 0);
     }
@@ -39,10 +32,8 @@ public class TestRookStructure {
         builder.setMoveMaker(Alliance.WHITE);
         // Set the current player
         final Board board = builder.build();
-
         assertEquals(RookStructureAnalyzer.get().rookStructureScore(board, board.whitePlayer()), 25);
         assertEquals(RookStructureAnalyzer.get().rookStructureScore(board, board.whitePlayer()), 25);
-
     }
 
 

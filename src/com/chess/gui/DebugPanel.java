@@ -29,7 +29,7 @@ class DebugPanel extends JPanel implements Observer {
     @Override
     public void update(final Observable obs,
                        final Object obj) {
-        this.jTextArea.setText("best move so far:  " + obj);
+        this.jTextArea.setText(obj.toString().trim());
         redo();
     }
 

@@ -1,5 +1,6 @@
 package com.chess.engine.classic.player.ai;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -7,12 +8,12 @@ import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
-import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.ImmutableList;
 
 public final class KingSafetyAnalyzer {
 
     private static final KingSafetyAnalyzer INSTANCE = new KingSafetyAnalyzer();
-    private static final List<boolean[]> COLUMNS = initColumns();
+    private static final List<List<Boolean>> COLUMNS = initColumns();
 
     private KingSafetyAnalyzer() {
     }
@@ -21,17 +22,17 @@ public final class KingSafetyAnalyzer {
         return INSTANCE;
     }
 
-    private static List<boolean[]> initColumns() {
-        final Builder<boolean[]> columns = new Builder<>();
-        columns.add(BoardUtils.FIRST_COLUMN);
-        columns.add(BoardUtils.SECOND_COLUMN);
-        columns.add(BoardUtils.THIRD_COLUMN);
-        columns.add(BoardUtils.FOURTH_COLUMN);
-        columns.add(BoardUtils.FIFTH_COLUMN);
-        columns.add(BoardUtils.SIXTH_COLUMN);
-        columns.add(BoardUtils.SEVENTH_COLUMN);
-        columns.add(BoardUtils.EIGHTH_COLUMN);
-        return columns.build();
+    private static List<List<Boolean>> initColumns() {
+        final List<List<Boolean>> columns = new ArrayList<>();
+        columns.add(BoardUtils.INSTANCE.FIRST_COLUMN);
+        columns.add(BoardUtils.INSTANCE.SECOND_COLUMN);
+        columns.add(BoardUtils.INSTANCE.THIRD_COLUMN);
+        columns.add(BoardUtils.INSTANCE.FOURTH_COLUMN);
+        columns.add(BoardUtils.INSTANCE.FIFTH_COLUMN);
+        columns.add(BoardUtils.INSTANCE.SIXTH_COLUMN);
+        columns.add(BoardUtils.INSTANCE.SEVENTH_COLUMN);
+        columns.add(BoardUtils.INSTANCE.EIGHTH_COLUMN);
+        return ImmutableList.copyOf(columns);
     }
 
     public KingDistance calculateKingTropism(final Player player) {
@@ -65,42 +66,42 @@ public final class KingSafetyAnalyzer {
     }
 
     private static int getFile(final int coordinate) {
-        if(BoardUtils.FIRST_COLUMN[coordinate]) {
+        if(BoardUtils.INSTANCE.FIRST_COLUMN.get(coordinate)) {
             return 1;
-        } else if(BoardUtils.SECOND_COLUMN[coordinate]) {
+        } else if(BoardUtils.INSTANCE.SECOND_COLUMN.get(coordinate)) {
             return 2;
-        } else if(BoardUtils.THIRD_COLUMN[coordinate]) {
+        } else if(BoardUtils.INSTANCE.THIRD_COLUMN.get(coordinate)) {
             return 3;
-        } else if(BoardUtils.FOURTH_COLUMN[coordinate]) {
+        } else if(BoardUtils.INSTANCE.FOURTH_COLUMN.get(coordinate)) {
             return 4;
-        } else if(BoardUtils.FIFTH_COLUMN[coordinate]) {
+        } else if(BoardUtils.INSTANCE.FIFTH_COLUMN.get(coordinate)) {
             return 5;
-        } else if(BoardUtils.SIXTH_COLUMN[coordinate]) {
+        } else if(BoardUtils.INSTANCE.SIXTH_COLUMN.get(coordinate)) {
             return 6;
-        } else if(BoardUtils.SEVENTH_COLUMN[coordinate]) {
+        } else if(BoardUtils.INSTANCE.SEVENTH_COLUMN.get(coordinate)) {
             return 7;
-        } else if(BoardUtils.EIGHTH_COLUMN[coordinate]) {
+        } else if(BoardUtils.INSTANCE.EIGHTH_COLUMN.get(coordinate)) {
             return 8;
         }
         throw new RuntimeException("should not reach here!");
     }
 
     private static int getRank(final int coordinate) {
-        if(BoardUtils.FIRST_ROW[coordinate]) {
+        if(BoardUtils.INSTANCE.FIRST_ROW.get(coordinate)) {
             return 1;
-        } else if(BoardUtils.SECOND_ROW[coordinate]) {
+        } else if(BoardUtils.INSTANCE.SECOND_ROW.get(coordinate)) {
             return 2;
-        } else if(BoardUtils.THIRD_ROW[coordinate]) {
+        } else if(BoardUtils.INSTANCE.THIRD_ROW.get(coordinate)) {
             return 3;
-        } else if(BoardUtils.FOURTH_ROW[coordinate]) {
+        } else if(BoardUtils.INSTANCE.FOURTH_ROW.get(coordinate)) {
             return 4;
-        } else if(BoardUtils.FIFTH_ROW[coordinate]) {
+        } else if(BoardUtils.INSTANCE.FIFTH_ROW.get(coordinate)) {
             return 5;
-        } else if(BoardUtils.SIXTH_ROW[coordinate]) {
+        } else if(BoardUtils.INSTANCE.SIXTH_ROW.get(coordinate)) {
             return 6;
-        } else if(BoardUtils.SEVENTH_ROW[coordinate]) {
+        } else if(BoardUtils.INSTANCE.SEVENTH_ROW.get(coordinate)) {
             return 7;
-        } else if(BoardUtils.EIGHTH_ROW[coordinate]) {
+        } else if(BoardUtils.INSTANCE.EIGHTH_ROW.get(coordinate)) {
             return 8;
         }
         throw new RuntimeException("should not reach here!");

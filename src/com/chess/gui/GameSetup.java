@@ -19,8 +19,7 @@ import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.player.Player;
 import com.chess.gui.Table.PlayerType;
 
-public class GameSetup
-        extends JDialog {
+class GameSetup extends JDialog {
 
     private PlayerType whitePlayerType;
     private PlayerType blackPlayerType;
@@ -29,7 +28,8 @@ public class GameSetup
     private static final String HUMAN_TEXT = "Human";
     private static final String COMPUTER_TEXT = "Computer";
 
-    GameSetup(final JFrame frame, boolean modal) {
+    GameSetup(final JFrame frame,
+              final boolean modal) {
         super(frame, modal);
         final JPanel myPanel = new JPanel(new GridLayout(0, 1));
         final JRadioButton whiteHumanButton = new JRadioButton(HUMAN_TEXT);
@@ -96,7 +96,7 @@ public class GameSetup
         return getBlackPlayerType() == PlayerType.COMPUTER;
     }
 
-    Table.PlayerType getWhitePlayerType() {
+    PlayerType getWhitePlayerType() {
         return this.whitePlayerType;
     }
 

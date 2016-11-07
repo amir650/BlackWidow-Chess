@@ -12,7 +12,7 @@ public abstract class Piece {
     protected final Alliance pieceAlliance;
     protected final int piecePosition;
     protected final boolean isFirstMove;
-    private final int cachedHashCode;
+    protected final int cachedHashCode;
 
     Piece(final PieceType type,
           final Alliance alliance,
@@ -41,8 +41,9 @@ public abstract class Piece {
         return this.isFirstMove;
     }
 
-    public abstract int getPieceValue();
-
+    public int getPieceValue() {
+        return this.pieceType.getPieceValue();
+    }
     public abstract int locationBonus();
 
     public abstract Piece movePiece(Move move);

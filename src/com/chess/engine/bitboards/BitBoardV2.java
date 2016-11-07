@@ -1,7 +1,5 @@
 package com.chess.engine.bitboards;
 
-import java.util.BitSet;
-
 public class BitBoardV2 {
 
     final long bits;

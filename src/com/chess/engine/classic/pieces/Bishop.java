@@ -1,5 +1,6 @@
 package com.chess.engine.classic.pieces;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
 import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList;
-import org.magicwerk.brownies.collections.GapList;
 
 public final class Bishop extends Piece {
 
@@ -24,13 +24,13 @@ public final class Bishop extends Piece {
 
     public Bishop(final Alliance alliance,
                   final int piecePosition,
-                  final boolean isFirstMove) {
+                   final boolean isFirstMove) {
         super(PieceType.BISHOP, alliance, piecePosition, isFirstMove);
     }
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
-        final List<Move> legalMoves = new GapList<>();
+        final List<Move> legalMoves = new ArrayList<>();
         for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) {
             int candidateDestinationCoordinate = this.piecePosition;
             while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
@@ -60,23 +60,13 @@ public final class Bishop extends Piece {
     }
 
     @Override
-    public boolean equals(final Object other) {
-        return this == other || other instanceof Bishop && (super.equals(other));
-    }
-
-    @Override
-    public int getPieceValue() {
-        return this.pieceType.getPieceValue();
-    }
-
-    @Override
     public int locationBonus() {
         return this.pieceAlliance.bishopBonus(this.piecePosition);
     }
 
     @Override
     public Bishop movePiece(final Move move) {
-        return PieceUtils.getMovedBishop(move);
+        return PieceUtils.INSTANCE.getMovedBishop(move);
     }
 
     @Override
@@ -86,13 +76,13 @@ public final class Bishop extends Piece {
 
     private static boolean isFirstColumnExclusion(final int currentCandidate,
                                                   final int candidateDestinationCoordinate) {
-        return (BoardUtils.FIRST_COLUMN[candidateDestinationCoordinate] &&
+        return (BoardUtils.INSTANCE.FIRST_COLUMN.get(candidateDestinationCoordinate) &&
                 ((currentCandidate == -9) || (currentCandidate == 7)));
     }
 
     private static boolean isEighthColumnExclusion(final int currentCandidate,
                                                    final int candidateDestinationCoordinate) {
-        return BoardUtils.EIGHTH_COLUMN[candidateDestinationCoordinate] &&
+        return BoardUtils.INSTANCE.EIGHTH_COLUMN.get(candidateDestinationCoordinate) &&
                         ((currentCandidate == -7) || (currentCandidate == 9));
     }
 

@@ -29,17 +29,18 @@ public class AlphaBetaWithMoveOrdering extends Observable implements MoveStrateg
         SORT {
             @Override
             Collection<Move> sort(final Collection<Move> moves) {
-                return Ordering.from(ATTACKS_SORT).immutableSortedCopy(moves);
+                return Ordering.from(SMART_SORT).immutableSortedCopy(moves);
             }
         };
 
-        public static Comparator<Move> ATTACKS_SORT = new Comparator<Move>() {
+        public static Comparator<Move> SMART_SORT = new Comparator<Move>() {
             @Override
             public int compare(final Move move1, final Move move2) {
                 return ComparisonChain.start()
-                        .compare(move2.isAttack(), move1.isAttack())
-                        .compare(move1.getMovedPiece().getPieceValue(), move2.getMovedPiece().getPieceValue())
-                        .compare(move2.isCastlingMove(), move1.isCastlingMove())
+                        .compareTrueFirst(BoardUtils.isThreatenedBoardImmediate(move1.getBoard()), BoardUtils.isThreatenedBoardImmediate(move2.getBoard()))
+                        .compareTrueFirst(move1.isAttack(), move2.isAttack())
+                        .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
+                        .compare(move2.getMovedPiece().getPieceValue(), move1.getMovedPiece().getPieceValue())
                         .result();
             }
         };
@@ -58,7 +59,7 @@ public class AlphaBetaWithMoveOrdering extends Observable implements MoveStrateg
 
     @Override
     public String toString() {
-        return "AlphaBetaWithMoveOrdering";
+        return "AB+MO";
     }
 
     @Override
@@ -77,38 +78,40 @@ public class AlphaBetaWithMoveOrdering extends Observable implements MoveStrateg
         int lowestSeenValue = Integer.MAX_VALUE;
         int currentValue;
         int moveCounter = 1;
-        final List<Move> orderedMoves = MoveOrdering.get().orderMoves(board);
-        int numMoves = orderedMoves.size();
+        final int numMoves = this.moveSorter.sort(board.currentPlayer().getLegalMoves()).size();
         System.out.println(board.currentPlayer() + " THINKING with depth = " + depth);
-        System.out.println("\tOrdered moves! : " + orderedMoves);
-        for (final Move move : orderedMoves) {
+        System.out.println("\tOrdered moves! : " + this.moveSorter.sort(board.currentPlayer().getLegalMoves()));
+        for (final Move move : this.moveSorter.sort(board.currentPlayer().getLegalMoves())) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             this.quiescenceCount = 0;
             final String s;
             if (moveTransition.getMoveStatus().isDone()) {
                 final long candidateMoveStartTime = System.nanoTime();
                 currentValue = alliance.isWhite() ?
-                        min(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue) :
-                        max(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue);
+                        min(moveTransition.getToBoard(), depth - 1, highestSeenValue, lowestSeenValue) :
+                        max(moveTransition.getToBoard(), depth - 1, highestSeenValue, lowestSeenValue);
                 if (alliance.isWhite() && currentValue > highestSeenValue) {
                     highestSeenValue = currentValue;
                     bestMove = move;
-                    setChanged();
-                    notifyObservers(bestMove);
+                    //setChanged();
+                    //notifyObservers(bestMove);
                 }
                 else if (alliance.isBlack() && currentValue < lowestSeenValue) {
                     lowestSeenValue = currentValue;
                     bestMove = move;
-                    setChanged();
-                    notifyObservers(bestMove);
+                    //setChanged();
+                    //notifyObservers(bestMove);
                 }
-                final String quiescenceInfo = " [hi = " +highestSeenValue+ " low = " +lowestSeenValue+ "] quiescenceCount = " +this.quiescenceCount;
-                s = "\t" + toString() + " analyzing move (" +moveCounter+ "/" +numMoves+ ") " + move + " (best move so far is:  " + bestMove
-                        + quiescenceInfo + " took " +calculateTimeTaken(candidateMoveStartTime, System.nanoTime());
+                final String quiescenceInfo = " [h: " +highestSeenValue+ " l: " +lowestSeenValue+ "] q: " +this.quiescenceCount;
+                s = "\t" + toString() + "(" +depth+ "), m: (" +moveCounter+ "/" +numMoves+ ") " + move + ", best:  " + bestMove
+
+                        + quiescenceInfo + ", t: " +calculateTimeTaken(candidateMoveStartTime, System.nanoTime());
             } else {
-                s = "\t" + toString() + " analyzing move (" +moveCounter+ "/" +numMoves+ ") " + move + " is ILLEGAL!";
+                s = "\t" + toString() + ", m: (" +moveCounter+ "/" +numMoves+ ") " + move + " is illegal, best: " +bestMove;
             }
             System.out.println(s);
+            setChanged();
+            notifyObservers(s);
             moveCounter++;
         }
         this.executionTime = System.currentTimeMillis() - startTime;
@@ -129,7 +132,7 @@ public class AlphaBetaWithMoveOrdering extends Observable implements MoveStrateg
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                currentHighest = Math.max(currentHighest, min(moveTransition.getTransitionBoard(),
+                currentHighest = Math.max(currentHighest, min(moveTransition.getToBoard(),
                         calculateQuiescenceDepth(board, move, depth), currentHighest, lowest));
                 if (lowest <= currentHighest) {
                     this.cutOffsProduced++;
@@ -152,7 +155,7 @@ public class AlphaBetaWithMoveOrdering extends Observable implements MoveStrateg
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                currentLowest = Math.min(currentLowest, max(moveTransition.getTransitionBoard(),
+                currentLowest = Math.min(currentLowest, max(moveTransition.getToBoard(),
                         calculateQuiescenceDepth(board, move, depth), highest, currentLowest));
                 if (currentLowest <= highest) {
                     this.cutOffsProduced++;
@@ -167,9 +170,9 @@ public class AlphaBetaWithMoveOrdering extends Observable implements MoveStrateg
                                          final Move move,
                                          final int depth) {
         if((depth == 1 && (this.quiescenceCount < this.quiescenceFactor)) &&
-           (move.isAttack() || BoardUtils.isThreatenedBoard(board))) {
+           BoardUtils.isThreatenedBoardImmediate(board)) {
             this.quiescenceCount++;
-            return 2;
+            return 1;
         }
         return depth - 1;
     }

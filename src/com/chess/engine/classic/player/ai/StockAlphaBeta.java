@@ -79,8 +79,8 @@ public class StockAlphaBeta implements MoveStrategy {
             if (moveTransition.getMoveStatus().isDone()) {
                 final long candidateMoveStartTime = System.nanoTime();
                 currentValue = alliance.isWhite() ?
-                        min(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue) :
-                        max(moveTransition.getTransitionBoard(), depth - 1, highestSeenValue, lowestSeenValue);
+                        min(moveTransition.getToBoard(), depth - 1, highestSeenValue, lowestSeenValue) :
+                        max(moveTransition.getToBoard(), depth - 1, highestSeenValue, lowestSeenValue);
                 final String quiescenceInfo = " [hi = " +highestSeenValue+ " low = " +lowestSeenValue+ "] quiescenceCount = " +this.quiescenceCount;
                 System.out.println("\t" + toString() + " analyzing move (" +moveCounter+ "/" +numMoves+ ") " + move + " (best move so far is:  " + bestMove
                         + quiescenceInfo + " took " +calculateTimeTaken(candidateMoveStartTime, System.nanoTime()));
@@ -116,7 +116,7 @@ public class StockAlphaBeta implements MoveStrategy {
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                currentHighest = Math.max(currentHighest, min(moveTransition.getTransitionBoard(),
+                currentHighest = Math.max(currentHighest, min(moveTransition.getToBoard(),
                         calculateQuiescenceDepth(board, move, depth), currentHighest, lowest));
                 if (currentHighest >= lowest) {
                     return lowest;
@@ -138,7 +138,7 @@ public class StockAlphaBeta implements MoveStrategy {
         for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                currentLowest = Math.min(currentLowest, max(moveTransition.getTransitionBoard(),
+                currentLowest = Math.min(currentLowest, max(moveTransition.getToBoard(),
                         calculateQuiescenceDepth(board, move, depth), highest, currentLowest));
                 if (currentLowest <= highest) {
                     return highest;

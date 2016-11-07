@@ -28,7 +28,7 @@ public final class BlackPlayer extends Player {
 
         final List<Move> kingCastles = new ArrayList<>();
 
-        if(this.playerKing.isFirstMove() && !isInCheck()) {
+        if(this.playerKing.isFirstMove() && this.playerKing.getPiecePosition() == 4 && !isInCheck()) {
             //blacks king side castle
             if(!this.board.getTile(5).isTileOccupied() && !this.board.getTile(6).isTileOccupied()) {
                 final Tile rookTile = this.board.getTile(7);
