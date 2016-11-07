@@ -440,7 +440,7 @@ public final class Table extends Observable {
         preferencesMenu.add(cbLegalMoveHighlighter);
 
         final JCheckBoxMenuItem cbUseBookMoves = new JCheckBoxMenuItem(
-                "Use Book Moves", true);
+                "Use Book Moves", false);
 
         cbUseBookMoves.addActionListener(new ActionListener() {
             @Override
