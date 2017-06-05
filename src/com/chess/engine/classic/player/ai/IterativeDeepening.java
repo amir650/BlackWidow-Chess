@@ -9,11 +9,13 @@ import com.google.common.primitives.Ints;
 
 import java.util.*;
 
-import static com.google.common.collect.Ordering.*;
+import static com.chess.engine.classic.board.Move.*;
+import static com.google.common.collect.Ordering.from;
 
 public class IterativeDeepening extends Observable implements MoveStrategy {
 
     private final BoardEvaluator evaluator;
+    private final int searchDepth;
     private final MoveSorter moveSorter;
     private long boardsEvaluated;
     private long executionTime;
@@ -43,8 +45,9 @@ public class IterativeDeepening extends Observable implements MoveStrategy {
         abstract Collection<Move> sort(Collection<Move> moves);
     }
 
-    public IterativeDeepening() {
+    public IterativeDeepening(final int searchDepth) {
         this.evaluator = new StandardBoardEvaluator();
+        this.searchDepth = searchDepth;
         this.moveSorter = MoveSorter.SORT;
         this.boardsEvaluated = 0;
         this.cutOffsProduced = 0;
@@ -61,11 +64,10 @@ public class IterativeDeepening extends Observable implements MoveStrategy {
     }
 
     @Override
-    public Move execute(final Board board,
-                        final int depth) {
+    public Move execute(final Board board) {
 
         final long startTime = System.currentTimeMillis();
-        System.out.println(board.currentPlayer() + " THINKING with depth = " + depth);
+        System.out.println(board.currentPlayer() + " THINKING with depth = " + this.searchDepth);
 
         MoveOrderingBuilder builder = new MoveOrderingBuilder();
         builder.setOrder(board.currentPlayer().getAlliance().isWhite() ? Ordering.DESC : Ordering.ASC);
@@ -73,13 +75,13 @@ public class IterativeDeepening extends Observable implements MoveStrategy {
             builder.addMoveOrderingRecord(move, 0);
         }
 
-        Move bestMove = Move.NULL_MOVE;
+        Move bestMove = MoveFactory.getNullMove();
         int currentDepth = 1;
 
         int highestSeenValue = Integer.MIN_VALUE;
         int lowestSeenValue = Integer.MAX_VALUE;
 
-        while (currentDepth <= depth) {
+        while (currentDepth <= this.searchDepth) {
             final long subTimeStart = System.currentTimeMillis();
             //int highestSeenValue = Integer.MIN_VALUE;
             //int lowestSeenValue = Integer.MAX_VALUE;

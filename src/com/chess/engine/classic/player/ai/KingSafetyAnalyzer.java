@@ -1,14 +1,14 @@
 package com.chess.engine.classic.player.ai;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
 import com.google.common.collect.ImmutableList;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public final class KingSafetyAnalyzer {
 
@@ -50,14 +50,14 @@ public final class KingSafetyAnalyzer {
         return new KingDistance(closestPiece, closestDistance);
     }
 
-    private int calculateChebyshevDistance(final int pieceOneSquare,
-                                           final int pieceTwoSquare) {
+    private int calculateChebyshevDistance(final int kingTileId,
+                                           final int enemyAttackTileId) {
 
-        final int squareOneRank = getRank(pieceOneSquare);
-        final int squareTwoRank = getRank(pieceTwoSquare);
+        final int squareOneRank = getRank(kingTileId);
+        final int squareTwoRank = getRank(enemyAttackTileId);
 
-        final int squareOneFile = getFile(pieceOneSquare);
-        final int squareTwoFile = getFile(pieceTwoSquare);
+        final int squareOneFile = getFile(kingTileId);
+        final int squareTwoFile = getFile(enemyAttackTileId);
 
         final int rankDistance = Math.abs(squareTwoRank - squareOneRank);
         final int fileDistance = Math.abs(squareTwoFile - squareOneFile);

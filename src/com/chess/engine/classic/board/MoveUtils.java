@@ -1,11 +1,13 @@
 package com.chess.engine.classic.board;
 
+import static com.chess.engine.classic.board.Move.*;
+
 public enum MoveUtils {
 
     INSTANCE;
 
     public static int exchangeScore(final Move move) {
-        if(move == Move.NULL_MOVE) {
+        if(move == MoveFactory.getNullMove()) {
             return 1;
         }
         return move.isAttack() ?

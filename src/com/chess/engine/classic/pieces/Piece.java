@@ -1,18 +1,18 @@
 package com.chess.engine.classic.pieces;
 
-import java.util.Collection;
-
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
 
+import java.util.Collection;
+
 public abstract class Piece {
 
-    protected final PieceType pieceType;
-    protected final Alliance pieceAlliance;
-    protected final int piecePosition;
-    protected final boolean isFirstMove;
-    protected final int cachedHashCode;
+    final PieceType pieceType;
+    final Alliance pieceAlliance;
+    final int piecePosition;
+    private final boolean isFirstMove;
+    private final int cachedHashCode;
 
     Piece(final PieceType type,
           final Alliance alliance,
@@ -85,6 +85,11 @@ public abstract class Piece {
             }
 
             @Override
+            public boolean isBishop() {
+                return false;
+            }
+
+            @Override
             public boolean isRook() {
                 return false;
             }
@@ -101,6 +106,11 @@ public abstract class Piece {
             }
 
             @Override
+            public boolean isBishop() {
+                return false;
+            }
+
+            @Override
             public boolean isRook() {
                 return false;
             }
@@ -110,10 +120,15 @@ public abstract class Piece {
                 return false;
             }
         },
-        BISHOP(330, "B") {
+        BISHOP(350, "B") {
             @Override
             public boolean isPawn() {
                 return false;
+            }
+
+            @Override
+            public boolean isBishop() {
+                return true;
             }
 
             @Override
@@ -129,6 +144,11 @@ public abstract class Piece {
         ROOK(500, "R") {
             @Override
             public boolean isPawn() {
+                return false;
+            }
+
+            @Override
+            public boolean isBishop() {
                 return false;
             }
 
@@ -149,6 +169,11 @@ public abstract class Piece {
             }
 
             @Override
+            public boolean isBishop() {
+                return false;
+            }
+
+            @Override
             public boolean isRook() {
                 return false;
             }
@@ -158,9 +183,14 @@ public abstract class Piece {
                 return false;
             }
         },
-        KING(10000, "K") {
+        KING(20000, "K") {
             @Override
             public boolean isPawn() {
+                return false;
+            }
+
+            @Override
+            public boolean isBishop() {
                 return false;
             }
 
@@ -193,6 +223,7 @@ public abstract class Piece {
         }
 
         public abstract boolean isPawn();
+        public abstract boolean isBishop();
         public abstract boolean isRook();
         public abstract boolean isKing();
 

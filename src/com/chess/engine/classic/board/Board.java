@@ -1,6 +1,7 @@
 package com.chess.engine.classic.board;
 
 import com.chess.engine.classic.Alliance;
+import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.pieces.Bishop;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Knight;
@@ -14,7 +15,11 @@ import com.chess.engine.classic.player.WhitePlayer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class Board {
 
@@ -24,11 +29,12 @@ public final class Board {
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
-    //
     private final Pawn enPassantPawn;
     private final Move transitionMove;
 
-    public Board(final Builder builder) {
+    private static final Board STANDARD_BOARD = createStandardBoardImpl();
+
+    private Board(final Builder builder) {
         this.gameBoard = createGameBoard(builder);
         this.whitePieces = calculateActivePieces(builder, Alliance.WHITE);
         this.blackPieces = calculateActivePieces(builder, Alliance.BLACK);
@@ -38,7 +44,7 @@ public final class Board {
         this.whitePlayer = new WhitePlayer(this, whiteStandardMoves, blackStandardMoves);
         this.blackPlayer = new BlackPlayer(this, whiteStandardMoves, blackStandardMoves);
         this.currentPlayer = builder.nextMoveMaker.choosePlayerByAlliance(this.whitePlayer, this.blackPlayer);
-        this.transitionMove = builder.transitionMove != null ? builder.transitionMove : Move.NULL_MOVE;
+        this.transitionMove = builder.transitionMove != null ? builder.transitionMove : MoveFactory.getNullMove();
     }
 
     @Override
@@ -108,6 +114,10 @@ public final class Board {
     }
 
     public static Board createStandardBoard() {
+        return STANDARD_BOARD;
+    }
+
+    private static Board createStandardBoardImpl() {
         final Builder builder = new Builder();
         // Black Layout
         builder.setPiece(new Rook(Alliance.BLACK, 0));

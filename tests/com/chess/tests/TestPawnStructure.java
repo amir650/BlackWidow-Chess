@@ -1,17 +1,16 @@
 package com.chess.tests;
 
-import static junit.framework.Assert.assertEquals;
-
-import com.chess.pgn.FenUtilities;
-import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
-import org.junit.Test;
-
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Pawn;
 import com.chess.engine.classic.player.ai.PawnStructureAnalyzer;
+import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
+import com.chess.pgn.FenUtilities;
+import org.junit.Test;
+
+import static junit.framework.Assert.assertEquals;
 
 public class TestPawnStructure {
 
@@ -52,6 +51,7 @@ public class TestPawnStructure {
         builder.setMoveMaker(Alliance.WHITE);
         // Set the current player
         final Board board = builder.build();
+        System.out.println(FenUtilities.createFENFromGame(board));
 
         assertEquals(PawnStructureAnalyzer.get().isolatedPawnPenalty(board.whitePlayer()), PawnStructureAnalyzer.ISOLATED_PAWN_PENALTY);
         assertEquals(PawnStructureAnalyzer.get().isolatedPawnPenalty(board.blackPlayer()), PawnStructureAnalyzer.ISOLATED_PAWN_PENALTY * 5);

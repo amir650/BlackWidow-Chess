@@ -1,11 +1,16 @@
 package com.chess.engine.classic.board;
 
+import com.chess.engine.classic.pieces.King;
+import com.chess.engine.classic.pieces.Piece;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import static com.chess.engine.classic.board.Move.MoveFactory;
 
 public enum  BoardUtils {
 
@@ -94,27 +99,52 @@ public enum  BoardUtils {
         return board.whitePlayer().isInCheck() || board.blackPlayer().isInCheck();
     }
 
-//    public static boolean isEscapeCheckMove(final Board board) {
-//
-//        final Board priorBoard = move.getBoard()
-//
-//
-//        return isThreatenedBoardImmediate(moveTransition.getFromBoard()) &&
-//               !isThreatenedBoardImmediate(moveTransition.getToBoard());
-//    }
-
-    public static boolean threatChainScore(final Board board) {
-
-        Board currentBoard = board;
-        boolean isThreat = false;
-        while(currentBoard != null) {
-            if(currentBoard.whitePlayer().isInCheck() || currentBoard.blackPlayer().isInCheck()) {
-                isThreat = true;
-                break;
+    public static boolean kingThreat(final Move move) {
+        final Board board = move.getBoard();
+        final King enemyKing = board.currentPlayer().getOpponent().getPlayerKing();
+        for(Move m : board.currentPlayer().getLegalMoves()) {
+            if(m.getDestinationCoordinate() == enemyKing.getPiecePosition()) {
+                return true;
             }
-            currentBoard = currentBoard.getTransitionMove().getBoard();
         }
-        return isThreat;
+        return false;
+    }
+
+    public static boolean isKingPawnTrap(final Board board,
+                                         final King king,
+                                         final int frontTile) {
+        final Tile tile = board.getTile(frontTile);
+        if(tile.isTileOccupied()) {
+            final Piece piece = tile.getPiece();
+            if(piece.getPieceType().isPawn() && piece.getPieceAllegiance() != king.getPieceAllegiance()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static int mvvlva(final Move move) {
+
+        final Piece movingPiece = move.getMovedPiece();
+
+        if(move.isAttack()) {
+            final Piece attackedPiece = move.getAttackedPiece();
+            return (attackedPiece.getPieceValue() - movingPiece.getPieceValue() +  Piece.PieceType.KING.getPieceValue()) * 100;
+        }
+
+        return Piece.PieceType.KING.getPieceValue() - movingPiece.getPieceValue();
+    }
+
+    public static List<Move> lastNMoves(final Board board, int N) {
+        final List<Move> moveHistory = new ArrayList<>();
+        Move currentMove = board.getTransitionMove();
+        int i = 0;
+        while(currentMove != MoveFactory.getNullMove() && i < N) {
+            moveHistory.add(currentMove);
+            currentMove = currentMove.getBoard().getTransitionMove();
+            i++;
+        }
+        return ImmutableList.copyOf(moveHistory);
     }
 
     public static boolean isEndGame(final Board board) {

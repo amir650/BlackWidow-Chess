@@ -3,7 +3,6 @@ package com.chess.engine.classic.board;
 import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.pieces.Pawn;
 import com.chess.engine.classic.pieces.Piece;
-import com.chess.engine.classic.pieces.Piece.PieceType;
 import com.chess.engine.classic.pieces.Rook;
 
 public abstract class Move {
@@ -12,8 +11,6 @@ public abstract class Move {
     protected final int destinationCoordinate;
     protected final Piece movedPiece;
     protected final boolean isFirstMove;
-
-    public static final Move NULL_MOVE = new NullMove();
 
     private Move(final Board board,
                  final Piece pieceMoved,
@@ -149,11 +146,14 @@ public abstract class Move {
 
         final Move decoratedMove;
         final Pawn promotedPawn;
+        final Piece promotionPiece;
 
-        public PawnPromotion(final Move decoratedMove) {
+        public PawnPromotion(final Move decoratedMove,
+                             final Piece promotionPiece) {
             super(decoratedMove.getBoard(), decoratedMove.getMovedPiece(), decoratedMove.getDestinationCoordinate());
             this.decoratedMove = decoratedMove;
             this.promotedPawn = (Pawn) decoratedMove.getMovedPiece();
+            this.promotionPiece = promotionPiece;
         }
 
         @Override
@@ -178,7 +178,7 @@ public abstract class Move {
             for (final Piece piece : pawnMovedBoard.currentPlayer().getOpponent().getActivePieces()) {
                 builder.setPiece(piece);
             }
-            builder.setPiece(this.promotedPawn.getPromotionPiece().movePiece(this));
+            builder.setPiece(this.promotionPiece.movePiece(this));
             builder.setMoveMaker(pawnMovedBoard.currentPlayer().getAlliance());
             builder.setMoveTransition(this);
             return builder.build();
@@ -197,7 +197,7 @@ public abstract class Move {
         @Override
         public String toString() {
             return BoardUtils.INSTANCE.getPositionAtCoordinate(this.movedPiece.getPiecePosition()) + "-" +
-                   BoardUtils.INSTANCE.getPositionAtCoordinate(this.destinationCoordinate) + "=" + PieceType.QUEEN;
+                   BoardUtils.INSTANCE.getPositionAtCoordinate(this.destinationCoordinate) + "=" + this.promotionPiece.getPieceType();
         }
 
     }
@@ -381,9 +381,9 @@ public abstract class Move {
     static abstract class CastleMove
             extends Move {
 
-        protected final Rook castleRook;
-        protected final int castleRookStart;
-        protected final int castleRookDestination;
+        final Rook castleRook;
+        final int castleRookStart;
+        final int castleRookDestination;
 
         CastleMove(final Board board,
                    final Piece pieceMoved,
@@ -509,7 +509,7 @@ public abstract class Move {
 
     }
 
-    public static abstract class AttackMove
+    static abstract class AttackMove
             extends Move {
 
         private final Piece attackedPiece;
@@ -551,11 +551,21 @@ public abstract class Move {
 
     }
 
-    public static class NullMove
+    private static class NullMove
             extends Move {
 
         private NullMove() {
             super(null, -1);
+        }
+
+        @Override
+        public int getCurrentCoordinate() {
+            return -1;
+        }
+
+        @Override
+        public int getDestinationCoordinate() {
+            return -1;
         }
 
         @Override
@@ -571,8 +581,14 @@ public abstract class Move {
 
     public static class MoveFactory {
 
+        private static final Move NULL_MOVE = new NullMove();
+
         private MoveFactory() {
             throw new RuntimeException("Not instantiatable!");
+        }
+
+        public static Move getNullMove() {
+            return NULL_MOVE;
         }
 
         public static Move createMove(final Board board,

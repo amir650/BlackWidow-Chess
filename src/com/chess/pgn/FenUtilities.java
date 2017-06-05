@@ -29,10 +29,10 @@ public class FenUtilities {
     private static Board parseFEN(final String fenString) {
         final String[] fenPartitions = fenString.trim().split(" ");
         final Builder builder = new Builder();
-        final boolean whiteKingSideCastle = whiteKingSideCastle(fenPartitions[3]);
-        final boolean whiteQueenSideCastle = whiteQueenSideCastle(fenPartitions[3]);
-        final boolean blackKingSideCastle = blackKingSideCastle(fenPartitions[3]);
-        final boolean blackQueenSideCastle = blackQueenSideCastle(fenPartitions[3]);
+        final boolean whiteKingSideCastle = whiteKingSideCastle(fenPartitions[2]);
+        final boolean whiteQueenSideCastle = whiteQueenSideCastle(fenPartitions[2]);
+        final boolean blackKingSideCastle = blackKingSideCastle(fenPartitions[2]);
+        final boolean blackQueenSideCastle = blackQueenSideCastle(fenPartitions[2]);
         final String gameConfiguration = fenPartitions[0];
         final char[] boardTiles = gameConfiguration.replaceAll("/", "")
                 .replaceAll("8", "--------")
@@ -64,6 +64,7 @@ public class FenUtilities {
                     i++;
                     break;
                 case 'k':
+                    final boolean isCastled = !blackKingSideCastle && !blackQueenSideCastle;
                     builder.setPiece(new King(Alliance.BLACK, i, blackKingSideCastle, blackQueenSideCastle));
                     i++;
                     break;

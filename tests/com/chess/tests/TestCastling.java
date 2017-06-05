@@ -1,17 +1,16 @@
 package com.chess.tests;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-
-import com.chess.engine.classic.player.ai.MoveStrategy;
-import com.chess.pgn.FenUtilities;
-import com.chess.engine.classic.player.ai.StockAlphaBeta;
-import org.junit.Test;
-
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.MoveTransition;
+import com.chess.engine.classic.player.ai.MoveStrategy;
+import com.chess.engine.classic.player.ai.StockAlphaBeta;
+import com.chess.pgn.FenUtilities;
+import org.junit.Test;
+
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class TestCastling {
 
@@ -297,9 +296,9 @@ public class TestCastling {
                                 BoardUtils.INSTANCE.getCoordinateAtPosition("c3")));
         assertTrue(t11.getMoveStatus().isDone());
 
-        final MoveStrategy moveStrategy = new StockAlphaBeta();
+        final MoveStrategy moveStrategy = new StockAlphaBeta(6);
 
-        moveStrategy.execute(t11.getToBoard(), 4);
+        moveStrategy.execute(t11.getToBoard());
     }
 
     @Test

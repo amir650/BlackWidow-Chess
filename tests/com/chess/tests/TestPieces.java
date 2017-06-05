@@ -15,11 +15,8 @@ import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
-/**
- * Created by amir.afghani on 12/30/15.
- */
 public class TestPieces {
 
     @Test
@@ -67,6 +64,7 @@ public class TestPieces {
 
     @Test
     public void testLegalMoveAllAvailable() {
+
         final Board.Builder boardBuilder = new Board.Builder();
         // Black Layout
         boardBuilder.setPiece(new King(Alliance.BLACK, 4, false, false));
@@ -78,9 +76,7 @@ public class TestPieces {
         boardBuilder.setMoveMaker(Alliance.WHITE);
         final Board board = boardBuilder.build();
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
-        final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 13);
-        assertEquals(blackLegals.size(), 13);
         final Move wm1 = Move.MoveFactory
                 .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e4"), BoardUtils.INSTANCE.getCoordinateAtPosition("d6"));
         final Move wm2 = Move.MoveFactory
@@ -97,6 +93,7 @@ public class TestPieces {
                 .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e4"), BoardUtils.INSTANCE.getCoordinateAtPosition("d2"));
         final Move wm8 = Move.MoveFactory
                 .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e4"), BoardUtils.INSTANCE.getCoordinateAtPosition("f2"));
+
         assertTrue(whiteLegals.contains(wm1));
         assertTrue(whiteLegals.contains(wm2));
         assertTrue(whiteLegals.contains(wm3));
@@ -105,22 +102,38 @@ public class TestPieces {
         assertTrue(whiteLegals.contains(wm6));
         assertTrue(whiteLegals.contains(wm7));
         assertTrue(whiteLegals.contains(wm8));
+
+        final Board.Builder boardBuilder2 = new Board.Builder();
+        // Black Layout
+        boardBuilder2.setPiece(new King(Alliance.BLACK, 4, false, false));
+        boardBuilder2.setPiece(new Knight(Alliance.BLACK, 28));
+        // White Layout
+        boardBuilder2.setPiece(new Knight(Alliance.WHITE, 36));
+        boardBuilder2.setPiece(new King(Alliance.WHITE, 60, false, false));
+        // Set the current player
+        boardBuilder2.setMoveMaker(Alliance.BLACK);
+        final Board board2 = boardBuilder2.build();
+        final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
+
         final Move bm1 = Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("d7"));
+                .createMove(board2, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("d7"));
         final Move bm2 = Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("f7"));
+                .createMove(board2, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("f7"));
         final Move bm3 = Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("c6"));
+                .createMove(board2, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("c6"));
         final Move bm4 = Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("g6"));
+                .createMove(board2, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("g6"));
         final Move bm5 = Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("c4"));
+                .createMove(board2, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("c4"));
         final Move bm6 = Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("g4"));
+                .createMove(board2, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("g4"));
         final Move bm7 = Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("d3"));
+                .createMove(board2, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("d3"));
         final Move bm8 = Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("f3"));
+                .createMove(board2, BoardUtils.INSTANCE.getCoordinateAtPosition("e5"), BoardUtils.INSTANCE.getCoordinateAtPosition("f3"));
+
+        assertEquals(blackLegals.size(), 13);
+
         assertTrue(blackLegals.contains(bm1));
         assertTrue(blackLegals.contains(bm2));
         assertTrue(blackLegals.contains(bm3));
@@ -156,6 +169,7 @@ public class TestPieces {
                 .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("a8"), BoardUtils.INSTANCE.getCoordinateAtPosition("c7"));
         assertTrue(blackLegals.contains(bm1));
         assertTrue(blackLegals.contains(bm2));
+
     }
 
     @Test
@@ -203,7 +217,7 @@ public class TestPieces {
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(board.getTile(0), board.getTile(0));
-        assertFalse(board.getTile(0).equals(null));
+        assertNotNull(board.getTile(0));
         assertEquals(whiteLegals.size(), 12);
         assertEquals(blackLegals.size(), 5);
         assertTrue(whiteLegals.contains(Move.MoveFactory

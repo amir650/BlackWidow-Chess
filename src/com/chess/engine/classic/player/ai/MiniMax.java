@@ -7,17 +7,21 @@ import com.chess.engine.classic.board.MoveTransition;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import static com.chess.engine.classic.board.Move.*;
+
 public final class MiniMax implements MoveStrategy {
 
     private final BoardEvaluator evaluator;
+    private final int searchDepth;
     private long boardsEvaluated;
     private long executionTime;
     private FreqTableRow[] freqTable;
     private int freqTableIndex;
 
-    public MiniMax() {
+    public MiniMax(final int searchDepth) {
         this.evaluator = new StandardBoardEvaluator();
         this.boardsEvaluated = 0;
+        this.searchDepth = searchDepth;
     }
 
     @Override
@@ -30,14 +34,13 @@ public final class MiniMax implements MoveStrategy {
         return this.boardsEvaluated;
     }
 
-    public Move execute(final Board board,
-                        final int depth) {
+    public Move execute(final Board board) {
         final long startTime = System.currentTimeMillis();
-        Move bestMove = Move.NULL_MOVE;
+        Move bestMove = MoveFactory.getNullMove();
         int highestSeenValue = Integer.MIN_VALUE;
         int lowestSeenValue = Integer.MAX_VALUE;
         int currentValue;
-        System.out.println(board.currentPlayer() + " THINKING with depth = " +depth);
+        System.out.println(board.currentPlayer() + " THINKING with depth = " +this.searchDepth);
         this.freqTable = new FreqTableRow[board.currentPlayer().getLegalMoves().size()];
         this.freqTableIndex = 0;
         int moveCounter = 1;
@@ -48,8 +51,8 @@ public final class MiniMax implements MoveStrategy {
                 final FreqTableRow row = new FreqTableRow(move);
                 this.freqTable[this.freqTableIndex] = row;
                 currentValue = board.currentPlayer().getAlliance().isWhite() ?
-                                min(moveTransition.getToBoard(), depth - 1) :
-                                max(moveTransition.getToBoard(), depth - 1);
+                                min(moveTransition.getToBoard(), this.searchDepth - 1) :
+                                max(moveTransition.getToBoard(), this.searchDepth - 1);
                 System.out.println("\t" + toString() + " analyzing move (" +moveCounter + "/" +numMoves+ ") " + move +
                                    " scores " + currentValue + " " +this.freqTable[this.freqTableIndex]);
                 this.freqTableIndex++;

@@ -1,23 +1,13 @@
 package com.chess.gui;
 
-import java.awt.Container;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerModel;
-import javax.swing.SpinnerNumberModel;
-
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.player.Player;
 import com.chess.gui.Table.PlayerType;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 class GameSetup extends JDialog {
 
@@ -104,7 +94,9 @@ class GameSetup extends JDialog {
         return this.blackPlayerType;
     }
 
-    private static JSpinner addLabeledSpinner(Container c, String label, SpinnerModel model) {
+    private static JSpinner addLabeledSpinner(final Container c,
+                                              final String label,
+                                              final SpinnerModel model) {
         final JLabel l = new JLabel(label);
         c.add(l);
         final JSpinner spinner = new JSpinner(model);

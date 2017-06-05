@@ -1,20 +1,19 @@
 package com.chess.tests;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
+import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.*;
+import com.chess.engine.classic.board.Board.Builder;
+import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.pieces.*;
 import com.chess.engine.classic.player.ai.BoardEvaluator;
+import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
 import com.chess.pgn.FenUtilities;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 
-import com.chess.engine.classic.Alliance;
-import com.chess.engine.classic.board.Board.Builder;
-import com.chess.engine.classic.board.Move.MoveFactory;
-import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class TestBoard {
 
@@ -84,9 +83,15 @@ public class TestBoard {
         System.out.println(evaluator.evaluate(board, 0));
         assertEquals(new StandardBoardEvaluator().evaluate(board, 0), 0);
 
+        final Move move = MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e1"),
+                BoardUtils.INSTANCE.getCoordinateAtPosition("f1"));
+
         final MoveTransition moveTransition = board.currentPlayer()
-                .makeMove(MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e1"),
-                        BoardUtils.INSTANCE.getCoordinateAtPosition("f1")));
+                .makeMove(move);
+
+        assertEquals(moveTransition.getTransitionMove(), move);
+        assertEquals(moveTransition.getFromBoard(), board);
+        assertEquals(moveTransition.getToBoard().currentPlayer(), moveTransition.getToBoard().blackPlayer());
 
         assertTrue(moveTransition.getMoveStatus().isDone());
         assertEquals(moveTransition.getToBoard().whitePlayer().getPlayerKing().getPiecePosition(), 61);

@@ -1,8 +1,5 @@
 package com.chess.engine.classic.board;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.pieces.*;
 import com.google.common.collect.HashBasedTable;
@@ -10,12 +7,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 
+import java.util.HashMap;
+import java.util.Map;
+
 abstract public class Tile {
 
-    protected final int tileCoordinate;
+    private final int tileCoordinate;
 
     private static final Map<Integer, EmptyTile> EMPTY_TILES = createAllPossibleEmptyTiles();
-
     private static final Table<Integer, Piece, OccupiedTile> OCCUPIED_TILES = createAllPossibleOccupiedTiles();
 
     private Tile(final int coordinate) {
@@ -26,8 +25,8 @@ abstract public class Tile {
 
     public abstract Piece getPiece();
 
-    public static Tile createTile(final int coordinate,
-                                  final Piece piece) {
+    static Tile createTile(final int coordinate,
+                           final Piece piece) {
 
         if(piece == null) {
             return EMPTY_TILES.get(coordinate);
@@ -108,7 +107,7 @@ abstract public class Tile {
         return ImmutableTable.copyOf(occupiedTileTable);
     }
 
-    public static final class EmptyTile extends Tile {
+    private static final class EmptyTile extends Tile {
 
         private EmptyTile(final int coordinate) {
             super(coordinate);
@@ -130,7 +129,7 @@ abstract public class Tile {
 
     }
 
-    public static final class OccupiedTile extends Tile {
+    private static final class OccupiedTile extends Tile {
 
         private final Piece pieceOnTile;
 

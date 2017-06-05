@@ -1,6 +1,7 @@
 package com.chess.engine.classic.player.ai;
 
 import com.chess.engine.classic.board.Board;
+import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
 import com.chess.engine.classic.player.ai.KingSafetyAnalyzer.KingDistance;
@@ -11,9 +12,11 @@ public final class StandardBoardEvaluator
 
     private final static int CHECK_MATE_BONUS = 10000;
     private final static int CHECK_BONUS = 50;
-    private final static int CASTLED_BONUS = 65;
+    private final static int CASTLE_BONUS = 60;
     private final static int CASTLE_CAPABLE_BONUS = 25;
-    private final static int MOBILITY_BONUS = 1;
+    private final static int MOBILITY_MULTIPLIER = 2;
+    private final static int ATTACK_MULTIPLIER = 2;
+    private final static int TWO_BISHOPS_BONUS = 50;
 
     @Override
     public int evaluate(final Board board,
@@ -25,31 +28,64 @@ public final class StandardBoardEvaluator
     private static int score(final Player player,
                              final int depth) {
         return mobility(player) +
-               checkmate(player, depth) +
+               kingThreats(player, depth) +
+               attacks(player) +
                castle(player) +
-               pieceValueAndLocation(player) +
+               pieceEvaluations(player) +
                pawnStructure(player);
     }
 
-    private static int pieceValueAndLocation(final Player player) {
+    private static int attacks(final Player player) {
+        int attackScore = 0;
+        for(final Move move : player.getLegalMoves()) {
+            if(move.isAttack()) {
+                final Piece movedPiece = move.getMovedPiece();
+                final Piece attackedPiece = move.getAttackedPiece();
+                if(movedPiece.getPieceValue() <= attackedPiece.getPieceValue()) {
+                    attackScore ++;
+                }
+            }
+        }
+        return attackScore * ATTACK_MULTIPLIER;
+    }
+
+    private static int pieceEvaluations(final Player player) {
         int pieceValuationScore = 0;
+        int numBishops = 0;
         for (final Piece piece : player.getActivePieces()) {
             pieceValuationScore += piece.getPieceValue() + piece.locationBonus();
+            if(piece.getPieceType().isBishop()) {
+                numBishops++;
+            }
+//            if(piece.getPieceType().isRook()) {
+//                for(final Move move : player.getLegalMoves()) {
+//                    if(move.getMovedPiece().equals(piece)) {
+//
+//                    }
+//                }
+//            }
         }
-        return pieceValuationScore;
+        return pieceValuationScore + (numBishops == 2 ? TWO_BISHOPS_BONUS : 0);
     }
 
     private static int mobility(final Player player) {
-        return MOBILITY_BONUS * player.getLegalMoves().size();
+        return MOBILITY_MULTIPLIER * mobilityFun2(player);
     }
 
-    private static int checkmate(final Player player,
-                                 final int depth) {
-        return player.getOpponent().isInCheckMate() ? CHECK_MATE_BONUS  * depthBonus(depth) : check(player, depth);
+    private static int mobilityFun1(final Player player) {
+        return (player.getLegalMoves().size() - player.getOpponent().getLegalMoves().size());
     }
 
-    private static int check(final Player player,
-                             final int depth) {
+    private static int mobilityFun2(final Player player) {
+        return (int)((player.getLegalMoves().size() * 100.0f) / player.getOpponent().getLegalMoves().size());
+    }
+
+    private static int kingThreats(final Player player,
+                                   final int depth) {
+        return player.getOpponent().isInCheckMate() ? CHECK_MATE_BONUS  * depthBonus(depth) : check(player);
+    }
+
+    private static int check(final Player player) {
         return player.getOpponent().isInCheck() ? CHECK_BONUS : 0;
     }
 
@@ -57,12 +93,12 @@ public final class StandardBoardEvaluator
         return depth == 0 ? 1 : 100 * depth;
     }
 
-    private static int castleCapable(final Player player) {
-        return (player.isKingSideCastleCapable() || player.isQueenSideCastleCapable()) ? CASTLE_CAPABLE_BONUS : 0;
+    private static int castle(final Player player) {
+        return player.isCastled() ? CASTLE_BONUS : castleCapable(player);
     }
 
-    private static int castle(final Player player) {
-        return player.isCastled() ? CASTLED_BONUS : castleCapable(player);
+    private static int castleCapable(final Player player) {
+        return player.isKingSideCastleCapable() || player.isQueenSideCastleCapable() ? CASTLE_CAPABLE_BONUS : 0;
     }
 
     private static int pawnStructure(final Player player) {

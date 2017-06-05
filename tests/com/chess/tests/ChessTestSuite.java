@@ -13,7 +13,8 @@ import org.junit.runners.Suite;
                      TestAlphaBeta.class,
                      TestCastling.class,
                      TestPawnStructure.class,
-                     TestFENParser.class
+                     TestFENParser.class,
+                     TestEngine.class
                      /*TestPGNParser.class*/})
 public class ChessTestSuite {
 }

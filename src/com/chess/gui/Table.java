@@ -1,38 +1,30 @@
 package com.chess.gui;
 
-import static com.chess.pgn.PGNUtilities.*;
-import static javax.swing.JFrame.setDefaultLookAndFeelDecorated;
-import static javax.swing.SwingUtilities.invokeLater;
-import static javax.swing.SwingUtilities.isLeftMouseButton;
-import static javax.swing.SwingUtilities.isRightMouseButton;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
-
 import com.chess.engine.classic.board.*;
-import com.chess.pgn.FenUtilities;
-import com.chess.pgn.MySqlGamePersistence;
 import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
-import com.chess.engine.classic.player.ai.*;
+import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
+import com.chess.engine.classic.player.ai.StockAlphaBeta;
+import com.chess.pgn.FenUtilities;
+import com.chess.pgn.MySqlGamePersistence;
 import com.google.common.collect.Lists;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
+
+import static com.chess.pgn.PGNUtilities.persistPGNFile;
+import static com.chess.pgn.PGNUtilities.writeGameToPGNFile;
+import static javax.swing.JFrame.setDefaultLookAndFeelDecorated;
+import static javax.swing.SwingUtilities.*;
 
 public final class Table extends Observable {
 
@@ -456,7 +448,7 @@ public final class Table extends Observable {
     }
 
     private static String playerInfo(final Player player) {
-        return ("Player is: " +player.getAlliance() + "\nlegal moves =" + player.getLegalMoves() + "\ninCheck = " +
+        return ("Player is: " +player.getAlliance() + "\nlegal moves (" +player.getLegalMoves().size()+ ") = " +player.getLegalMoves() + "\ninCheck = " +
                 player.isInCheck() + "\nisInCheckMate = " +player.isInCheckMate() +
                 "\nisCastled = " +player.isCastled())+ "\n";
     }
@@ -524,6 +516,7 @@ public final class Table extends Observable {
     private static class TableGameAIWatcher
             implements Observer {
 
+        @Override
         public void update(final Observable o,
                            final Object arg) {
 
@@ -535,15 +528,13 @@ public final class Table extends Observable {
                 thinkTank.execute();
             }
 
-            if (Table.get().getGameBoard().currentPlayer().isInCheckMate() ||
-                Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
+            if (Table.get().getGameBoard().currentPlayer().isInCheckMate()) {
                 JOptionPane.showMessageDialog(Table.get().getBoardPanel(),
                         "Game Over: Player " + Table.get().getGameBoard().currentPlayer() + " is in checkmate!", "Game Over",
                         JOptionPane.INFORMATION_MESSAGE);
             }
 
-            if (Table.get().getGameBoard().currentPlayer().isInStaleMate() ||
-                Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
+            if (Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
                 JOptionPane.showMessageDialog(Table.get().getBoardPanel(),
                         "Game Over: Player " + Table.get().getGameBoard().currentPlayer() + " is in stalemate!", "Game Over",
                         JOptionPane.INFORMATION_MESSAGE);
@@ -570,18 +561,19 @@ public final class Table extends Observable {
                     ? MySqlGamePersistence.get().getNextBestMove(Table.get().getGameBoard(),
                     Table.get().getGameBoard().currentPlayer(),
                     Table.get().getMoveLog().getMoves().toString().replaceAll("\\[", "").replaceAll("\\]", ""))
-                    : Move.NULL_MOVE;
-            if (Table.get().getUseBook() && bookMove != Move.NULL_MOVE) {
+                    : MoveFactory.getNullMove();
+            if (Table.get().getUseBook() && bookMove != MoveFactory.getNullMove()) {
                 bestMove = bookMove;
             }
             else {
-                final int moveNumber = Table.get().getMoveLog().size();
-                final int quiescenceFactor = 2000 + (100 * moveNumber);
-                final AlphaBetaWithMoveOrdering strategy = new AlphaBetaWithMoveOrdering(1500);
+                //final int moveNumber = Table.get().getMoveLog().size();
+                //final int quiescenceFactor = 2000 + (100 * moveNumber);
+                final StockAlphaBeta strategy =
+                        new StockAlphaBeta(Table.get().getGameSetup().getSearchDepth());
                 strategy.addObserver(Table.get().getDebugPanel());
                 //Table.get().getGameBoard().currentPlayer().setMoveStrategy(strategy);
                 bestMove = strategy.execute(
-                        Table.get().getGameBoard(), Table.get().getGameSetup().getSearchDepth());
+                        Table.get().getGameBoard());
             }
             return bestMove;
         }
@@ -622,7 +614,7 @@ public final class Table extends Observable {
             validate();
         }
 
-        public void drawBoard(final Board board) {
+        void drawBoard(final Board board) {
             removeAll();
             for (final TilePanel boardTile : boardDirection.traverse(boardTiles)) {
                 boardTile.drawTile(board);
@@ -632,15 +624,15 @@ public final class Table extends Observable {
             repaint();
         }
 
-        public void setTileDarkColor(final Board board,
-                                     final Color darkColor) {
+        void setTileDarkColor(final Board board,
+                              final Color darkColor) {
             for (final TilePanel boardTile : boardTiles) {
                 boardTile.setDarkTileColor(darkColor);
             }
             drawBoard(board);
         }
 
-        public void setTileLightColor(final Board board,
+        void setTileLightColor(final Board board,
                                       final Color lightColor) {
             for (final TilePanel boardTile : boardTiles) {
                 boardTile.setLightTileColor(lightColor);
@@ -650,7 +642,7 @@ public final class Table extends Observable {
 
     }
 
-    public enum BoardDirection {
+    enum BoardDirection {
         NORMAL {
             @Override
             List<TilePanel> traverse(final List<TilePanel> boardTiles) {
@@ -691,7 +683,7 @@ public final class Table extends Observable {
             return this.moves;
         }
 
-        public void addMove(final Move move) {
+        void addMove(final Move move) {
             this.moves.add(move);
         }
 
@@ -699,15 +691,15 @@ public final class Table extends Observable {
             return this.moves.size();
         }
 
-        public void clear() {
+        void clear() {
             this.moves.clear();
         }
 
-        public Move removeMove(int index) {
+        Move removeMove(final int index) {
             return this.moves.remove(index);
         }
 
-        public boolean removeMove(final Move move) {
+        boolean removeMove(final Move move) {
             return this.moves.remove(move);
         }
 
@@ -728,6 +720,11 @@ public final class Table extends Observable {
             addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(final MouseEvent event) {
+
+                    if(Table.get().getGameSetup().isAIPlayer(Table.get().getGameBoard().currentPlayer())) {
+                        return;
+                    }
+
                     if (isRightMouseButton(event)) {
                         sourceTile = null;
                         destinationTile = null;
@@ -785,7 +782,7 @@ public final class Table extends Observable {
             validate();
         }
 
-        public void drawTile(final Board board) {
+        void drawTile(final Board board) {
             assignTileColor();
             assignTilePieceIcon(board);
             highlightTileBorder(board);
@@ -795,11 +792,11 @@ public final class Table extends Observable {
             repaint();
         }
 
-        public void setLightTileColor(final Color color) {
+        void setLightTileColor(final Color color) {
             lightTileColor = color;
         }
 
-        public void setDarkTileColor(final Color color) {
+        void setDarkTileColor(final Color color) {
             darkTileColor = color;
         }
 

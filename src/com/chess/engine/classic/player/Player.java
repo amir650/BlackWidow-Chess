@@ -1,9 +1,5 @@
 package com.chess.engine.classic.player;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
@@ -11,8 +7,16 @@ import com.chess.engine.classic.board.Move.MoveStatus;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Piece;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public abstract class Player {
 
@@ -20,19 +24,20 @@ public abstract class Player {
     protected final King playerKing;
     protected final Collection<Move> legalMoves;
     protected final boolean isInCheck;
+    private final LoadingCache<Player, Boolean> escapeCache = initEscapeCache();
 
     Player(final Board board,
            final Collection<Move> playerLegals,
            final Collection<Move> opponentLegals) {
         this.board = board;
         this.playerKing = establishKing();
+        this.isInCheck = !Player.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegals).isEmpty();
         this.legalMoves = ImmutableList.copyOf(
                 Iterables.concat(playerLegals, calculateKingCastles(playerLegals, opponentLegals)));
-        this.isInCheck = !Player.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegals).isEmpty();
     }
 
-    public boolean isMoveLegal(final Move move) {
-        return !(move.isCastlingMove() && isInCheck()) && this.legalMoves.contains(move);
+    private boolean isMoveLegal(final Move move) {
+        return this.legalMoves.contains(move);
     }
 
     public boolean isInCheck() {
@@ -63,7 +68,7 @@ public abstract class Player {
         return this.playerKing;
     }
 
-    protected King establishKing() {
+    private King establishKing() {
         for(final Piece piece : getActivePieces()) {
             if(piece.getPieceType().isKing()) {
                 return (King) piece;
@@ -72,14 +77,32 @@ public abstract class Player {
         throw new RuntimeException("Should not reach here! " +this.getAlliance()+ " king could not be established!");
     }
 
-    protected boolean hasEscapeMoves() {
-        for(final Move move : getLegalMoves()) {
-            final MoveTransition transition = makeMove(move);
+    private static boolean hasEscapeMoves(final Player player) {
+        for(final Move move : player.getLegalMoves()) {
+            final MoveTransition transition = player.makeMove(move);
             if (transition.getMoveStatus().isDone()) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean hasEscapeMoves() {
+        return this.escapeCache.getUnchecked(this);
+    }
+
+    private static LoadingCache<Player, Boolean> initEscapeCache() {
+        return CacheBuilder.newBuilder()
+                .expireAfterAccess(2, TimeUnit.MINUTES)
+                .weakKeys()
+                .concurrencyLevel(1)
+                .maximumSize(1)
+                .build(
+                        new CacheLoader<Player, Boolean>() {
+                            public Boolean load(final Player player) {
+                                return hasEscapeMoves(player);
+                            }
+                        });
     }
 
     public Collection<Move> getLegalMoves() {
@@ -118,6 +141,7 @@ public abstract class Player {
     public abstract Collection<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
-    protected abstract Collection<Move> calculateKingCastles(Collection<Move> playerLegals, Collection<Move> opponentLegals);
+    protected abstract Collection<Move> calculateKingCastles(Collection<Move> playerLegals,
+                                                             Collection<Move> opponentLegals);
 
 }
