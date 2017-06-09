@@ -19,7 +19,7 @@ public final class MoveOrdering {
     private static final int ORDER_SEARCH_DEPTH = 2;
 
     private MoveOrdering() {
-        this.evaluator = new StandardBoardEvaluator();
+        this.evaluator = StandardBoardEvaluator.get();
     }
 
     public static MoveOrdering get() {

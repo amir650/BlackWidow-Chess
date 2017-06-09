@@ -368,7 +368,7 @@ public class TestAlphaBeta {
         final MoveStrategy alphaBeta = new StockAlphaBeta(6);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("d4"), BoardUtils.INSTANCE.getCoordinateAtPosition("d5")));
+                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("f4"), BoardUtils.INSTANCE.getCoordinateAtPosition("f5")));
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(bestMove);
         assertTrue(t1.getMoveStatus().isDone());
@@ -380,7 +380,7 @@ public class TestAlphaBeta {
         final MoveStrategy alphaBeta = new StockAlphaBeta(6);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e8"), BoardUtils.INSTANCE.getCoordinateAtPosition("e4")));
+                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("d6"), BoardUtils.INSTANCE.getCoordinateAtPosition("d5")));
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(bestMove);
         assertTrue(t1.getMoveStatus().isDone());

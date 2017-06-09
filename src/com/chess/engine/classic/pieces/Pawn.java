@@ -144,7 +144,7 @@ public final class Pawn
 
     @Override
     public Pawn movePiece(final Move move) {
-        return PieceUtils.INSTANCE.getMovedPawn(move);
+        return PieceUtils.INSTANCE.getMovedPawn(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
     }
 
 }

@@ -52,7 +52,7 @@ public class AlphaBetaWithMoveOrdering extends Observable implements MoveStrateg
 
     public AlphaBetaWithMoveOrdering(final int searchDepth,
                                      final int quiescenceFactor) {
-        this.evaluator = new StandardBoardEvaluator();
+        this.evaluator = StandardBoardEvaluator.get();
         this.searchDepth = searchDepth;
         this.quiescenceFactor = quiescenceFactor;
         this.moveSorter = MoveSorter.SORT;

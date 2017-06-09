@@ -17,6 +17,14 @@ public final class StandardBoardEvaluator
     private final static int MOBILITY_MULTIPLIER = 2;
     private final static int ATTACK_MULTIPLIER = 2;
     private final static int TWO_BISHOPS_BONUS = 50;
+    private static final StandardBoardEvaluator INSTANCE = new StandardBoardEvaluator();
+
+    private StandardBoardEvaluator() {
+    }
+
+    public static StandardBoardEvaluator get() {
+        return INSTANCE;
+    }
 
     @Override
     public int evaluate(final Board board,
@@ -57,26 +65,15 @@ public final class StandardBoardEvaluator
             if(piece.getPieceType().isBishop()) {
                 numBishops++;
             }
-//            if(piece.getPieceType().isRook()) {
-//                for(final Move move : player.getLegalMoves()) {
-//                    if(move.getMovedPiece().equals(piece)) {
-//
-//                    }
-//                }
-//            }
         }
         return pieceValuationScore + (numBishops == 2 ? TWO_BISHOPS_BONUS : 0);
     }
 
     private static int mobility(final Player player) {
-        return MOBILITY_MULTIPLIER * mobilityFun2(player);
+        return MOBILITY_MULTIPLIER * mobilityRatio(player);
     }
 
-    private static int mobilityFun1(final Player player) {
-        return (player.getLegalMoves().size() - player.getOpponent().getLegalMoves().size());
-    }
-
-    private static int mobilityFun2(final Player player) {
+    private static int mobilityRatio(final Player player) {
         return (int)((player.getLegalMoves().size() * 100.0f) / player.getOpponent().getLegalMoves().size());
     }
 

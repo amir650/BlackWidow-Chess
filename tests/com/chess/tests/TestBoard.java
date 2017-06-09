@@ -50,7 +50,7 @@ public class TestBoard {
         assertEquals(Iterables.size(allPieces), 32);
         assertFalse(BoardUtils.isEndGame(board));
         assertFalse(BoardUtils.isThreatenedBoardImmediate(board));
-        assertEquals(new StandardBoardEvaluator().evaluate(board, 0), 0);
+        assertEquals(StandardBoardEvaluator.get().evaluate(board, 0), 0);
         assertEquals(board.getTile(35).getPiece(), null);
         assertEquals(board.getTile(35).getTileCoordinate(), 35);
 
@@ -79,9 +79,9 @@ public class TestBoard {
         assertFalse(board.currentPlayer().getOpponent().isInCheckMate());
         assertEquals(board.currentPlayer(), board.whitePlayer());
         assertEquals(board.currentPlayer().getOpponent(), board.blackPlayer());
-        BoardEvaluator evaluator = new StandardBoardEvaluator();
+        BoardEvaluator evaluator = StandardBoardEvaluator.get();
         System.out.println(evaluator.evaluate(board, 0));
-        assertEquals(new StandardBoardEvaluator().evaluate(board, 0), 0);
+        assertEquals(StandardBoardEvaluator.get().evaluate(board, 0), 0);
 
         final Move move = MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e1"),
                 BoardUtils.INSTANCE.getCoordinateAtPosition("f1"));

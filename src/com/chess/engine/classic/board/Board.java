@@ -172,7 +172,7 @@ public final class Board {
         for (final Piece piece : pieces) {
             legalMoves.addAll(piece.calculateLegalMoves(this));
         }
-        return ImmutableList.copyOf(legalMoves);
+        return legalMoves;
     }
 
     private static Collection<Piece> calculateActivePieces(final Builder builder,

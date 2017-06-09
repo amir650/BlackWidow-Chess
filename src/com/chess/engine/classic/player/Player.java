@@ -7,16 +7,11 @@ import com.chess.engine.classic.board.Move.MoveStatus;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Piece;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public abstract class Player {
 
@@ -24,7 +19,6 @@ public abstract class Player {
     protected final King playerKing;
     protected final Collection<Move> legalMoves;
     protected final boolean isInCheck;
-    private final LoadingCache<Player, Boolean> escapeCache = initEscapeCache();
 
     Player(final Board board,
            final Collection<Move> playerLegals,
@@ -32,8 +26,8 @@ public abstract class Player {
         this.board = board;
         this.playerKing = establishKing();
         this.isInCheck = !Player.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegals).isEmpty();
-        this.legalMoves = ImmutableList.copyOf(
-                Iterables.concat(playerLegals, calculateKingCastles(playerLegals, opponentLegals)));
+        playerLegals.addAll(calculateKingCastles(playerLegals, opponentLegals));
+        this.legalMoves = ImmutableList.copyOf(playerLegals);
     }
 
     private boolean isMoveLegal(final Move move) {
@@ -77,32 +71,14 @@ public abstract class Player {
         throw new RuntimeException("Should not reach here! " +this.getAlliance()+ " king could not be established!");
     }
 
-    private static boolean hasEscapeMoves(final Player player) {
-        for(final Move move : player.getLegalMoves()) {
-            final MoveTransition transition = player.makeMove(move);
+    private boolean hasEscapeMoves() {
+        for(final Move move : getLegalMoves()) {
+            final MoveTransition transition = makeMove(move);
             if (transition.getMoveStatus().isDone()) {
                 return true;
             }
         }
         return false;
-    }
-
-    private boolean hasEscapeMoves() {
-        return this.escapeCache.getUnchecked(this);
-    }
-
-    private static LoadingCache<Player, Boolean> initEscapeCache() {
-        return CacheBuilder.newBuilder()
-                .expireAfterAccess(2, TimeUnit.MINUTES)
-                .weakKeys()
-                .concurrencyLevel(1)
-                .maximumSize(1)
-                .build(
-                        new CacheLoader<Player, Boolean>() {
-                            public Boolean load(final Player player) {
-                                return hasEscapeMoves(player);
-                            }
-                        });
     }
 
     public Collection<Move> getLegalMoves() {

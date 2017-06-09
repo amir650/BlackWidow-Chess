@@ -2,7 +2,6 @@ package com.chess.engine.classic.pieces;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.BoardUtils;
-import com.chess.engine.classic.board.Move;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 
@@ -16,24 +15,29 @@ enum PieceUtils {
     private final Table<Alliance, Integer, Bishop> ALL_POSSIBLE_BISHOPS = PieceUtils.createAllPossibleMovedBishops();
     private final Table<Alliance, Integer, Pawn> ALL_POSSIBLE_PAWNS = PieceUtils.createAllPossibleMovedPawns();
 
-    Pawn getMovedPawn(final Move move) {
-        return ALL_POSSIBLE_PAWNS.get(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    public Pawn getMovedPawn(final Alliance alliance,
+                      final int destinationCoordinate) {
+        return ALL_POSSIBLE_PAWNS.get(alliance, destinationCoordinate);
     }
 
-    Knight getMovedKnight(final Move move) {
-        return ALL_POSSIBLE_KNIGHTS.get(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    Knight getMovedKnight(final Alliance alliance,
+                          final int destinationCoordinate) {
+        return ALL_POSSIBLE_KNIGHTS.get(alliance, destinationCoordinate);
     }
 
-    Bishop getMovedBishop(final Move move) {
-        return ALL_POSSIBLE_BISHOPS.get(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    Bishop getMovedBishop(final Alliance alliance,
+                          final int destinationCoordinate) {
+        return ALL_POSSIBLE_BISHOPS.get(alliance, destinationCoordinate);
     }
 
-    Rook getMovedRook(final Move move) {
-        return ALL_POSSIBLE_ROOKS.get(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    Rook getMovedRook(final Alliance alliance,
+                      final int destinationCoordinate) {
+        return ALL_POSSIBLE_ROOKS.get(alliance, destinationCoordinate);
     }
 
-    Queen getMovedQueen(final Move move) {
-        return ALL_POSSIBLE_QUEENS.get(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    Queen getMovedQueen(final Alliance alliance,
+                        final int destinationCoordinate) {
+        return ALL_POSSIBLE_QUEENS.get(alliance, destinationCoordinate);
     }
 
     private static Table<Alliance, Integer, Pawn> createAllPossibleMovedPawns() {

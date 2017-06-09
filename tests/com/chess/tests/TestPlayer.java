@@ -31,7 +31,7 @@ public class TestPlayer {
                 .makeMove(MoveFactory.createMove(t1.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("e7"),
                         BoardUtils.INSTANCE.getCoordinateAtPosition("e5")));
         assertTrue(t2.getMoveStatus().isDone());
-        assertEquals(new StandardBoardEvaluator().evaluate(t2.getToBoard(), 0), 0);
+        assertEquals(StandardBoardEvaluator.get().evaluate(t2.getToBoard(), 0), 0);
     }
 
     @Test

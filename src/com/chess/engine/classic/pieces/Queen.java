@@ -1,9 +1,5 @@
 package com.chess.engine.classic.pieces;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.BoardUtils;
@@ -12,6 +8,10 @@ import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
 import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public final class Queen extends Piece {
 
@@ -68,7 +68,7 @@ public final class Queen extends Piece {
 
     @Override
     public Queen movePiece(final Move move) {
-        return PieceUtils.INSTANCE.getMovedQueen(move);
+        return PieceUtils.INSTANCE.getMovedQueen(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
     }
 
     @Override

@@ -62,7 +62,7 @@ public class TestPawnStructure {
         final Board board = FenUtilities.createGameFromFEN("4k3/2p1p1p1/8/8/8/8/2P1P1P1/4K3 w KQkq -");
         assertEquals(PawnStructureAnalyzer.get().isolatedPawnPenalty(board.whitePlayer()), PawnStructureAnalyzer.ISOLATED_PAWN_PENALTY * 3);
         assertEquals(PawnStructureAnalyzer.get().isolatedPawnPenalty(board.blackPlayer()), PawnStructureAnalyzer.ISOLATED_PAWN_PENALTY * 3);
-        final StandardBoardEvaluator boardEvaluator = new StandardBoardEvaluator();
+        final StandardBoardEvaluator boardEvaluator = StandardBoardEvaluator.get();
         assertEquals(boardEvaluator.evaluate(board, 1), 0);
     }
 
@@ -71,7 +71,7 @@ public class TestPawnStructure {
         final Board board = FenUtilities.createGameFromFEN("6k1/p6p/8/8/8/8/P6P/6K1 b - - 0 1");
         assertEquals(PawnStructureAnalyzer.get().isolatedPawnPenalty(board.whitePlayer()), PawnStructureAnalyzer.ISOLATED_PAWN_PENALTY * 2);
         assertEquals(PawnStructureAnalyzer.get().isolatedPawnPenalty(board.blackPlayer()), PawnStructureAnalyzer.ISOLATED_PAWN_PENALTY * 2);
-        final StandardBoardEvaluator boardEvaluator = new StandardBoardEvaluator();
+        final StandardBoardEvaluator boardEvaluator = StandardBoardEvaluator.get();
         assertEquals(boardEvaluator.evaluate(board, 1), 0);
     }
 
@@ -80,7 +80,7 @@ public class TestPawnStructure {
         final Board board = FenUtilities.createGameFromFEN("6k1/4p3/4p3/8/8/4P3/4P3/6K1 b - - 0 1");
         assertEquals(PawnStructureAnalyzer.get().isolatedPawnPenalty(board.whitePlayer()), PawnStructureAnalyzer.ISOLATED_PAWN_PENALTY * 2);
         assertEquals(PawnStructureAnalyzer.get().isolatedPawnPenalty(board.blackPlayer()), PawnStructureAnalyzer.ISOLATED_PAWN_PENALTY * 2);
-        final StandardBoardEvaluator boardEvaluator = new StandardBoardEvaluator();
+        final StandardBoardEvaluator boardEvaluator = StandardBoardEvaluator.get();
         assertEquals(boardEvaluator.evaluate(board, 1), 0);
     }
 
@@ -89,7 +89,7 @@ public class TestPawnStructure {
         final Board board = Board.createStandardBoard();
         assertEquals(PawnStructureAnalyzer.get().doubledPawnPenalty(board.whitePlayer()), 0);
         assertEquals(PawnStructureAnalyzer.get().doubledPawnPenalty(board.blackPlayer()), 0);
-        final StandardBoardEvaluator boardEvaluator = new StandardBoardEvaluator();
+        final StandardBoardEvaluator boardEvaluator = StandardBoardEvaluator.get();
         assertEquals(boardEvaluator.evaluate(board, 1), 0);
     }
 
@@ -98,7 +98,7 @@ public class TestPawnStructure {
         final Board board = FenUtilities.createGameFromFEN("6k1/4p3/4p3/8/8/4P3/4P3/6K1 b - - 0 1");
         assertEquals(PawnStructureAnalyzer.get().doubledPawnPenalty(board.whitePlayer()), PawnStructureAnalyzer.DOUBLED_PAWN_PENALTY * 2);
         assertEquals(PawnStructureAnalyzer.get().doubledPawnPenalty(board.blackPlayer()), PawnStructureAnalyzer.DOUBLED_PAWN_PENALTY * 2);
-        final StandardBoardEvaluator boardEvaluator = new StandardBoardEvaluator();
+        final StandardBoardEvaluator boardEvaluator = StandardBoardEvaluator.get();
         assertEquals(boardEvaluator.evaluate(board, 1), 0);
     }
 
@@ -114,7 +114,7 @@ public class TestPawnStructure {
         final Board board = FenUtilities.createGameFromFEN("6k1/8/8/P6p/P6p/P6p/8/6K1 b - - 0 1");
         assertEquals(PawnStructureAnalyzer.get().doubledPawnPenalty(board.whitePlayer()), PawnStructureAnalyzer.DOUBLED_PAWN_PENALTY * 3);
         assertEquals(PawnStructureAnalyzer.get().doubledPawnPenalty(board.blackPlayer()), PawnStructureAnalyzer.DOUBLED_PAWN_PENALTY * 3);
-        final StandardBoardEvaluator boardEvaluator = new StandardBoardEvaluator();
+        final StandardBoardEvaluator boardEvaluator = StandardBoardEvaluator.get();
         assertEquals(boardEvaluator.evaluate(board, 1), -5);
     }
 

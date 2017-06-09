@@ -101,13 +101,8 @@ public enum  BoardUtils {
 
     public static boolean kingThreat(final Move move) {
         final Board board = move.getBoard();
-        final King enemyKing = board.currentPlayer().getOpponent().getPlayerKing();
-        for(Move m : board.currentPlayer().getLegalMoves()) {
-            if(m.getDestinationCoordinate() == enemyKing.getPiecePosition()) {
-                return true;
-            }
-        }
-        return false;
+        MoveTransition transition = board.currentPlayer().makeMove(move);
+        return transition.getToBoard().currentPlayer().isInCheck();
     }
 
     public static boolean isKingPawnTrap(final Board board,

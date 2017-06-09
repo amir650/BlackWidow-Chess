@@ -233,7 +233,7 @@ public final class Table extends Observable {
         evaluateBoardMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                System.out.println(new StandardBoardEvaluator().evaluate(chessBoard, gameSetup.getSearchDepth()));
+                System.out.println(StandardBoardEvaluator.get().evaluate(chessBoard, gameSetup.getSearchDepth()));
 
             }
         });
@@ -721,7 +721,8 @@ public final class Table extends Observable {
                 @Override
                 public void mouseClicked(final MouseEvent event) {
 
-                    if(Table.get().getGameSetup().isAIPlayer(Table.get().getGameBoard().currentPlayer())) {
+                    if(Table.get().getGameSetup().isAIPlayer(Table.get().getGameBoard().currentPlayer()) ||
+                       BoardUtils.isEndGame(Table.get().getGameBoard())) {
                         return;
                     }
 
@@ -754,9 +755,9 @@ public final class Table extends Observable {
                         public void run() {
                             gameHistoryPanel.redo(chessBoard, moveLog);
                             takenPiecesPanel.redo(moveLog);
-                            if (gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
+                            //if (gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
                                 Table.get().moveMadeUpdate(PlayerType.HUMAN);
-                            }
+                            //}
                             boardPanel.drawBoard(chessBoard);
                             debugPanel.redo();
                         }

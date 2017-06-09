@@ -3,10 +3,12 @@ package com.chess.engine.classic.player.ai;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public final class PawnStructureAnalyzer {
 
@@ -36,13 +38,13 @@ public final class PawnStructureAnalyzer {
     }
 
     private static Collection<Piece> calculatePlayerPawns(final Player player) {
-        final Builder<Piece> playerPawnLocations = new Builder<>();
+        final List<Piece> playerPawnLocations = new ArrayList<>(8);
         for(final Piece piece : player.getActivePieces()) {
             if(piece.getPieceType().isPawn()) {
                 playerPawnLocations.add(piece);
             }
         }
-        return playerPawnLocations.build();
+        return ImmutableList.copyOf(playerPawnLocations);
     }
 
     private static int calculatePawnColumnStack(final ListMultimap<Integer, Piece> pawnsOnColumnTable) {

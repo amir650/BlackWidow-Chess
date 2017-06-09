@@ -46,7 +46,7 @@ public class IterativeDeepening extends Observable implements MoveStrategy {
     }
 
     public IterativeDeepening(final int searchDepth) {
-        this.evaluator = new StandardBoardEvaluator();
+        this.evaluator = StandardBoardEvaluator.get();
         this.searchDepth = searchDepth;
         this.moveSorter = MoveSorter.SORT;
         this.boardsEvaluated = 0;

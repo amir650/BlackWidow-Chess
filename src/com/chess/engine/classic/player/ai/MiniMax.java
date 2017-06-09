@@ -19,7 +19,7 @@ public final class MiniMax implements MoveStrategy {
     private int freqTableIndex;
 
     public MiniMax(final int searchDepth) {
-        this.evaluator = new StandardBoardEvaluator();
+        this.evaluator = StandardBoardEvaluator.get();
         this.boardsEvaluated = 0;
         this.searchDepth = searchDepth;
     }

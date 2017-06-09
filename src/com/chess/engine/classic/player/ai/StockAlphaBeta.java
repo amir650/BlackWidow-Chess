@@ -18,7 +18,6 @@ import static com.chess.engine.classic.board.Move.MoveFactory;
 public class StockAlphaBeta extends Observable implements MoveStrategy {
 
     private final BoardEvaluator evaluator;
-    private final MoveSorter moveSorter;
     private final int searchDepth;
     private long boardsEvaluated;
     private long executionTime;
@@ -27,33 +26,45 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
 
     private enum MoveSorter {
 
-        SORT {
+        STANDARD {
             @Override
             Collection<Move> sort(final Collection<Move> moves) {
-                return Ordering.from(EXPENSIVE_COMPARATOR).immutableSortedCopy(moves);
+                return Ordering.from(new Comparator<Move>() {
+                    @Override
+                    public int compare(final Move move1,
+                                       final Move move2) {
+                        return ComparisonChain.start()
+                                .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
+                                .compare(mvvlva(move2), mvvlva(move1))
+                                .result();
+                    }
+                }).immutableSortedCopy(moves);
             }
-        };
-
-        public static Comparator<Move> EXPENSIVE_COMPARATOR = new Comparator<Move>() {
+        },
+        EXPENSIVE {
             @Override
-            public int compare(final Move move1,
-                               final Move move2) {
-                return ComparisonChain.start()
-                        .compareTrueFirst(BoardUtils.kingThreat(move1), BoardUtils.kingThreat(move2))
-                        .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
-                        .compare(mvvlva(move2), mvvlva(move1))
-                        .result();
+            Collection<Move> sort(final Collection<Move> moves) {
+                return Ordering.from(new Comparator<Move>() {
+                    @Override
+                    public int compare(final Move move1,
+                                       final Move move2) {
+                        return ComparisonChain.start()
+                                .compareTrueFirst(BoardUtils.kingThreat(move1), BoardUtils.kingThreat(move2))
+                                .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
+                                .compare(mvvlva(move2), mvvlva(move1))
+                                .result();
+                    }
+                }).immutableSortedCopy(moves);
             }
         };
 
-        abstract Collection<Move> sort(Collection<Move> moves);
+        abstract  Collection<Move> sort(Collection<Move> moves);
     }
 
 
     public StockAlphaBeta(final int searchDepth) {
-        this.evaluator = new StandardBoardEvaluator();
+        this.evaluator = StandardBoardEvaluator.get();
         this.searchDepth = searchDepth;
-        this.moveSorter = MoveSorter.SORT;
         this.boardsEvaluated = 0;
         this.quiescenceCount = 0;
     }
@@ -80,7 +91,7 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
         int moveCounter = 1;
         int numMoves = board.currentPlayer().getLegalMoves().size();
 
-        for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
+        for (final Move move : MoveSorter.EXPENSIVE.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             this.quiescenceCount = 0;
             final String s;
@@ -144,7 +155,7 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
             return this.evaluator.evaluate(board, depth);
         }
         int currentHighest = highest;
-        for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
+        for (final Move move : MoveSorter.STANDARD.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 currentHighest = Math.max(currentHighest, min(moveTransition.getToBoard(),
@@ -166,7 +177,7 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
             return this.evaluator.evaluate(board, depth);
         }
         int currentLowest = lowest;
-        for (final Move move : this.moveSorter.sort((board.currentPlayer().getLegalMoves()))) {
+        for (final Move move : MoveSorter.STANDARD.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 currentLowest = Math.min(currentLowest, max(moveTransition.getToBoard(),
