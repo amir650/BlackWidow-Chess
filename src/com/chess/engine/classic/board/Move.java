@@ -83,14 +83,8 @@ public abstract class Move {
 
     public Board execute() {
         final Board.Builder builder = new Builder();
-        for (final Piece piece : this.board.currentPlayer().getActivePieces()) {
-            if (!this.movedPiece.equals(piece)) {
-                builder.setPiece(piece);
-            }
-        }
-        for (final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()) {
-            builder.setPiece(piece);
-        }
+        this.board.currentPlayer().getActivePieces().stream().filter(piece -> !this.movedPiece.equals(piece)).forEach(builder::setPiece);
+        this.board.currentPlayer().getOpponent().getActivePieces().forEach(builder::setPiece);
         builder.setPiece(this.movedPiece.movePiece(this));
         builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
         builder.setMoveTransition(this);
@@ -106,7 +100,7 @@ public abstract class Move {
         return builder.build();
     }
 
-    public String disambiguationFile() {
+    String disambiguationFile() {
         for(final Move move : this.board.currentPlayer().getLegalMoves()) {
             if(move.getDestinationCoordinate() == this.destinationCoordinate && !this.equals(move) &&
                this.movedPiece.getPieceType().equals(move.getMovedPiece().getPieceType())) {
@@ -170,14 +164,8 @@ public abstract class Move {
         public Board execute() {
             final Board pawnMovedBoard = this.decoratedMove.execute();
             final Board.Builder builder = new Builder();
-            for (final Piece piece : pawnMovedBoard.currentPlayer().getActivePieces()) {
-                if (!this.promotedPawn.equals(piece)) {
-                    builder.setPiece(piece);
-                }
-            }
-            for (final Piece piece : pawnMovedBoard.currentPlayer().getOpponent().getActivePieces()) {
-                builder.setPiece(piece);
-            }
+            pawnMovedBoard.currentPlayer().getActivePieces().stream().filter(piece -> !this.promotedPawn.equals(piece)).forEach(builder::setPiece);
+            pawnMovedBoard.currentPlayer().getOpponent().getActivePieces().forEach(builder::setPiece);
             builder.setPiece(this.promotionPiece.movePiece(this));
             builder.setMoveMaker(pawnMovedBoard.currentPlayer().getAlliance());
             builder.setMoveTransition(this);
@@ -309,16 +297,8 @@ public abstract class Move {
         @Override
         public Board execute() {
             final Board.Builder builder = new Builder();
-            for (final Piece piece : this.board.currentPlayer().getActivePieces()) {
-                if (!this.movedPiece.equals(piece)) {
-                    builder.setPiece(piece);
-                }
-            }
-            for (final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()) {
-                if(!piece.equals(this.getAttackedPiece())) {
-                    builder.setPiece(piece);
-                }
-            }
+            this.board.currentPlayer().getActivePieces().stream().filter(piece -> !this.movedPiece.equals(piece)).forEach(builder::setPiece);
+            this.board.currentPlayer().getOpponent().getActivePieces().stream().filter(piece -> !piece.equals(this.getAttackedPiece())).forEach(builder::setPiece);
             builder.setPiece(this.movedPiece.movePiece(this));
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
             builder.setMoveTransition(this);
@@ -355,14 +335,8 @@ public abstract class Move {
         @Override
         public Board execute() {
             final Board.Builder builder = new Builder();
-            for (final Piece piece : this.board.currentPlayer().getActivePieces()) {
-                if (!this.movedPiece.equals(piece)) {
-                    builder.setPiece(piece);
-                }
-            }
-            for (final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()) {
-                builder.setPiece(piece);
-            }
+            this.board.currentPlayer().getActivePieces().stream().filter(piece -> !this.movedPiece.equals(piece)).forEach(builder::setPiece);
+            this.board.currentPlayer().getOpponent().getActivePieces().forEach(builder::setPiece);
             final Pawn movedPawn = (Pawn)this.movedPiece.movePiece(this);
             builder.setPiece(movedPawn);
             builder.setEnPassantPawn(movedPawn);
@@ -397,7 +371,7 @@ public abstract class Move {
             this.castleRookDestination = castleRookDestination;
         }
 
-        public Rook getCastleRook() {
+        Rook getCastleRook() {
             return this.castleRook;
         }
 

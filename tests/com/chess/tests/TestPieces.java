@@ -15,6 +15,7 @@ import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 public class TestPieces {
@@ -216,8 +217,8 @@ public class TestPieces {
         final Board board = builder.build();
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
-        assertEquals(board.getTile(0), board.getTile(0));
-        assertNotNull(board.getTile(0));
+        assertEquals(board.getPiece(0), board.getPiece(0));
+        assertNotNull(board.getPiece(0));
         assertEquals(whiteLegals.size(), 12);
         assertEquals(blackLegals.size(), 5);
         assertTrue(whiteLegals.contains(Move.MoveFactory
@@ -487,8 +488,8 @@ public class TestPieces {
     public void testKingEquality() {
         final Board board = Board.createStandardBoard();
         final Board board2 = Board.createStandardBoard();
-        assertEquals(board.getTile(60).getPiece(), board2.getTile(60).getPiece());
-        junit.framework.Assert.assertFalse(board.getTile(60).getPiece().equals(null));
+        assertEquals(board.getPiece(60), board2.getPiece(60));
+        assertFalse(board.getPiece(60).equals(null));
     }
 
     @Test

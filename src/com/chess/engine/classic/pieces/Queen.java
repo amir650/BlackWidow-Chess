@@ -6,7 +6,6 @@ import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
-import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -31,9 +30,8 @@ public final class Queen extends Piece {
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
-        int candidateDestinationCoordinate;
         for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) {
-            candidateDestinationCoordinate = this.piecePosition;
+            int candidateDestinationCoordinate = this.piecePosition;
             while (true) {
                 if (isFirstColumnExclusion(currentCandidateOffset, candidateDestinationCoordinate) ||
                     isEightColumnExclusion(currentCandidateOffset, candidateDestinationCoordinate)) {
@@ -43,11 +41,10 @@ public final class Queen extends Piece {
                 if (!BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     break;
                 } else {
-                    final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
-                    if (!candidateDestinationTile.isTileOccupied()) {
+                    final Piece pieceAtDestination = board.getPiece(candidateDestinationCoordinate);
+                    if (pieceAtDestination == null) {
                         legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
                     } else {
-                        final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance pieceAtDestinationAllegiance = pieceAtDestination.getPieceAllegiance();
                         if (this.pieceAlliance != pieceAtDestinationAllegiance) {
                             legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate,

@@ -9,9 +9,8 @@ import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Piece;
 import com.google.common.collect.ImmutableList;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class Player {
 
@@ -28,10 +27,6 @@ public abstract class Player {
         this.isInCheck = !Player.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegals).isEmpty();
         playerLegals.addAll(calculateKingCastles(playerLegals, opponentLegals));
         this.legalMoves = ImmutableList.copyOf(playerLegals);
-    }
-
-    private boolean isMoveLegal(final Move move) {
-        return this.legalMoves.contains(move);
     }
 
     public boolean isInCheck() {
@@ -63,22 +58,12 @@ public abstract class Player {
     }
 
     private King establishKing() {
-        for(final Piece piece : getActivePieces()) {
-            if(piece.getPieceType().isKing()) {
-                return (King) piece;
-            }
-        }
-        throw new RuntimeException("Should not reach here! " +this.getAlliance()+ " king could not be established!");
+        return (King) getActivePieces().stream().filter(piece ->
+            piece.getPieceType().isKing()).findAny().orElseThrow(RuntimeException::new);
     }
 
     private boolean hasEscapeMoves() {
-        for(final Move move : getLegalMoves()) {
-            final MoveTransition transition = makeMove(move);
-            if (transition.getMoveStatus().isDone()) {
-                return true;
-            }
-        }
-        return false;
+        return this.legalMoves.stream().anyMatch(move -> makeMove(move).getMoveStatus().isDone());
     }
 
     public Collection<Move> getLegalMoves() {
@@ -87,17 +72,12 @@ public abstract class Player {
 
     static Collection<Move> calculateAttacksOnTile(final int tile,
                                                    final Collection<Move> moves) {
-        final List<Move> attackMoves = new ArrayList<>();
-        for (final Move move : moves) {
-            if (tile == move.getDestinationCoordinate()) {
-                attackMoves.add(move);
-            }
-        }
-        return ImmutableList.copyOf(attackMoves);
+        return moves.stream().filter(move -> move.getDestinationCoordinate() == tile)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), ImmutableList::copyOf));
     }
 
     public MoveTransition makeMove(final Move move) {
-        if (!isMoveLegal(move)) {
+        if (!this.legalMoves.contains(move)) {
             return new MoveTransition(this.board, this.board, move, MoveStatus.ILLEGAL_MOVE);
         }
         final Board transitionedBoard = move.execute();

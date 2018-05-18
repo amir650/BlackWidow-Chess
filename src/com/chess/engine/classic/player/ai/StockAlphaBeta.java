@@ -22,39 +22,27 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
     private long boardsEvaluated;
     private long executionTime;
     private int quiescenceCount;
-    private static final int MAX_QUIESCENCE = 5000;
+    private static final int MAX_QUIESCENCE = 5000*10;
 
     private enum MoveSorter {
 
         STANDARD {
             @Override
             Collection<Move> sort(final Collection<Move> moves) {
-                return Ordering.from(new Comparator<Move>() {
-                    @Override
-                    public int compare(final Move move1,
-                                       final Move move2) {
-                        return ComparisonChain.start()
-                                .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
-                                .compare(mvvlva(move2), mvvlva(move1))
-                                .result();
-                    }
-                }).immutableSortedCopy(moves);
+                return Ordering.from((Comparator<Move>) (move1, move2) -> ComparisonChain.start()
+                        .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
+                        .compare(mvvlva(move2), mvvlva(move1))
+                        .result()).immutableSortedCopy(moves);
             }
         },
         EXPENSIVE {
             @Override
             Collection<Move> sort(final Collection<Move> moves) {
-                return Ordering.from(new Comparator<Move>() {
-                    @Override
-                    public int compare(final Move move1,
-                                       final Move move2) {
-                        return ComparisonChain.start()
-                                .compareTrueFirst(BoardUtils.kingThreat(move1), BoardUtils.kingThreat(move2))
-                                .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
-                                .compare(mvvlva(move2), mvvlva(move1))
-                                .result();
-                    }
-                }).immutableSortedCopy(moves);
+                return Ordering.from((Comparator<Move>) (move1, move2) -> ComparisonChain.start()
+                        .compareTrueFirst(BoardUtils.kingThreat(move1), BoardUtils.kingThreat(move2))
+                        .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
+                        .compare(mvvlva(move2), mvvlva(move1))
+                        .result()).immutableSortedCopy(moves);
             }
         };
 
@@ -129,8 +117,12 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
         }
 
         this.executionTime = System.currentTimeMillis() - startTime;
+        final String result = board.currentPlayer() + " SELECTS " +bestMove+ " [#boards evaluated = " +this.boardsEvaluated+
+                " time taken = " +this.executionTime/1000+ " rate = " +(1000 * ((double)this.boardsEvaluated/this.executionTime));
         System.out.printf("%s SELECTS %s [#boards evaluated = %d, time taken = %d ms, rate = %.1f\n", board.currentPlayer(),
                 bestMove, this.boardsEvaluated, this.executionTime, (1000 * ((double)this.boardsEvaluated/this.executionTime)));
+        setChanged();
+        notifyObservers(result);
         return bestMove;
     }
 
@@ -195,16 +187,16 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
         if(depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
             int activityMeasure = 0;
             if (moveTransition.getToBoard().currentPlayer().isInCheck()) {
-                activityMeasure += 2;
+                activityMeasure += 1;
             }
-            for(final Move move: BoardUtils.lastNMoves(moveTransition.getToBoard(), 4)) {
+            for(final Move move: BoardUtils.lastNMoves(moveTransition.getToBoard(), 2)) {
                 if(move.isAttack()) {
                     activityMeasure += 1;
                 }
             }
-            if(activityMeasure > 3) {
+            if(activityMeasure >= 2) {
                 this.quiescenceCount++;
-                return 2;
+                return 1;
             }
         }
         return depth - 1;

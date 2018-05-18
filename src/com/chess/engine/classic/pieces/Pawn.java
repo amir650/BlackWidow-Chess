@@ -41,16 +41,16 @@ public final class Pawn
             if (!BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 continue;
             }
-            if (currentCandidateOffset == 8 && !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
+            if (currentCandidateOffset == 8 && board.getPiece(candidateDestinationCoordinate) == null) {
                 if (this.pieceAlliance.isPawnPromotionSquare(candidateDestinationCoordinate)) {
                     legalMoves.add(new PawnPromotion(
-                            new PawnMove(board, this, candidateDestinationCoordinate), new Queen(this.pieceAlliance, candidateDestinationCoordinate)));
+                            new PawnMove(board, this, candidateDestinationCoordinate), PieceUtils.INSTANCE.getMovedQueen(this.pieceAlliance, candidateDestinationCoordinate)));
                     legalMoves.add(new PawnPromotion(
-                            new PawnMove(board, this, candidateDestinationCoordinate), new Rook(this.pieceAlliance, candidateDestinationCoordinate)));
+                            new PawnMove(board, this, candidateDestinationCoordinate), PieceUtils.INSTANCE.getMovedRook(this.pieceAlliance, candidateDestinationCoordinate)));
                     legalMoves.add(new PawnPromotion(
-                            new PawnMove(board, this, candidateDestinationCoordinate), new Bishop(this.pieceAlliance, candidateDestinationCoordinate)));
+                            new PawnMove(board, this, candidateDestinationCoordinate), PieceUtils.INSTANCE.getMovedBishop(this.pieceAlliance, candidateDestinationCoordinate)));
                     legalMoves.add(new PawnPromotion(
-                            new PawnMove(board, this, candidateDestinationCoordinate), new Knight(this.pieceAlliance, candidateDestinationCoordinate)));
+                            new PawnMove(board, this, candidateDestinationCoordinate), PieceUtils.INSTANCE.getMovedKnight(this.pieceAlliance, candidateDestinationCoordinate)));
                 }
                 else {
                     legalMoves.add(new PawnMove(board, this, candidateDestinationCoordinate));
@@ -61,26 +61,26 @@ public final class Pawn
                      (BoardUtils.INSTANCE.SEVENTH_ROW.get(this.piecePosition) && this.pieceAlliance.isWhite()))) {
                 final int behindCandidateDestinationCoordinate =
                         this.piecePosition + (this.pieceAlliance.getDirection() * 8);
-                if (!board.getTile(candidateDestinationCoordinate).isTileOccupied() &&
-                    !board.getTile(behindCandidateDestinationCoordinate).isTileOccupied()) {
+                if (board.getPiece(candidateDestinationCoordinate) == null &&
+                    board.getPiece(behindCandidateDestinationCoordinate) == null) {
                     legalMoves.add(new PawnJump(board, this, candidateDestinationCoordinate));
                 }
             }
             else if (currentCandidateOffset == 7 &&
                     !((BoardUtils.INSTANCE.EIGHTH_COLUMN.get(this.piecePosition) && this.pieceAlliance.isWhite()) ||
                       (BoardUtils.INSTANCE.FIRST_COLUMN.get(this.piecePosition) && this.pieceAlliance.isBlack()))) {
-                if(board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
-                    final Piece pieceOnCandidate = board.getTile(candidateDestinationCoordinate).getPiece();
+                if(board.getPiece(candidateDestinationCoordinate) != null) {
+                    final Piece pieceOnCandidate = board.getPiece(candidateDestinationCoordinate);
                     if (this.pieceAlliance != pieceOnCandidate.getPieceAllegiance()) {
                         if (this.pieceAlliance.isPawnPromotionSquare(candidateDestinationCoordinate)) {
                             legalMoves.add(new PawnPromotion(
-                                    new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate), new Queen(this.pieceAlliance, candidateDestinationCoordinate)));
+                                    new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate), PieceUtils.INSTANCE.getMovedQueen(this.pieceAlliance, candidateDestinationCoordinate)));
                             legalMoves.add(new PawnPromotion(
-                                    new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate), new Rook(this.pieceAlliance, candidateDestinationCoordinate)));
+                                    new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate), PieceUtils.INSTANCE.getMovedRook(this.pieceAlliance, candidateDestinationCoordinate)));
                             legalMoves.add(new PawnPromotion(
-                                    new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate), new Bishop(this.pieceAlliance, candidateDestinationCoordinate)));
+                                    new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate), PieceUtils.INSTANCE.getMovedBishop(this.pieceAlliance, candidateDestinationCoordinate)));
                             legalMoves.add(new PawnPromotion(
-                                    new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate), new Knight(this.pieceAlliance, candidateDestinationCoordinate)));
+                                    new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate), PieceUtils.INSTANCE.getMovedKnight(this.pieceAlliance, candidateDestinationCoordinate)));
                         }
                         else {
                             legalMoves.add(
@@ -100,27 +100,27 @@ public final class Pawn
             else if (currentCandidateOffset == 9 &&
                     !((BoardUtils.INSTANCE.FIRST_COLUMN.get(this.piecePosition) && this.pieceAlliance.isWhite()) ||
                       (BoardUtils.INSTANCE.EIGHTH_COLUMN.get(this.piecePosition) && this.pieceAlliance.isBlack()))) {
-                if(board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
+                if(board.getPiece(candidateDestinationCoordinate) != null) {
                     if (this.pieceAlliance !=
-                            board.getTile(candidateDestinationCoordinate).getPiece().getPieceAllegiance()) {
+                            board.getPiece(candidateDestinationCoordinate).getPieceAllegiance()) {
                         if (this.pieceAlliance.isPawnPromotionSquare(candidateDestinationCoordinate)) {
                             legalMoves.add(new PawnPromotion(
                                     new PawnAttackMove(board, this, candidateDestinationCoordinate,
-                                            board.getTile(candidateDestinationCoordinate).getPiece()), new Queen(this.pieceAlliance, candidateDestinationCoordinate)));
+                                            board.getPiece(candidateDestinationCoordinate)), PieceUtils.INSTANCE.getMovedQueen(this.pieceAlliance, candidateDestinationCoordinate)));
                             legalMoves.add(new PawnPromotion(
                                     new PawnAttackMove(board, this, candidateDestinationCoordinate,
-                                            board.getTile(candidateDestinationCoordinate).getPiece()), new Rook(this.pieceAlliance, candidateDestinationCoordinate)));
+                                            board.getPiece(candidateDestinationCoordinate)), PieceUtils.INSTANCE.getMovedRook(this.pieceAlliance, candidateDestinationCoordinate)));
                             legalMoves.add(new PawnPromotion(
                                     new PawnAttackMove(board, this, candidateDestinationCoordinate,
-                                            board.getTile(candidateDestinationCoordinate).getPiece()), new Bishop(this.pieceAlliance, candidateDestinationCoordinate)));
+                                            board.getPiece(candidateDestinationCoordinate)), PieceUtils.INSTANCE.getMovedBishop(this.pieceAlliance, candidateDestinationCoordinate)));
                             legalMoves.add(new PawnPromotion(
                                     new PawnAttackMove(board, this, candidateDestinationCoordinate,
-                                            board.getTile(candidateDestinationCoordinate).getPiece()), new Knight(this.pieceAlliance, candidateDestinationCoordinate)));
+                                            board.getPiece(candidateDestinationCoordinate)), PieceUtils.INSTANCE.getMovedKnight(this.pieceAlliance, candidateDestinationCoordinate)));
                         }
                         else {
                             legalMoves.add(
                                     new PawnAttackMove(board, this, candidateDestinationCoordinate,
-                                            board.getTile(candidateDestinationCoordinate).getPiece()));
+                                            board.getPiece(candidateDestinationCoordinate)));
                         }
                     }
                 } else if (board.getEnPassantPawn() != null && board.getEnPassantPawn().getPiecePosition() ==

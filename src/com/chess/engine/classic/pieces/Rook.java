@@ -6,7 +6,6 @@ import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
-import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -38,11 +37,10 @@ public final class Rook extends Piece {
                 }
                 candidateDestinationCoordinate += currentCandidateOffset;
                 if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
-                    final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
-                    if (!candidateDestinationTile.isTileOccupied()) {
+                    final Piece pieceAtDestination = board.getPiece(candidateDestinationCoordinate);
+                    if (pieceAtDestination == null) {
                         legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
                     } else {
-                        final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance pieceAtDestinationAllegiance = pieceAtDestination.getPieceAllegiance();
                         if (this.pieceAlliance != pieceAtDestinationAllegiance) {
                             legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate,

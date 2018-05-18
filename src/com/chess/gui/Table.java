@@ -37,8 +37,7 @@ public final class Table extends Observable {
     private final GameSetup gameSetup;
     private Board chessBoard;
     private Move computerMove;
-    private Tile sourceTile;
-    private Tile destinationTile;
+    private Piece sourceTile;
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
     private String pieceIconPath;
@@ -566,12 +565,13 @@ public final class Table extends Observable {
                 bestMove = bookMove;
             }
             else {
-                //final int moveNumber = Table.get().getMoveLog().size();
-                //final int quiescenceFactor = 2000 + (100 * moveNumber);
+                int numPieces = Table.get().getGameBoard().getWhitePieces().size() +
+                        Table.get().getGameBoard().getBlackPieces().size();
+                //int bonusDepth = Math.min(4, 1 + Math.round((float)32/numPieces));
+                int bonusDepth = 0;
                 final StockAlphaBeta strategy =
-                        new StockAlphaBeta(Table.get().getGameSetup().getSearchDepth());
+                        new StockAlphaBeta(Table.get().getGameSetup().getSearchDepth() + bonusDepth);
                 strategy.addObserver(Table.get().getDebugPanel());
-                //Table.get().getGameBoard().currentPlayer().setMoveStrategy(strategy);
                 bestMove = strategy.execute(
                         Table.get().getGameBoard());
             }
@@ -728,26 +728,23 @@ public final class Table extends Observable {
 
                     if (isRightMouseButton(event)) {
                         sourceTile = null;
-                        destinationTile = null;
                         humanMovedPiece = null;
                     } else if (isLeftMouseButton(event)) {
                         if (sourceTile == null) {
-                            sourceTile = chessBoard.getTile(tileId);
-                            humanMovedPiece = sourceTile.getPiece();
+                            sourceTile = chessBoard.getPiece(tileId);
+                            humanMovedPiece = sourceTile;
                             if (humanMovedPiece == null) {
                                 sourceTile = null;
                             }
                         } else {
-                            destinationTile = chessBoard.getTile(tileId);
-                            final Move move = MoveFactory.createMove(chessBoard, sourceTile.getTileCoordinate(),
-                                    destinationTile.getTileCoordinate());
+                            final Move move = MoveFactory.createMove(chessBoard, sourceTile.getPiecePosition(),
+                                    tileId);
                             final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getToBoard();
                                 moveLog.addMove(move);
                             }
                             sourceTile = null;
-                            destinationTile = null;
                             humanMovedPiece = null;
                         }
                     }
@@ -845,11 +842,11 @@ public final class Table extends Observable {
 
         private void assignTilePieceIcon(final Board board) {
             this.removeAll();
-            if(board.getTile(this.tileId).isTileOccupied()) {
+            if(board.getPiece(this.tileId) != null) {
                 try{
                     final BufferedImage image = ImageIO.read(new File(pieceIconPath +
-                            board.getTile(this.tileId).getPiece().getPieceAllegiance().toString().substring(0, 1) + "" +
-                            board.getTile(this.tileId).getPiece().toString() +
+                            board.getPiece(this.tileId).getPieceAllegiance().toString().substring(0, 1) + "" +
+                            board.getPiece(this.tileId).toString() +
                             ".gif"));
                     add(new JLabel(new ImageIcon(image)));
                 } catch(final IOException e) {

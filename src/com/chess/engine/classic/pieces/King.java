@@ -1,17 +1,16 @@
 package com.chess.engine.classic.pieces;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.MajorAttackMove;
 import com.chess.engine.classic.board.Move.MajorMove;
-import com.chess.engine.classic.board.Tile;
 import com.google.common.collect.ImmutableList;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public final class King extends Piece {
 
@@ -64,12 +63,10 @@ public final class King extends Piece {
             }
             final int candidateDestinationCoordinate = this.piecePosition + currentCandidateOffset;
             if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
-                final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
-                if (!candidateDestinationTile.isTileOccupied()) {
+                final Piece pieceAtDestination = board.getPiece(candidateDestinationCoordinate);
+                if (pieceAtDestination == null) {
                     legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
-                }
-                else {
-                    final Piece pieceAtDestination = candidateDestinationTile.getPiece();
+                } else {
                     final Alliance pieceAtDestinationAllegiance = pieceAtDestination.getPieceAllegiance();
                     if (this.pieceAlliance != pieceAtDestinationAllegiance) {
                         legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate,

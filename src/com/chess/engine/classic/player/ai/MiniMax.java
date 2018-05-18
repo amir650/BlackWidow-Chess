@@ -86,8 +86,8 @@ public final class MiniMax implements MoveStrategy {
         return bestMove;
     }
 
-    public int min(final Board board,
-                   final int depth) {
+    private int min(final Board board,
+                    final int depth) {
         if(depth == 0) {
             this.boardsEvaluated++;
             this.freqTable[this.freqTableIndex].increment();
@@ -109,8 +109,8 @@ public final class MiniMax implements MoveStrategy {
         return lowestSeenValue;
     }
 
-    public int max(final Board board,
-                   final int depth) {
+    private int max(final Board board,
+                    final int depth) {
         if(depth == 0) {
             this.boardsEvaluated++;
             this.freqTable[this.freqTableIndex].increment();
@@ -133,8 +133,7 @@ public final class MiniMax implements MoveStrategy {
     }
 
     private static boolean isEndGameScenario(final Board board) {
-        return  board.currentPlayer().isInCheckMate() ||
-                board.currentPlayer().isInStaleMate();
+        return board.currentPlayer().isInCheckMate() || board.currentPlayer().isInStaleMate();
     }
 
     private static class FreqTableRow {
@@ -147,11 +146,11 @@ public final class MiniMax implements MoveStrategy {
             this.move = move;
         }
 
-        public long getCount() {
+        long getCount() {
             return this.count.get();
         }
 
-        public void increment() {
+        void increment() {
             this.count.incrementAndGet();
         }
 

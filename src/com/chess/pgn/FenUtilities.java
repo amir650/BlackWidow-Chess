@@ -6,7 +6,7 @@ import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.pieces.*;
 
-import static com.chess.engine.classic.board.Board.*;
+import static com.chess.engine.classic.board.Board.Builder;
 
 public class FenUtilities {
 
@@ -163,7 +163,9 @@ public class FenUtilities {
     private static String calculateBoardText(final Board board) {
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
-            final String tileText = board.getTile(i).toString();
+            final String tileText = board.getPiece(i) == null ? "-" :
+                    board.getPiece(i).getPieceAllegiance().isWhite() ? board.getPiece(i).toString() :
+                    board.getPiece(i).toString().toLowerCase();
             builder.append(tileText);
         }
         builder.insert(8, "/");

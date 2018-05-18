@@ -44,11 +44,13 @@ public abstract class Piece {
     public int getPieceValue() {
         return this.pieceType.getPieceValue();
     }
+
     public abstract int locationBonus();
 
     public abstract Piece movePiece(Move move);
 
     public abstract Collection<Move> calculateLegalMoves(final Board board);
+
 
     @Override
     public boolean equals(final Object other) {
@@ -59,20 +61,20 @@ public abstract class Piece {
             return false;
         }
         final Piece otherPiece = (Piece) other;
-        return piecePosition == otherPiece.piecePosition && pieceType == otherPiece.pieceType &&
-               pieceAlliance == otherPiece.pieceAlliance && isFirstMove == otherPiece.isFirstMove;
+        return this.piecePosition == otherPiece.piecePosition && this.pieceType == otherPiece.pieceType &&
+               this.pieceAlliance == otherPiece.pieceAlliance && this.isFirstMove == otherPiece.isFirstMove;
     }
 
     @Override
     public int hashCode() {
-        return cachedHashCode;
+        return this.cachedHashCode;
     }
 
     private int computeHashCode() {
-        int result = pieceType.hashCode();
-        result = 31 * result + pieceAlliance.hashCode();
-        result = 31 * result + piecePosition;
-        result = 31 * result + (isFirstMove ? 1 : 0);
+        int result = this.pieceType.hashCode();
+        result = 31 * result + this.pieceAlliance.hashCode();
+        result = 31 * result + this.piecePosition;
+        result = 31 * result + (this.isFirstMove ? 1 : 0);
         return result;
     }
 
@@ -217,7 +219,8 @@ public abstract class Piece {
             return this.pieceName;
         }
 
-        PieceType(final int val, final String pieceName) {
+        PieceType(final int val,
+                  final String pieceName) {
             this.value = val;
             this.pieceName = pieceName;
         }

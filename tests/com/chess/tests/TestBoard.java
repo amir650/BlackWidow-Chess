@@ -7,7 +7,6 @@ import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.pieces.*;
 import com.chess.engine.classic.player.ai.BoardEvaluator;
 import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
-import com.chess.pgn.FenUtilities;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 
@@ -51,9 +50,7 @@ public class TestBoard {
         assertFalse(BoardUtils.isEndGame(board));
         assertFalse(BoardUtils.isThreatenedBoardImmediate(board));
         assertEquals(StandardBoardEvaluator.get().evaluate(board, 0), 0);
-        assertEquals(board.getTile(35).getPiece(), null);
-        assertEquals(board.getTile(35).getTileCoordinate(), 35);
-
+        assertEquals(board.getPiece(35), null);
     }
 
     @Test
@@ -226,26 +223,21 @@ public class TestBoard {
     }
 
     @Test
-    public void tt() {
+    public void mem() {
+        final Runtime runtime = Runtime.getRuntime();
+        long start, end;
+        runtime.gc();
+        start = runtime.freeMemory();
+        Board board = Board.createStandardBoard();
+        end =  runtime.freeMemory();
+        System.out.println("That took " + (start-end) + " bytes.");
 
-        final Board.Builder builder = new Board.Builder();
-        //BLACK LAYOUT
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        //WHITE LAYOUT
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        builder.setPiece(new Bishop(Alliance.WHITE, 61));
-        //white to move
-        builder.setMoveMaker(Alliance.WHITE);
-        final Board board = builder.build();
-        System.out.println(FenUtilities.createFENFromGame(board));
     }
-
-
     private static int calculatedActivesFor(final Board board,
                                             final Alliance alliance) {
         int count = 0;
-        for (final Tile t : board.getGameBoard()) {
-            if (t.isTileOccupied() && t.getPiece().getPieceAllegiance().equals(alliance)) {
+        for (final Piece p : board.getAllPieces()) {
+            if (p.getPieceAllegiance().equals(alliance)) {
                 count++;
             }
         }

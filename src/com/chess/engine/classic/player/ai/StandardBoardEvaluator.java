@@ -13,7 +13,6 @@ public final class StandardBoardEvaluator
     private final static int CHECK_MATE_BONUS = 10000;
     private final static int CHECK_BONUS = 50;
     private final static int CASTLE_BONUS = 60;
-    private final static int CASTLE_CAPABLE_BONUS = 25;
     private final static int MOBILITY_MULTIPLIER = 2;
     private final static int ATTACK_MULTIPLIER = 2;
     private final static int TWO_BISHOPS_BONUS = 50;
@@ -50,7 +49,7 @@ public final class StandardBoardEvaluator
                 final Piece movedPiece = move.getMovedPiece();
                 final Piece attackedPiece = move.getAttackedPiece();
                 if(movedPiece.getPieceValue() <= attackedPiece.getPieceValue()) {
-                    attackScore ++;
+                    attackScore++;
                 }
             }
         }
@@ -91,11 +90,7 @@ public final class StandardBoardEvaluator
     }
 
     private static int castle(final Player player) {
-        return player.isCastled() ? CASTLE_BONUS : castleCapable(player);
-    }
-
-    private static int castleCapable(final Player player) {
-        return player.isKingSideCastleCapable() || player.isQueenSideCastleCapable() ? CASTLE_CAPABLE_BONUS : 0;
+        return player.isCastled() ? CASTLE_BONUS : 0;
     }
 
     private static int pawnStructure(final Player player) {

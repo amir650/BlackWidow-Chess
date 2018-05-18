@@ -10,7 +10,6 @@ import com.chess.engine.classic.pieces.*;
 import com.chess.engine.classic.player.ai.MiniMax;
 import com.chess.engine.classic.player.ai.MoveStrategy;
 import com.chess.pgn.FenUtilities;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -69,16 +68,6 @@ public class TestMiniMax {
         minMax.execute(board);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         assertEquals(numBoardsEvaluated, 119060324L);
-    }
-
-    @Ignore
-    @Test
-    public void testOpeningDepth7() {
-        final Board board = Board.createStandardBoard();
-        final MoveStrategy minMax = new MiniMax(7);
-        minMax.execute(board);
-        final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-        assertEquals(numBoardsEvaluated, 3195901860L);
     }
 
     @Test

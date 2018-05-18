@@ -101,32 +101,24 @@ public enum  BoardUtils {
 
     public static boolean kingThreat(final Move move) {
         final Board board = move.getBoard();
-        MoveTransition transition = board.currentPlayer().makeMove(move);
+        final MoveTransition transition = board.currentPlayer().makeMove(move);
         return transition.getToBoard().currentPlayer().isInCheck();
     }
 
     public static boolean isKingPawnTrap(final Board board,
                                          final King king,
                                          final int frontTile) {
-        final Tile tile = board.getTile(frontTile);
-        if(tile.isTileOccupied()) {
-            final Piece piece = tile.getPiece();
-            if(piece.getPieceType().isPawn() && piece.getPieceAllegiance() != king.getPieceAllegiance()) {
-                return true;
-            }
-        }
-        return false;
+        final Piece piece = board.getPiece(frontTile);
+        return piece != null && piece.getPieceType().isPawn() &&
+               piece.getPieceAllegiance() != king.getPieceAllegiance();
     }
 
     public static int mvvlva(final Move move) {
-
         final Piece movingPiece = move.getMovedPiece();
-
         if(move.isAttack()) {
             final Piece attackedPiece = move.getAttackedPiece();
             return (attackedPiece.getPieceValue() - movingPiece.getPieceValue() +  Piece.PieceType.KING.getPieceValue()) * 100;
         }
-
         return Piece.PieceType.KING.getPieceValue() - movingPiece.getPieceValue();
     }
 
