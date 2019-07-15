@@ -7,10 +7,12 @@ import com.chess.engine.classic.board.Move.MoveStatus;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Piece;
-import com.google.common.collect.ImmutableList;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.collectingAndThen;
 
 public abstract class Player {
 
@@ -24,9 +26,9 @@ public abstract class Player {
            final Collection<Move> opponentLegals) {
         this.board = board;
         this.playerKing = establishKing();
-        this.isInCheck = !Player.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegals).isEmpty();
+        this.isInCheck = !calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegals).isEmpty();
         playerLegals.addAll(calculateKingCastles(playerLegals, opponentLegals));
-        this.legalMoves = ImmutableList.copyOf(playerLegals);
+        this.legalMoves = Collections.unmodifiableCollection(playerLegals);
     }
 
     public boolean isInCheck() {
@@ -58,12 +60,16 @@ public abstract class Player {
     }
 
     private King establishKing() {
-        return (King) getActivePieces().stream().filter(piece ->
-            piece.getPieceType().isKing()).findAny().orElseThrow(RuntimeException::new);
+        return (King) getActivePieces().stream()
+                                       .filter(piece -> piece.getPieceType().isKing())
+                                       .findAny()
+                                       .orElseThrow(RuntimeException::new);
     }
 
     private boolean hasEscapeMoves() {
-        return this.legalMoves.stream().anyMatch(move -> makeMove(move).getMoveStatus().isDone());
+        return this.legalMoves.stream()
+                              .anyMatch(move -> makeMove(move)
+                              .getMoveStatus().isDone());
     }
 
     public Collection<Move> getLegalMoves() {
@@ -72,8 +78,9 @@ public abstract class Player {
 
     static Collection<Move> calculateAttacksOnTile(final int tile,
                                                    final Collection<Move> moves) {
-        return moves.stream().filter(move -> move.getDestinationCoordinate() == tile)
-                .collect(Collectors.collectingAndThen(Collectors.toList(), ImmutableList::copyOf));
+        return moves.stream()
+                    .filter(move -> move.getDestinationCoordinate() == tile)
+                    .collect(collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
     }
 
     public MoveTransition makeMove(final Move move) {

@@ -102,7 +102,7 @@ public class PGNUtilities {
     }
 
     public static List<String> processMoveText(final String gameText) throws ParsePGNException {
-        return gameText.isEmpty() ? Collections.<String>emptyList() : createMovesFromPGN(gameText);
+        return gameText.isEmpty() ? Collections.emptyList() : createMovesFromPGN(gameText);
     }
 
     private static List<String> createMovesFromPGN(final String pgnText) {

@@ -6,18 +6,16 @@ import com.chess.engine.classic.pieces.*;
 import com.chess.engine.classic.player.BlackPlayer;
 import com.chess.engine.classic.player.Player;
 import com.chess.engine.classic.player.WhitePlayer;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class Board {
 
-    private final Int2ObjectMap<Piece> boardConfig;
+    private final Map<Integer, Piece> boardConfig;
     private final Collection<Piece> whitePieces;
     private final Collection<Piece> blackPieces;
     private final WhitePlayer whitePlayer;
@@ -29,7 +27,7 @@ public final class Board {
     private static final Board STANDARD_BOARD = createStandardBoardImpl();
 
     private Board(final Builder builder) {
-        this.boardConfig = Int2ObjectMaps.unmodifiable(builder.boardConfig);
+        this.boardConfig = Collections.unmodifiableMap(builder.boardConfig);
         this.whitePieces = calculateActivePieces(builder, Alliance.WHITE);
         this.blackPieces = calculateActivePieces(builder, Alliance.BLACK);
         this.enPassantPawn = builder.enPassantPawn;
@@ -57,7 +55,7 @@ public final class Board {
     private static String prettyPrint(final Piece piece) {
         if(piece != null) {
             return piece.getPieceAllegiance().isBlack() ?
-                    piece.toString().toLowerCase() : piece.toString();
+                   piece.toString().toLowerCase() : piece.toString();
         }
         return "-";
     }
@@ -70,13 +68,14 @@ public final class Board {
         return this.whitePieces;
     }
 
-    public Iterable<Piece> getAllPieces() {
-        return Iterables.unmodifiableIterable(Iterables.concat(this.whitePieces, this.blackPieces));
+    public Collection<Piece> getAllPieces() {
+        return Stream.concat(this.whitePieces.stream(),
+                             this.blackPieces.stream()).collect(Collectors.toList());
     }
 
-    public Iterable<Move> getAllLegalMoves() {
-        return Iterables.unmodifiableIterable(Iterables.concat(this.whitePlayer.getLegalMoves(),
-                                                               this.blackPlayer.getLegalMoves()));
+    public Collection<Move> getAllLegalMoves() {
+        return Stream.concat(this.whitePlayer.getLegalMoves().stream(),
+                             this.blackPlayer.getLegalMoves().stream()).collect(Collectors.toList());
     }
 
     public WhitePlayer whitePlayer() {
@@ -158,18 +157,18 @@ public final class Board {
                                                            final Alliance alliance) {
         return builder.boardConfig.values().stream()
                .filter(piece -> piece.getPieceAllegiance() == alliance)
-               .collect(Collectors.collectingAndThen(Collectors.toList(), ImmutableList::copyOf));
+               .collect(Collectors.toList());
     }
 
     public static class Builder {
 
-        Int2ObjectMap<Piece> boardConfig;
+        Map<Integer, Piece> boardConfig;
         Alliance nextMoveMaker;
         Pawn enPassantPawn;
         Move transitionMove;
 
         public Builder() {
-            this.boardConfig = new Int2ObjectOpenHashMap<>(33, 1.0f);
+            this.boardConfig = new HashMap<>();
         }
 
         public Builder setPiece(final Piece piece) {

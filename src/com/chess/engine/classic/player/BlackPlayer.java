@@ -8,10 +8,10 @@ import com.chess.engine.classic.board.Move.KingSideCastleMove;
 import com.chess.engine.classic.board.Move.QueenSideCastleMove;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.pieces.Rook;
-import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public final class BlackPlayer extends Player {
@@ -27,7 +27,7 @@ public final class BlackPlayer extends Player {
                                                     final Collection<Move> opponentLegals) {
 
         if (this.isInCheck() || this.isCastled() || !(this.isKingSideCastleCapable() || this.isQueenSideCastleCapable())) {
-            return ImmutableList.of();
+            return Collections.emptyList();
         }
 
         final List<Move> kingCastles = new ArrayList<>();
@@ -62,7 +62,7 @@ public final class BlackPlayer extends Player {
                 }
             }
         }
-        return ImmutableList.copyOf(kingCastles);
+        return Collections.unmodifiableList(kingCastles);
     }
 
     @Override

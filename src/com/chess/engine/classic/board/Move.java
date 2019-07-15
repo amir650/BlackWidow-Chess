@@ -93,9 +93,7 @@ public abstract class Move {
 
     public Board undo() {
         final Board.Builder builder = new Builder();
-        for (final Piece piece : this.board.getAllPieces()) {
-            builder.setPiece(piece);
-        }
+        this.board.getAllPieces().stream().forEach(builder::setPiece);
         builder.setMoveMaker(this.board.currentPlayer().getAlliance());
         return builder.build();
     }
@@ -308,9 +306,7 @@ public abstract class Move {
         @Override
         public Board undo() {
             final Board.Builder builder = new Builder();
-            for (final Piece piece : this.board.getAllPieces()) {
-                builder.setPiece(piece);
-            }
+            this.board.getAllPieces().stream().forEach(builder::setPiece);
             builder.setEnPassantPawn((Pawn)this.getAttackedPiece());
             builder.setMoveMaker(this.board.currentPlayer().getAlliance());
             return builder.build();

@@ -88,16 +88,9 @@ public final class MoveOrdering {
     }
 
     private static Collection<Move> calculateSimpleMoveOrder(final Collection<Move> moves) {
-
         final List<Move> sortedMoves = new ArrayList<>();
         sortedMoves.addAll(moves);
-        Collections.sort(sortedMoves, new Comparator<Move>() {
-            @Override
-            public int compare(final Move m1, final Move m2) {
-                return Booleans.compare(m2.isAttack(), m1.isAttack());
-            }
-        });
-
+        Collections.sort(sortedMoves, (m1, m2) -> Booleans.compare(m2.isAttack(), m1.isAttack()));
         return sortedMoves;
     }
 

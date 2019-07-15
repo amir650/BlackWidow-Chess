@@ -9,7 +9,7 @@ public class InvalidGame extends Game {
     public InvalidGame(final PGNGameTags tags,
                        final String malformedGameText,
                        final String outcome) {
-        super(tags, Collections.<String>emptyList(), outcome);
+        super(tags, Collections.emptyList(), outcome);
         this.malformedGameText = malformedGameText;
     }
 

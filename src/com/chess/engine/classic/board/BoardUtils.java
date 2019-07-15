@@ -2,13 +2,8 @@ package com.chess.engine.classic.board;
 
 import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Piece;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.chess.engine.classic.board.Move.MoveFactory;
 
@@ -47,7 +42,7 @@ public enum  BoardUtils {
             column[columnNumber] = true;
             columnNumber += NUM_TILES_PER_ROW;
         } while(columnNumber < NUM_TILES);
-        return ImmutableList.copyOf(column);
+        return Collections.unmodifiableList(Arrays.asList((column)));
     }
 
     private static List<Boolean> initRow(int rowNumber) {
@@ -59,7 +54,7 @@ public enum  BoardUtils {
             row[rowNumber] = true;
             rowNumber++;
         } while(rowNumber % NUM_TILES_PER_ROW != 0);
-        return ImmutableList.copyOf(row);
+        return Collections.unmodifiableList(Arrays.asList(row));
     }
 
     private Map<String, Integer> initializePositionToCoordinateMap() {
@@ -67,11 +62,11 @@ public enum  BoardUtils {
         for (int i = START_TILE_INDEX; i < NUM_TILES; i++) {
             positionToCoordinate.put(ALGEBRAIC_NOTATION.get(i), i);
         }
-        return ImmutableMap.copyOf(positionToCoordinate);
+        return Collections.unmodifiableMap(positionToCoordinate);
     }
 
     private static List<String> initializeAlgebraicNotation() {
-        return ImmutableList.copyOf(new String[]{
+        return Collections.unmodifiableList(Arrays.asList(new String[]{
                 "a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8",
                 "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7",
                 "a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6",
@@ -80,7 +75,7 @@ public enum  BoardUtils {
                 "a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3",
                 "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2",
                 "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"
-        });
+        }));
     }
 
     public static boolean isValidTileCoordinate(final int coordinate) {
@@ -109,7 +104,8 @@ public enum  BoardUtils {
                                          final King king,
                                          final int frontTile) {
         final Piece piece = board.getPiece(frontTile);
-        return piece != null && piece.getPieceType().isPawn() &&
+        return piece != null &&
+               piece.getPieceType().isPawn() &&
                piece.getPieceAllegiance() != king.getPieceAllegiance();
     }
 
@@ -131,7 +127,7 @@ public enum  BoardUtils {
             currentMove = currentMove.getBoard().getTransitionMove();
             i++;
         }
-        return ImmutableList.copyOf(moveHistory);
+        return Collections.unmodifiableList(moveHistory);
     }
 
     public static boolean isEndGame(final Board board) {
