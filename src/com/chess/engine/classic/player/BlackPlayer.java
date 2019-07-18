@@ -71,7 +71,7 @@ public final class BlackPlayer extends Player {
     }
 
     @Override
-    public Collection<Piece> getActivePieces() {
+    public Piece[] getActivePieces() {
         return this.board.getBlackPieces();
     }
 

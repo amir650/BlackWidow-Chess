@@ -68,7 +68,7 @@ public final class WhitePlayer extends Player {
     }
 
     @Override
-    public Collection<Piece> getActivePieces() {
+    public Piece[] getActivePieces() {
         return this.board.getWhitePieces();
     }
 

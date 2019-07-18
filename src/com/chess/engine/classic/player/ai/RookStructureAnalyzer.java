@@ -56,14 +56,13 @@ public final class RookStructureAnalyzer {
     private static int calculateOpenFileRookBonus(final Board board,
                                                   final List<Integer> rookLocations) {
         int bonus = NO_BONUS;
+        final int[] piecesOnColumn = createPiecesOnColumnTable(board);
         for(final Integer rookLocation : rookLocations) {
-            final int[] piecesOnColumn = createPiecesOnColumnTable(board);
             final int rookColumn = rookLocation/8;
             for(int i = 0; i < piecesOnColumn.length; i++) {
                 if(piecesOnColumn[i] == 1 && i == rookColumn){
                     bonus += OPEN_COLUMN_ROOK_BONUS;
                 }
-
             }
         }
         return bonus;
@@ -80,6 +79,5 @@ public final class RookStructureAnalyzer {
         }
         return piecesOnColumnTable;
     }
-
 
 }

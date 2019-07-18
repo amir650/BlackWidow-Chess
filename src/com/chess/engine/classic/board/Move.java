@@ -5,6 +5,8 @@ import com.chess.engine.classic.pieces.Pawn;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.pieces.Rook;
 
+import java.util.stream.Stream;
+
 public abstract class Move {
 
     protected final Board board;
@@ -83,8 +85,8 @@ public abstract class Move {
 
     public Board execute() {
         final Board.Builder builder = new Builder();
-        this.board.currentPlayer().getActivePieces().stream().filter(piece -> !this.movedPiece.equals(piece)).forEach(builder::setPiece);
-        this.board.currentPlayer().getOpponent().getActivePieces().forEach(builder::setPiece);
+        Stream.of(this.board.currentPlayer().getActivePieces()).filter(piece -> !this.movedPiece.equals(piece)).forEach(builder::setPiece);
+        Stream.of(this.board.currentPlayer().getOpponent().getActivePieces()).forEach(builder::setPiece);
         builder.setPiece(this.movedPiece.movePiece(this));
         builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
         builder.setMoveTransition(this);
@@ -162,8 +164,8 @@ public abstract class Move {
         public Board execute() {
             final Board pawnMovedBoard = this.decoratedMove.execute();
             final Board.Builder builder = new Builder();
-            pawnMovedBoard.currentPlayer().getActivePieces().stream().filter(piece -> !this.promotedPawn.equals(piece)).forEach(builder::setPiece);
-            pawnMovedBoard.currentPlayer().getOpponent().getActivePieces().forEach(builder::setPiece);
+            Stream.of(pawnMovedBoard.currentPlayer().getActivePieces()).filter(piece -> !this.promotedPawn.equals(piece)).forEach(builder::setPiece);
+            Stream.of(pawnMovedBoard.currentPlayer().getOpponent().getActivePieces()).forEach(builder::setPiece);
             builder.setPiece(this.promotionPiece.movePiece(this));
             builder.setMoveMaker(pawnMovedBoard.currentPlayer().getAlliance());
             builder.setMoveTransition(this);
@@ -295,8 +297,8 @@ public abstract class Move {
         @Override
         public Board execute() {
             final Board.Builder builder = new Builder();
-            this.board.currentPlayer().getActivePieces().stream().filter(piece -> !this.movedPiece.equals(piece)).forEach(builder::setPiece);
-            this.board.currentPlayer().getOpponent().getActivePieces().stream().filter(piece -> !piece.equals(this.getAttackedPiece())).forEach(builder::setPiece);
+            Stream.of(this.board.currentPlayer().getActivePieces()).filter(piece -> !this.movedPiece.equals(piece)).forEach(builder::setPiece);
+            Stream.of(this.board.currentPlayer().getOpponent().getActivePieces()).filter(piece -> !piece.equals(this.getAttackedPiece())).forEach(builder::setPiece);
             builder.setPiece(this.movedPiece.movePiece(this));
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
             builder.setMoveTransition(this);
@@ -331,8 +333,8 @@ public abstract class Move {
         @Override
         public Board execute() {
             final Board.Builder builder = new Builder();
-            this.board.currentPlayer().getActivePieces().stream().filter(piece -> !this.movedPiece.equals(piece)).forEach(builder::setPiece);
-            this.board.currentPlayer().getOpponent().getActivePieces().forEach(builder::setPiece);
+            Stream.of(this.board.currentPlayer().getActivePieces()).filter(piece -> !this.movedPiece.equals(piece)).forEach(builder::setPiece);
+            Stream.of(this.board.currentPlayer().getOpponent().getActivePieces()).forEach(builder::setPiece);
             final Pawn movedPawn = (Pawn)this.movedPiece.movePiece(this);
             builder.setPiece(movedPawn);
             builder.setEnPassantPawn(movedPawn);

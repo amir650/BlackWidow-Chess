@@ -126,7 +126,7 @@ public class TestAlphaBeta {
         final MoveStrategy alphaBeta = new StockAlphaBeta(8);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("c8"), BoardUtils.INSTANCE.getCoordinateAtPosition("a6")));
+                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("c5"), BoardUtils.INSTANCE.getCoordinateAtPosition("d4")));
     }
 
     @Test
