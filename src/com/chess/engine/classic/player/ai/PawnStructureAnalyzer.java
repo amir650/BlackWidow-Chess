@@ -2,10 +2,10 @@ package com.chess.engine.classic.player.ai;
 
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
+import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public final class PawnStructureAnalyzer {
@@ -32,8 +32,7 @@ public final class PawnStructureAnalyzer {
 
     public int pawnStructureScore(final Player player) {
         final int[] pawnsOnColumnTable = createPawnColumnTable(calculatePlayerPawns(player));
-        return calculatePawnColumnStack(pawnsOnColumnTable) +
-               calculateIsolatedPawnPenalty(pawnsOnColumnTable);
+        return calculatePawnColumnStack(pawnsOnColumnTable) + calculateIsolatedPawnPenalty(pawnsOnColumnTable);
     }
 
     private static Collection<Piece> calculatePlayerPawns(final Player player) {
@@ -43,7 +42,7 @@ public final class PawnStructureAnalyzer {
                 playerPawnLocations.add(piece);
             }
         }
-        return Collections.unmodifiableCollection(playerPawnLocations);
+        return ImmutableList.copyOf(playerPawnLocations);
     }
 
     private static int calculatePawnColumnStack(final int[] pawnsOnColumnTable) {

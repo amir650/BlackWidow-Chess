@@ -39,8 +39,7 @@ public final class StandardBoardEvaluator
                attacks(player) +
                castle(player) +
                pieceEvaluations(player) +
-               pawnStructure(player) +
-               kingSafety(player);
+               pawnStructure(player);
     }
 
     private static int attacks(final Player player) {

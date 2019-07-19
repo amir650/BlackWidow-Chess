@@ -565,8 +565,8 @@ public final class Table extends Observable {
                 bestMove = bookMove;
             }
             else {
-                int numPieces = Table.get().getGameBoard().getWhitePieces().length +
-                        Table.get().getGameBoard().getBlackPieces().length;
+                int numPieces = Table.get().getGameBoard().getWhitePieces().size() +
+                        Table.get().getGameBoard().getBlackPieces().size();
                 //int bonusDepth = Math.min(4, 1 + Math.round((float)32/numPieces));
                 int bonusDepth = 0;
                 final StockAlphaBeta strategy =

@@ -11,16 +11,15 @@ import com.chess.engine.classic.pieces.Piece;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.collectingAndThen;
 
 public abstract class Player {
 
-    final Board board;
-    final King playerKing;
-    final Collection<Move> legalMoves;
-    final boolean isInCheck;
+    protected final Board board;
+    protected final King playerKing;
+    protected final Collection<Move> legalMoves;
+    protected final boolean isInCheck;
 
     Player(final Board board,
            final Collection<Move> playerLegals,
@@ -61,10 +60,10 @@ public abstract class Player {
     }
 
     private King establishKing() {
-        return (King) Stream.of(getActivePieces())
-                            .filter(piece -> piece.getPieceType().isKing())
-                            .findAny()
-                            .orElseThrow(RuntimeException::new);
+        return (King) getActivePieces().stream()
+                                       .filter(piece -> piece.getPieceType().isKing())
+                                       .findAny()
+                                       .orElseThrow(RuntimeException::new);
     }
 
     private boolean hasEscapeMoves() {
@@ -90,10 +89,7 @@ public abstract class Player {
         }
         final Board transitionedBoard = move.execute();
         final Collection<Move> kingAttacks = Player.calculateAttacksOnTile(
-                transitionedBoard.currentPlayer()
-                                 .getOpponent()
-                                 .getPlayerKing()
-                                 .getPiecePosition(),
+                transitionedBoard.currentPlayer().getOpponent().getPlayerKing().getPiecePosition(),
                 transitionedBoard.currentPlayer().getLegalMoves());
         if (!kingAttacks.isEmpty()) {
             return new MoveTransition(this.board, this.board, move, MoveStatus.LEAVES_PLAYER_IN_CHECK);
@@ -105,7 +101,7 @@ public abstract class Player {
         return new MoveTransition(this.board, move.undo(), move, MoveStatus.DONE);
     }
 
-    public abstract Piece[] getActivePieces();
+    public abstract Collection<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
     protected abstract Collection<Move> calculateKingCastles(Collection<Move> playerLegals,

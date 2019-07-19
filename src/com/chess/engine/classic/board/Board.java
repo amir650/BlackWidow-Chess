@@ -7,14 +7,17 @@ import com.chess.engine.classic.player.BlackPlayer;
 import com.chess.engine.classic.player.Player;
 import com.chess.engine.classic.player.WhitePlayer;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class Board {
 
-    private final Piece[] boardConfig;
-    private final Piece[] whitePieces;
-    private final Piece[] blackPieces;
+    private final Map<Integer, Piece> boardConfig;
+    private final Collection<Piece> whitePieces;
+    private final Collection<Piece> blackPieces;
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
@@ -24,7 +27,7 @@ public final class Board {
     private static final Board STANDARD_BOARD = createStandardBoardImpl();
 
     private Board(final Builder builder) {
-        this.boardConfig = builder.boardConfig;
+        this.boardConfig = Collections.unmodifiableMap(builder.boardConfig);
         this.whitePieces = calculateActivePieces(builder, Alliance.WHITE);
         this.blackPieces = calculateActivePieces(builder, Alliance.BLACK);
         this.enPassantPawn = builder.enPassantPawn;
@@ -40,7 +43,7 @@ public final class Board {
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
-            final String tileText = prettyPrint(this.boardConfig[i]);
+            final String tileText = prettyPrint(this.boardConfig.get(i));
             builder.append(String.format("%3s", tileText));
             if ((i + 1) % 8 == 0) {
                 builder.append("\n");
@@ -57,17 +60,17 @@ public final class Board {
         return "-";
     }
 
-    public Piece[] getBlackPieces() {
+    public Collection<Piece> getBlackPieces() {
         return this.blackPieces;
     }
 
-    public Piece[] getWhitePieces() {
+    public Collection<Piece> getWhitePieces() {
         return this.whitePieces;
     }
 
     public Collection<Piece> getAllPieces() {
-        return Stream.concat(Stream.of(this.whitePieces),
-                             Stream.of(this.blackPieces)).collect(Collectors.toList());
+        return Stream.concat(this.whitePieces.stream(),
+                             this.blackPieces.stream()).collect(Collectors.toList());
     }
 
     public Collection<Move> getAllLegalMoves() {
@@ -88,7 +91,7 @@ public final class Board {
     }
 
     public Piece getPiece(final int coordinate) {
-        return this.boardConfig[coordinate];
+        return this.boardConfig.get(coordinate);
     }
 
     public Pawn getEnPassantPawn() {
@@ -145,31 +148,31 @@ public final class Board {
         return builder.build();
     }
 
-    private Collection<Move> calculateLegalMoves(final Piece[] pieces) {
-        return Stream.of(pieces).flatMap(piece -> piece.calculateLegalMoves(this).stream())
-                                .collect(Collectors.toList());
+    private Collection<Move> calculateLegalMoves(final Collection<Piece> pieces) {
+        return pieces.stream().flatMap(piece -> piece.calculateLegalMoves(this).stream())
+                      .collect(Collectors.toList());
     }
 
-    private static Piece[] calculateActivePieces(final Builder builder,
+    private static Collection<Piece> calculateActivePieces(final Builder builder,
                                                            final Alliance alliance) {
-        return Stream.of(builder.boardConfig)
-                     .filter(piece -> piece != null && piece.getPieceAllegiance() == alliance)
-                     .toArray(Piece[]::new);
+        return builder.boardConfig.values().stream()
+               .filter(piece -> piece.getPieceAllegiance() == alliance)
+               .collect(Collectors.toList());
     }
 
     public static class Builder {
 
-        Piece[] boardConfig;
+        Map<Integer, Piece> boardConfig;
         Alliance nextMoveMaker;
         Pawn enPassantPawn;
         Move transitionMove;
 
         public Builder() {
-            this.boardConfig = new Piece[BoardUtils.NUM_TILES];
+            this.boardConfig = new HashMap<>();
         }
 
         public Builder setPiece(final Piece piece) {
-            this.boardConfig[piece.getPiecePosition()] = piece;
+            this.boardConfig.put(piece.getPiecePosition(), piece);
             return this;
         }
 

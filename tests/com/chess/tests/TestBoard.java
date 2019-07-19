@@ -163,8 +163,8 @@ public class TestBoard {
                 .makeMove(MoveFactory.createMove(t13.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("d5"),
                         BoardUtils.INSTANCE.getCoordinateAtPosition("e4")));
 
-        assertTrue(t14.getToBoard().whitePlayer().getActivePieces().length == calculatedActivesFor(t14.getToBoard(), Alliance.WHITE));
-        assertTrue(t14.getToBoard().blackPlayer().getActivePieces().length == calculatedActivesFor(t14.getToBoard(), Alliance.BLACK));
+        assertTrue(t14.getToBoard().whitePlayer().getActivePieces().size() == calculatedActivesFor(t14.getToBoard(), Alliance.WHITE));
+        assertTrue(t14.getToBoard().blackPlayer().getActivePieces().size() == calculatedActivesFor(t14.getToBoard(), Alliance.BLACK));
 
     }
 
