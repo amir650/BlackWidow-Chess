@@ -10,9 +10,9 @@ import com.google.common.annotations.VisibleForTesting;
 public final class StandardBoardEvaluator
         implements BoardEvaluator {
 
-    private final static int CHECK_MATE_BONUS = 10000;
-    private final static int CHECK_BONUS = 50;
-    private final static int CASTLE_BONUS = 60;
+    private final static int CHECK_MATE_BONUS = 100000;
+    private final static int CHECK_BONUS = 20;
+    private final static int CASTLE_BONUS = 40;
     private final static int MOBILITY_MULTIPLIER = 2;
     private final static int ATTACK_MULTIPLIER = 2;
     private final static int TWO_BISHOPS_BONUS = 50;

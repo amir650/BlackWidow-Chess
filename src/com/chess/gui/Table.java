@@ -170,9 +170,11 @@ public final class Table extends Observable {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 String fenString = JOptionPane.showInputDialog("Input FEN");
-                undoAllMoves();
-                chessBoard = FenUtilities.createGameFromFEN(fenString);
-                Table.get().getBoardPanel().drawBoard(chessBoard);
+                if(fenString != null) {
+                    undoAllMoves();
+                    chessBoard = FenUtilities.createGameFromFEN(fenString);
+                    Table.get().getBoardPanel().drawBoard(chessBoard);
+                }
             }
         });
         filesMenu.add(openFEN);

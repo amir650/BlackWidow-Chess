@@ -16,10 +16,10 @@ public class MySqlGamePersistence implements PGNPersistence {
     private final Connection dbConnection;
 
     private static MySqlGamePersistence INSTANCE = new MySqlGamePersistence();
-    private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String DB_URL = "jdbc:mysql://localhost/chessgames";
     private static final String USER = "root";
-    private static final String PASS = "nyw";
+    private static final String PASS = "powerpc123";
     private static final String NEXT_BEST_MOVE_QUERY =
         "SELECT SUBSTR(g1.moves, LENGTH('%s') + %d, INSTR(SUBSTR(g1.moves, LENGTH('%s') + %d, LENGTH(g1.moves)), ',') - 1), " +
         "COUNT(*) FROM game g1 WHERE g1.moves LIKE '%s%%' AND (outcome = '%s') GROUP BY substr(g1.moves, LENGTH('%s') + %d, " +
@@ -91,7 +91,7 @@ public class MySqlGamePersistence implements PGNPersistence {
     private void createGameTable() {
         try {
             final Statement statement = this.dbConnection.createStatement();
-            statement.execute("CREATE TABLE IF NOT EXISTS Game(id int primary key, outcome varchar(10), moves varchar(4000));");
+            statement.execute("CREATE TABLE IF NOT EXISTS Game(id int primary key, outcome varchar(10), moves varchar(3072));");
             statement.close();
         }
         catch (final SQLException e) {

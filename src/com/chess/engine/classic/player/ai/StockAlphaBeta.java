@@ -22,7 +22,7 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
     private long boardsEvaluated;
     private long executionTime;
     private int quiescenceCount;
-    private static final int MAX_QUIESCENCE = 5000*10;
+    private static final int MAX_QUIESCENCE = 5000;
 
     private enum MoveSorter {
 
@@ -59,7 +59,7 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
 
     @Override
     public String toString() {
-        return "StockAlphaBeta";
+        return "StockAB";
     }
 
     @Override
@@ -108,7 +108,7 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
 
                         + quiescenceInfo + ", t: " +calculateTimeTaken(candidateMoveStartTime, System.nanoTime());
             } else {
-                s = "\t" + toString() + ", m: (" +moveCounter+ "/" +numMoves+ ") " + move + " is illegal! best: " +bestMove;
+                s = "\t" + toString() + "(" +this.searchDepth + ")" + ", m: (" +moveCounter+ "/" +numMoves+ ") " + move + " is illegal! best: " +bestMove;
             }
             System.out.println(s);
             setChanged();
@@ -150,8 +150,9 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
         for (final Move move : MoveSorter.STANDARD.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                currentHighest = Math.max(currentHighest, min(moveTransition.getToBoard(),
-                        calculateQuiescenceDepth(moveTransition, depth), currentHighest, lowest));
+                Board toBoard = moveTransition.getToBoard();
+                currentHighest = Math.max(currentHighest, min(toBoard,
+                        calculateQuiescenceDepth(toBoard, depth), currentHighest, lowest));
                 if (currentHighest >= lowest) {
                     return lowest;
                 }
@@ -172,8 +173,9 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
         for (final Move move : MoveSorter.STANDARD.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                currentLowest = Math.min(currentLowest, max(moveTransition.getToBoard(),
-                        calculateQuiescenceDepth(moveTransition, depth), highest, currentLowest));
+                Board toBoard = moveTransition.getToBoard();
+                currentLowest = Math.min(currentLowest, max(toBoard,
+                        calculateQuiescenceDepth(toBoard, depth), highest, currentLowest));
                 if (currentLowest <= highest) {
                     return highest;
                 }
@@ -182,14 +184,15 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
         return currentLowest;
     }
 
-    private int calculateQuiescenceDepth(final MoveTransition moveTransition,
+    private int calculateQuiescenceDepth(final Board toBoard,
                                          final int depth) {
+//        return depth - 1;
         if(depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
             int activityMeasure = 0;
-            if (moveTransition.getToBoard().currentPlayer().isInCheck()) {
+            if (toBoard.currentPlayer().isInCheck()) {
                 activityMeasure += 1;
             }
-            for(final Move move: BoardUtils.lastNMoves(moveTransition.getToBoard(), 2)) {
+            for(final Move move: BoardUtils.lastNMoves(toBoard, 2)) {
                 if(move.isAttack()) {
                     activityMeasure += 1;
                 }
