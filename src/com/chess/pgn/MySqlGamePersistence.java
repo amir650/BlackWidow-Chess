@@ -115,6 +115,7 @@ public class MySqlGamePersistence implements PGNPersistence {
             gameStatement.close();
         }
         catch (final SQLException e) {
+            System.out.println("CREATE INDEX " +indexName+ " on Game(" +columnName+ ");\n");
             e.printStackTrace();
         }
 

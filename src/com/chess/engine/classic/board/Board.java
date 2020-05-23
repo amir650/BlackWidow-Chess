@@ -6,10 +6,6 @@ import com.chess.engine.classic.pieces.*;
 import com.chess.engine.classic.player.BlackPlayer;
 import com.chess.engine.classic.player.Player;
 import com.chess.engine.classic.player.WhitePlayer;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -20,7 +16,7 @@ import java.util.stream.Stream;
 
 public final class Board {
 
-    private final Int2ObjectMap<Piece> boardConfig;
+    private final Map<Integer, Piece> boardConfig;
     private final Collection<Piece> whitePieces;
     private final Collection<Piece> blackPieces;
     private final WhitePlayer whitePlayer;
@@ -32,7 +28,7 @@ public final class Board {
     private static final Board STANDARD_BOARD = createStandardBoardImpl();
 
     private Board(final Builder builder) {
-        this.boardConfig = Int2ObjectMaps.unmodifiable(builder.boardConfig);
+        this.boardConfig = Collections.unmodifiableMap(builder.boardConfig);
         this.whitePieces = calculateActivePieces(builder, Alliance.WHITE);
         this.blackPieces = calculateActivePieces(builder, Alliance.BLACK);
         this.enPassantPawn = builder.enPassantPawn;
@@ -167,15 +163,13 @@ public final class Board {
 
     public static class Builder {
 
-        //Map<Integer, Piece> boardConfig;
-        Int2ObjectMap<Piece> boardConfig;
+        Map<Integer, Piece> boardConfig;
         Alliance nextMoveMaker;
         Pawn enPassantPawn;
         Move transitionMove;
 
         public Builder() {
-            //this.boardConfig = new HashMap<>(32, 1.0f);
-            this.boardConfig = new Int2ObjectOpenHashMap<>(32, 1.0f);
+            this.boardConfig = new HashMap<>(32, 1.0f);
         }
 
         public Builder setPiece(final Piece piece) {

@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static com.chess.engine.classic.pieces.Piece.PieceType.ROOK;
+
 public final class BlackPlayer extends Player {
 
     public BlackPlayer(final Board board,
@@ -26,7 +28,7 @@ public final class BlackPlayer extends Player {
     protected Collection<Move> calculateKingCastles(final Collection<Move> playerLegals,
                                                     final Collection<Move> opponentLegals) {
 
-        if (this.isInCheck() || this.isCastled() || !(this.isKingSideCastleCapable() || this.isQueenSideCastleCapable())) {
+        if (!hasCastleOpportunities()) {
             return Collections.emptyList();
         }
 
@@ -39,7 +41,7 @@ public final class BlackPlayer extends Player {
                 if (kingSideRook != null && kingSideRook.isFirstMove() &&
                         Player.calculateAttacksOnTile(5, opponentLegals).isEmpty() &&
                         Player.calculateAttacksOnTile(6, opponentLegals).isEmpty() &&
-                        kingSideRook.getPieceType().isRook()) {
+                        kingSideRook.getPieceType() == ROOK) {
                     if (!BoardUtils.isKingPawnTrap(this.board, this.playerKing, 12)) {
                         kingCastles.add(
                                 new KingSideCastleMove(this.board, this.playerKing, 6, (Rook) kingSideRook, kingSideRook.getPiecePosition(), 5));
@@ -54,7 +56,7 @@ public final class BlackPlayer extends Player {
                 if (queenSideRook != null && queenSideRook.isFirstMove() &&
                         Player.calculateAttacksOnTile(2, opponentLegals).isEmpty() &&
                         Player.calculateAttacksOnTile(3, opponentLegals).isEmpty() &&
-                        queenSideRook.getPieceType().isRook()) {
+                        queenSideRook.getPieceType() == ROOK) {
                     if (!BoardUtils.isKingPawnTrap(this.board, this.playerKing, 12)) {
                         kingCastles.add(
                                 new QueenSideCastleMove(this.board, this.playerKing, 2, (Rook) queenSideRook, queenSideRook.getPiecePosition(), 3));

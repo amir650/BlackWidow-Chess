@@ -20,9 +20,8 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
     private final BoardEvaluator evaluator;
     private final int searchDepth;
     private long boardsEvaluated;
-    private long executionTime;
     private int quiescenceCount;
-    private static final int MAX_QUIESCENCE = 5000;
+    private static final int MAX_QUIESCENCE = 5000 * 5;
 
     private enum MoveSorter {
 
@@ -78,8 +77,7 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
         System.out.println(board.currentPlayer() + " THINKING with depth = " + this.searchDepth);
         int moveCounter = 1;
         int numMoves = board.currentPlayer().getLegalMoves().size();
-        Collection<Move> sortedMoves = MoveSorter.EXPENSIVE.sort((board.currentPlayer().getLegalMoves()));
-        for (final Move move : sortedMoves) {
+        for (final Move move : MoveSorter.EXPENSIVE.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             this.quiescenceCount = 0;
             final String s;
@@ -116,11 +114,11 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
             moveCounter++;
         }
 
-        this.executionTime = System.currentTimeMillis() - startTime;
+        final long executionTime = System.currentTimeMillis() - startTime;
         final String result = board.currentPlayer() + " SELECTS " +bestMove+ " [#boards evaluated = " +this.boardsEvaluated+
-                " time taken = " +this.executionTime/1000+ " rate = " +(1000 * ((double)this.boardsEvaluated/this.executionTime));
+                " time taken = " + executionTime /1000+ " rate = " +(1000 * ((double)this.boardsEvaluated/ executionTime));
         System.out.printf("%s SELECTS %s [#boards evaluated = %d, time taken = %d ms, rate = %.1f\n", board.currentPlayer(),
-                bestMove, this.boardsEvaluated, this.executionTime, (1000 * ((double)this.boardsEvaluated/this.executionTime)));
+                bestMove, this.boardsEvaluated, executionTime, (1000 * ((double)this.boardsEvaluated/ executionTime)));
         setChanged();
         notifyObservers(result);
         return bestMove;
@@ -150,7 +148,7 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
         for (final Move move : MoveSorter.STANDARD.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                Board toBoard = moveTransition.getToBoard();
+                final Board toBoard = moveTransition.getToBoard();
                 currentHighest = Math.max(currentHighest, min(toBoard,
                         calculateQuiescenceDepth(toBoard, depth), currentHighest, lowest));
                 if (currentHighest >= lowest) {
@@ -173,7 +171,7 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
         for (final Move move : MoveSorter.STANDARD.sort((board.currentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                Board toBoard = moveTransition.getToBoard();
+                final Board toBoard = moveTransition.getToBoard();
                 currentLowest = Math.min(currentLowest, max(toBoard,
                         calculateQuiescenceDepth(toBoard, depth), highest, currentLowest));
                 if (currentLowest <= highest) {
@@ -186,7 +184,6 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
 
     private int calculateQuiescenceDepth(final Board toBoard,
                                          final int depth) {
-//        return depth - 1;
         if(depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
             int activityMeasure = 0;
             if (toBoard.currentPlayer().isInCheck()) {
@@ -199,7 +196,7 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
             }
             if(activityMeasure >= 2) {
                 this.quiescenceCount++;
-                return 1;
+                return 2;
             }
         }
         return depth - 1;

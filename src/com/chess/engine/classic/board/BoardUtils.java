@@ -104,7 +104,7 @@ public enum  BoardUtils {
                                          final int frontTile) {
         final Piece piece = board.getPiece(frontTile);
         return piece != null &&
-               piece.getPieceType().isPawn() &&
+               piece.getPieceType() == Piece.PieceType.PAWN &&
                piece.getPieceAllegiance() != king.getPieceAllegiance();
     }
 

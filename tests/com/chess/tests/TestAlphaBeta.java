@@ -61,7 +61,7 @@ public class TestAlphaBeta {
         final MoveStrategy alphaBeta = new StockAlphaBeta(4);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e7"), BoardUtils.INSTANCE.getCoordinateAtPosition("e6")));
+                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e7"), BoardUtils.INSTANCE.getCoordinateAtPosition("e5")));
     }
 
     @Test
@@ -230,7 +230,7 @@ public class TestAlphaBeta {
         final MoveStrategy alphaBeta = new StockAlphaBeta(6);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e4"), BoardUtils.INSTANCE.getCoordinateAtPosition("e5")));
+                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("g3"), BoardUtils.INSTANCE.getCoordinateAtPosition("g6")));
     }
 
     @Test
@@ -377,7 +377,7 @@ public class TestAlphaBeta {
     @Test
     public void testBratcoKopec19() {
         final Board board = FenUtilities.createGameFromFEN("3rr3/2pq2pk/p2p1pnp/8/2QBPP2/1P6/P5PP/4RRK1 b - -");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(8);
+        final MoveStrategy alphaBeta = new StockAlphaBeta(2);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("d6"), BoardUtils.INSTANCE.getCoordinateAtPosition("d5")));

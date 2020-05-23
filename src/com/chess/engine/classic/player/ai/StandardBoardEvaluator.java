@@ -7,15 +7,17 @@ import com.chess.engine.classic.player.Player;
 import com.chess.engine.classic.player.ai.KingSafetyAnalyzer.KingDistance;
 import com.google.common.annotations.VisibleForTesting;
 
+import static com.chess.engine.classic.pieces.Piece.PieceType.BISHOP;
+
 public final class StandardBoardEvaluator
         implements BoardEvaluator {
 
-    private final static int CHECK_MATE_BONUS = 100000;
-    private final static int CHECK_BONUS = 20;
-    private final static int CASTLE_BONUS = 40;
-    private final static int MOBILITY_MULTIPLIER = 2;
-    private final static int ATTACK_MULTIPLIER = 2;
-    private final static int TWO_BISHOPS_BONUS = 50;
+    private final static int CHECK_MATE_BONUS = 10000;
+    private final static int CHECK_BONUS = 45;
+    private final static int CASTLE_BONUS = 25;
+    private final static int MOBILITY_MULTIPLIER = 5;
+    private final static int ATTACK_MULTIPLIER = 1;
+    private final static int TWO_BISHOPS_BONUS = 25;
     private static final StandardBoardEvaluator INSTANCE = new StandardBoardEvaluator();
 
     private StandardBoardEvaluator() {
@@ -29,6 +31,24 @@ public final class StandardBoardEvaluator
     public int evaluate(final Board board,
                         final int depth) {
         return score(board.whitePlayer(), depth) - score(board.blackPlayer(), depth);
+    }
+
+    public String evaluationDetails(final Board board, final int depth) {
+        return
+               ("White Mobility : " + mobility(board.whitePlayer()) + "\n") +
+                "White kingThreats : " + kingThreats(board.whitePlayer(), depth) + "\n" +
+                "White attacks : " + attacks(board.whitePlayer()) + "\n" +
+                "White castle : " + castle(board.whitePlayer()) + "\n" +
+                "White pieceEval : " + pieceEvaluations(board.whitePlayer()) + "\n" +
+                "White pawnStructure : " + pawnStructure(board.whitePlayer()) + "\n" +
+                "---------------------\n" +
+                "Black Mobility : " + mobility(board.blackPlayer()) + "\n" +
+                "Black kingThreats : " + kingThreats(board.blackPlayer(), depth) + "\n" +
+                "Black attacks : " + attacks(board.blackPlayer()) + "\n" +
+                "Black castle : " + castle(board.blackPlayer()) + "\n" +
+                "Black pieceEval : " + pieceEvaluations(board.blackPlayer()) + "\n" +
+                "Black pawnStructure : " + pawnStructure(board.blackPlayer()) + "\n\n" +
+                "Final Score = " + evaluate(board, depth);
     }
 
     @VisibleForTesting
@@ -61,7 +81,7 @@ public final class StandardBoardEvaluator
         int numBishops = 0;
         for (final Piece piece : player.getActivePieces()) {
             pieceValuationScore += piece.getPieceValue() + piece.locationBonus();
-            if(piece.getPieceType().isBishop()) {
+            if(piece.getPieceType() == BISHOP) {
                 numBishops++;
             }
         }
@@ -73,7 +93,7 @@ public final class StandardBoardEvaluator
     }
 
     private static int mobilityRatio(final Player player) {
-        return (int)((player.getLegalMoves().size() * 100.0f) / player.getOpponent().getLegalMoves().size());
+        return (int)((player.getLegalMoves().size() * 10.0f) / player.getOpponent().getLegalMoves().size());
     }
 
     private static int kingThreats(final Player player,
@@ -102,8 +122,8 @@ public final class StandardBoardEvaluator
         return ((kingDistance.getEnemyPiece().getPieceValue() / 100) * kingDistance.getDistance());
     }
 
-    private static int rookStructure(final Board board, final Player player) {
-        return RookStructureAnalyzer.get().rookStructureScore(board, player);
-    }
+//    private static int rookStructure(final Player player) {
+//        return RookStructureAnalyzer.get().rookStructureScore(player);
+//    }
 
 }

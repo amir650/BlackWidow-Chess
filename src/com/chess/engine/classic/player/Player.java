@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+import static com.chess.engine.classic.pieces.Piece.PieceType.KING;
 import static java.util.stream.Collectors.collectingAndThen;
 
 public abstract class Player {
@@ -61,7 +62,7 @@ public abstract class Player {
 
     private King establishKing() {
         return (King) getActivePieces().stream()
-                                       .filter(piece -> piece.getPieceType().isKing())
+                                       .filter(piece -> piece.getPieceType() == KING)
                                        .findAny()
                                        .orElseThrow(RuntimeException::new);
     }
@@ -88,9 +89,6 @@ public abstract class Player {
             return new MoveTransition(this.board, this.board, move, MoveStatus.ILLEGAL_MOVE);
         }
         final Board transitionedBoard = move.execute();
-        if(transitionedBoard.currentPlayer().getOpponent().isInCheck()) {
-            return new MoveTransition(this.board, this.board, move, MoveStatus.LEAVES_PLAYER_IN_CHECK);
-        }
         return transitionedBoard.currentPlayer().getOpponent().isInCheck() ?
                 new MoveTransition(this.board, this.board, move, MoveStatus.LEAVES_PLAYER_IN_CHECK) :
                 new MoveTransition(this.board, transitionedBoard, move, MoveStatus.DONE);
@@ -105,5 +103,9 @@ public abstract class Player {
     public abstract Player getOpponent();
     protected abstract Collection<Move> calculateKingCastles(Collection<Move> playerLegals,
                                                              Collection<Move> opponentLegals);
+    protected boolean hasCastleOpportunities() {
+        return !this.isInCheck && !this.playerKing.isCastled() &&
+                (this.playerKing.isKingSideCastleCapable() || this.playerKing.isQueenSideCastleCapable());
+    }
 
 }
