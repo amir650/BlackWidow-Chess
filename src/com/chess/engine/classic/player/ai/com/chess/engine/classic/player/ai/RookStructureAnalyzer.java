@@ -1,3 +1,4 @@
+package com.chess.engine.classic.player.ai;
 //package com.chess.engine.classic.player.ai;
 //
 //import java.util.ArrayList;

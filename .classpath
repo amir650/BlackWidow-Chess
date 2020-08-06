@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="com/chess/engine/classic/player/ai/" kind="src" path="src"/>
+	<classpathentry kind="src" path="src/com/chess/engine/classic/player/ai"/>
+	<classpathentry excluding="com/chess/tests/" kind="src" path="tests"/>
+	<classpathentry kind="src" path="tests/com/chess/tests"/>
+	<classpathentry kind="lib" path="lib/guava-18.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
