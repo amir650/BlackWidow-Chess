@@ -50,15 +50,21 @@ public final class Table extends Observable {
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
 
-    private static final Table INSTANCE = new Table();
+    private static Table INSTANCE = new Table(true);
+    private static boolean isStandard = true;
 
-    private Table() {
+    private Table(boolean standard) {
         this.gameFrame = new JFrame("BlackWidow");
         final JMenuBar tableMenuBar = new JMenuBar();
         populateMenuBar(tableMenuBar);
         this.gameFrame.setJMenuBar(tableMenuBar);
         this.gameFrame.setLayout(new BorderLayout());
-        this.chessBoard = Board.createStandardBoard();
+        if(standard) {
+        	this.chessBoard = Board.createStandardBoard();        	
+        }
+        else {
+        	this.chessBoard = Board.create960Board();
+        }
         this.boardDirection = BoardDirection.NORMAL;
         this.highlightLegalMoves = false;
         this.useBook = false;
@@ -204,13 +210,25 @@ public final class Table extends Observable {
     }
 
     private JMenu createOptionsMenu() {
-    	//TODO
         final JMenu optionsMenu = new JMenu("Options");
         optionsMenu.setMnemonic(KeyEvent.VK_O);
 
         final JMenuItem resetMenuItem = new JMenuItem("New Game", KeyEvent.VK_P);
-        resetMenuItem.addActionListener(e -> undoAllMoves());
+        resetMenuItem.addActionListener(e -> {
+        	undoAllMoves();
+        	switchBoard(true);
+        	boardPanel.drawBoard(chessBoard);
+        });
         optionsMenu.add(resetMenuItem);
+        
+        final JMenuItem board960MenuItem = new JMenuItem("Start New 960 Game");
+        board960MenuItem.addActionListener(e -> {
+        	undoAllMoves();
+        	Board.create960Board();
+        	switchBoard(false);
+        	boardPanel.drawBoard(chessBoard);
+        });
+        optionsMenu.add(board960MenuItem);
 
         final JMenuItem evaluateBoardMenuItem = new JMenuItem("Evaluate Board", KeyEvent.VK_E);
         evaluateBoardMenuItem.addActionListener(e -> System.out.println(StandardBoardEvaluator.get().evaluationDetails(chessBoard, gameSetup.getSearchDepth())));
@@ -350,7 +368,7 @@ public final class Table extends Observable {
             boardPanel.drawBoard(chessBoard);
         });
 
-        preferencesMenu.add(flipBoardMenuItem);
+        preferencesMenu.add(flipBoardMenuItem);        
         preferencesMenu.addSeparator();
 
 
@@ -397,6 +415,22 @@ public final class Table extends Observable {
         Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
         Table.get().getBoardPanel().drawBoard(chessBoard);
         Table.get().getDebugPanel().redo();
+    }
+    
+    private void switchBoard(boolean startNewGame) {
+    	if(isStandard && !startNewGame) {
+    		chessBoard = Board.create960Board();
+    	}
+    	else if(isStandard && startNewGame) {
+    		chessBoard = Board.createStandardBoard();
+    	}
+    	else if(!isStandard && !startNewGame) {
+    		chessBoard = Board.create960Board();
+    	}
+    	else {
+    		chessBoard = Board.createStandardBoard();
+    	}
+    	isStandard = !isStandard;
     }
 
     private static void loadPGNFile(final File pgnFile) {

@@ -29,8 +29,6 @@ public final class Board {
     private final Move transitionMove;
 
     private static final Board STANDARD_BOARD = createStandardBoardImpl();
-//    private static final Board STANDARD_BOARD = create960BoardImpl();
-//    private static final Board BOARD_960 = create960BoardImpl();
 
     private Board(final Builder builder) {
         this.boardConfig = Collections.unmodifiableMap(builder.boardConfig);
@@ -109,7 +107,11 @@ public final class Board {
     }
 
     public static Board createStandardBoard() {
-        return STANDARD_BOARD;
+    	return STANDARD_BOARD;
+    }
+    
+    public static Board create960Board() {
+    	return create960BoardImpl();
     }
 
     private static Board createStandardBoardImpl() {
