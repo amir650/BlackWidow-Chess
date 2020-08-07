@@ -221,7 +221,7 @@ public final class Table extends Observable {
         });
         optionsMenu.add(resetMenuItem);
         
-        final JMenuItem board960MenuItem = new JMenuItem("Start New 960 Game");
+        final JMenuItem board960MenuItem = new JMenuItem("New 960 Game");
         board960MenuItem.addActionListener(e -> {
         	undoAllMoves();
         	Board.create960Board();
