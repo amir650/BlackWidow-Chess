@@ -85,7 +85,7 @@ public abstract class Piece {
         BISHOP(330, "B"),
         ROOK(500, "R"),
         QUEEN(900, "Q"),
-        KING(10000, "K");
+        KING(100000, "K");
 
         private final int value;
         private final String pieceName;

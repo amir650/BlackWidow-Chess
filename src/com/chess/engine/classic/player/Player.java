@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+import static com.chess.engine.classic.board.MoveUtils.NULL_MOVE;
 import static com.chess.engine.classic.pieces.Piece.PieceType.KING;
 import static java.util.stream.Collectors.collectingAndThen;
 

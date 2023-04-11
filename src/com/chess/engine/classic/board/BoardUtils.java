@@ -35,9 +35,7 @@ public enum  BoardUtils {
 
     private static List<Boolean> initColumn(int columnNumber) {
         final Boolean[] column = new Boolean[NUM_TILES];
-        for(int i = 0; i < column.length; i++) {
-            column[i] = false;
-        }
+        Arrays.fill(column, false);
         do {
             column[columnNumber] = true;
             columnNumber += NUM_TILES_PER_ROW;
@@ -47,9 +45,7 @@ public enum  BoardUtils {
 
     private static List<Boolean> initRow(int rowNumber) {
         final Boolean[] row = new Boolean[NUM_TILES];
-        for(int i = 0; i < row.length; i++) {
-            row[i] = false;
-        }
+        Arrays.fill(row, false);
         do {
             row[rowNumber] = true;
             rowNumber++;

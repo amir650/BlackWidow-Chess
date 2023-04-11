@@ -375,6 +375,18 @@ public class TestAlphaBeta {
     }
 
     @Test
+    public void testGPT1() {
+        final Board board = FenUtilities.createGameFromFEN("r1b1k2r/pp2bppp/2n5/2pqN3/3p1B2/2PP1N2/P1P2PPP/R2QKB1R b KQkq - 0 9");
+        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
+        final Move bestMove = alphaBeta.execute(board);
+        assertEquals(bestMove, Move.MoveFactory
+                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("g7"), BoardUtils.INSTANCE.getCoordinateAtPosition("g5")));
+        final MoveTransition t1 = board.currentPlayer()
+                .makeMove(bestMove);
+        assertTrue(t1.getMoveStatus().isDone());
+    }
+
+    @Test
     public void testBratcoKopec19() {
         final Board board = FenUtilities.createGameFromFEN("3rr3/2pq2pk/p2p1pnp/8/2QBPP2/1P6/P5PP/4RRK1 b - -");
         final MoveStrategy alphaBeta = new StockAlphaBeta(2);

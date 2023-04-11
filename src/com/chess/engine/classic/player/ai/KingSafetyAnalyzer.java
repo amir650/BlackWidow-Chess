@@ -50,18 +50,10 @@ public final class KingSafetyAnalyzer {
         return new KingDistance(closestPiece, closestDistance);
     }
 
-    private int calculateChebyshevDistance(final int kingTileId,
+    private static int calculateChebyshevDistance(final int kingTileId,
                                            final int enemyAttackTileId) {
-
-        final int squareOneRank = getRank(kingTileId);
-        final int squareTwoRank = getRank(enemyAttackTileId);
-
-        final int squareOneFile = getFile(kingTileId);
-        final int squareTwoFile = getFile(enemyAttackTileId);
-
-        final int rankDistance = Math.abs(squareTwoRank - squareOneRank);
-        final int fileDistance = Math.abs(squareTwoFile - squareOneFile);
-
+        final int rankDistance = Math.abs(getRank(enemyAttackTileId) - getRank(kingTileId));
+        final int fileDistance = Math.abs(getFile(enemyAttackTileId) - getFile(kingTileId));
         return Math.max(rankDistance, fileDistance);
     }
 

@@ -91,7 +91,7 @@ public class MySqlGamePersistence implements PGNPersistence {
     private void createGameTable() {
         try {
             final Statement statement = this.dbConnection.createStatement();
-            statement.execute("CREATE TABLE IF NOT EXISTS Game(id int primary key, outcome varchar(10), moves varchar(3072));");
+            statement.execute("CREATE TABLE IF NOT EXISTS Game(id int primary key, outcome varchar(10), moves varchar(5000));");
             statement.close();
         }
         catch (final SQLException e) {

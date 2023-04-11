@@ -5,6 +5,8 @@ import com.chess.engine.classic.pieces.Pawn;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.pieces.Rook;
 
+import java.util.Objects;
+
 public abstract class Move {
 
     protected final Board board;
@@ -149,13 +151,17 @@ public abstract class Move {
         }
 
         @Override
-        public int hashCode() {
-            return decoratedMove.hashCode() + (31 * promotedPawn.hashCode());
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            final PawnPromotion that = (PawnPromotion) o;
+            return Objects.equals(decoratedMove, that.decoratedMove) && Objects.equals(promotedPawn, that.promotedPawn) && Objects.equals(promotionPiece, that.promotionPiece);
         }
 
         @Override
-        public boolean equals(final Object other) {
-            return this == other || other instanceof PawnPromotion && (super.equals(other));
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), decoratedMove, promotedPawn, promotionPiece);
         }
 
         @Override
@@ -521,10 +527,10 @@ public abstract class Move {
 
     }
 
-    private static class NullMove
+    static class NullMove
             extends Move {
 
-        private NullMove() {
+        NullMove() {
             super(null, -1);
         }
 
@@ -551,14 +557,12 @@ public abstract class Move {
 
     public static class MoveFactory {
 
-        private static final Move NULL_MOVE = new NullMove();
-
         private MoveFactory() {
             throw new RuntimeException("Not instantiatable!");
         }
 
         public static Move getNullMove() {
-            return NULL_MOVE;
+            return MoveUtils.NULL_MOVE;
         }
 
         public static Move createMove(final Board board,
@@ -570,7 +574,7 @@ public abstract class Move {
                     return move;
                 }
             }
-            return NULL_MOVE;
+            return MoveUtils.NULL_MOVE;
         }
     }
 }
