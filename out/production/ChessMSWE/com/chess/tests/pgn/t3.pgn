@@ -1,0 +1,24 @@
+[Event "?"]
+[Site "?"]
+[Date "2014.05.22"]
+[Round "?"]
+[White "Bad bishop - Good knight"]
+[Black "?"]
+[Result "0-1"]
+[ECO "E92"]
+[Annotator "Kopec, Danny & Kostovetsky, Daniel"]
+[PlyCount "64"]
+
+1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3 O-O 6. Be2 e5 7. dxe5 dxe5 8.
+Qxd8 Rxd8 9. Bg5 Nbd7 10. O-O-O {Diagram [#]} Rf8 (10... Re8 11. Nb5 (11. Nd5))
+(10... h6 11. Bxf6 Bxf6 12. Nd5) 11. Nd5 c6 (11... Nxe4 12. Nxc7 Rb8 13. Be3 b6
+) 12. Ne7+ Kh8 13. Nxc8 Raxc8 14. Bxf6 (14. Be3) 14... Nxf6 15. Nd2 (15. Bd3)
+15... Bh6 16. f3 Nd7 17. Kc2 Bxd2 (17... Rcd8 18. b4) 18. Rxd2 Nc5 19. b4 Ne6
+20. Rd7 b5 (20... Rcd8 21. Rxb7 Nd4+ 22. Kd3) 21. Rxa7 Nd4+ 22. Kd3 Rcd8 23.
+Ke3 Nc2+ 24. Kf2 Rd2 25. Rd1 Rfd8 26. Rxd2 {Diagram [#]} (26. cxb5 cxb5 27. Rc7
+Rxd1 28. Bxd1 Rd2+ 29. Kg3 Ne1 30. Bb3 f6 31. Rf7 Nxg2 32. Rf8+ Kg7 33. Rf7+
+Kh6 34. Rxf6 Nf4 35. Kh4 (35. Rxf4 exf4+ 36. Kxf4 Rxh2) 35... Rxh2+ 36. Kg4
+Rg2+ 37. Kh4 Nd3 38. a3 Rh2+ 39. Kg4 Rh1 40. Rc6 {Diagram [#]}) 26... Rxd2 27.
+Kf1 Nd4 28. cxb5 cxb5 29. a4 (29. Rd7 Rxa2 30. Bd3 Ra3 31. Be2 Ra1+ 32. Kf2 Ra2
+) (29. Bxb5 Nxb5) 29... Rxe2 (29... bxa4 30. Bc4) 30. axb5 Rb2 31. b6 Rxb4 32.
+b7 Kg7 0-1
