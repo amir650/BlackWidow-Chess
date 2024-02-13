@@ -251,4 +251,70 @@ public class TestGameFiniteStates {
 
         assertTrue(moveTransition.getToBoard().currentPlayer().isInCheck());
     }
+
+    @Test
+    public void testBlackMoveTurnFiniteState() {
+        // Setup board
+        var boardBuilder = new Board.Builder();
+        var boardUtils = BoardUtils.INSTANCE;
+
+        // Set up Black Alliance pieces
+        var blackKingPosition = boardUtils.getCoordinateAtPosition("a8");
+        var blackKingPiece = new King(Alliance.BLACK, blackKingPosition, false, false);
+        boardBuilder.setPiece(blackKingPiece);
+
+        var blackQueenPiece = new Queen(Alliance.BLACK, boardUtils.getCoordinateAtPosition("e2"));
+        boardBuilder.setPiece(blackQueenPiece);
+
+        // Set up White Alliance pieces
+        var whiteKingPosition = boardUtils.getCoordinateAtPosition("d7");
+        var whiteKingPiece = new King(Alliance.WHITE, whiteKingPosition, false, false);
+        boardBuilder.setPiece(whiteKingPiece);
+
+        // Set the current player's turn
+        boardBuilder.setMoveMaker(Alliance.BLACK);
+
+        final Board board = boardBuilder.build();
+
+        var initialPosition = boardUtils.getCoordinateAtPosition("e2");
+        var finalPosition = boardUtils.getCoordinateAtPosition("f2");
+
+        var moveTransition = board.currentPlayer()
+                .makeMove(Move.MoveFactory.createMove(board, initialPosition, finalPosition));
+
+        assertEquals(moveTransition.getToBoard().currentPlayer().toString(), "White");
+    }
+
+    @Test
+    public void testWhiteMoveTurnFiniteState() {
+        // Setup board
+        var boardBuilder = new Board.Builder();
+        var boardUtils = BoardUtils.INSTANCE;
+
+        // Set up Black Alliance pieces
+        var blackKingPosition = boardUtils.getCoordinateAtPosition("a8");
+        var blackKingPiece = new King(Alliance.BLACK, blackKingPosition, false, false);
+        boardBuilder.setPiece(blackKingPiece);
+
+        var blackQueenPiece = new Queen(Alliance.BLACK, boardUtils.getCoordinateAtPosition("e2"));
+        boardBuilder.setPiece(blackQueenPiece);
+
+        // Set up White Alliance pieces
+        var whiteKingPosition = boardUtils.getCoordinateAtPosition("d7");
+        var whiteKingPiece = new King(Alliance.WHITE, whiteKingPosition, false, false);
+        boardBuilder.setPiece(whiteKingPiece);
+
+        // Set the current player's turn
+        boardBuilder.setMoveMaker(Alliance.WHITE);
+
+        final Board board = boardBuilder.build();
+
+        var initialPosition = boardUtils.getCoordinateAtPosition("d7");
+        var finalPosition = boardUtils.getCoordinateAtPosition("c6");
+
+        var moveTransition = board.currentPlayer()
+                .makeMove(Move.MoveFactory.createMove(board, initialPosition, finalPosition));
+
+        assertEquals(moveTransition.getToBoard().currentPlayer().toString(), "Black");
+    }
 }
