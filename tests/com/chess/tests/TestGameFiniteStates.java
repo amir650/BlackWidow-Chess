@@ -69,15 +69,6 @@ public class TestGameFiniteStates {
         var blackKingPiece = new King(Alliance.BLACK, blackKingPosition, false, false);
         boardBuilder.setPiece(blackKingPiece);
 
-        var blackPawnPiece1 = new Pawn(Alliance.BLACK, boardUtils.getCoordinateAtPosition("g7"));
-        boardBuilder.setPiece(blackPawnPiece1);
-
-        var blackPawnPiece2 = new Pawn(Alliance.BLACK, boardUtils.getCoordinateAtPosition("h7"));
-        boardBuilder.setPiece(blackPawnPiece2);
-
-        var blackPawnPiece3= new Pawn(Alliance.BLACK, boardUtils.getCoordinateAtPosition("h7"));
-        boardBuilder.setPiece(blackPawnPiece3);
-
         var blackRookPiece = new Rook(Alliance.BLACK, boardUtils.getCoordinateAtPosition("d8"));
         boardBuilder.setPiece(blackRookPiece);
         // Set up White Alliance pieces
