@@ -21,7 +21,7 @@ import org.junit.runners.Suite;
     TestPawnPiece.class,
     TestQueenPiece.class,
     TestGameFiniteStates.class,
-        TestCoverage.class
+    TestCoverage.class
 })
 public class ChessTestSuite {
 }
