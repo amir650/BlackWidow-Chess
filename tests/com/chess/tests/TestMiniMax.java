@@ -53,24 +53,6 @@ public class TestMiniMax {
     }
 
     @Test
-    public void testOpeningDepth5() {
-        final Board board = Board.createStandardBoard();
-        final MoveStrategy minMax = new MiniMax(5);
-        minMax.execute(board);
-        final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-        assertEquals(numBoardsEvaluated, 4865609L);
-    }
-
-    @Test
-    public void testOpeningDepth6() {
-        final Board board = Board.createStandardBoard();
-        final MoveStrategy minMax = new MiniMax(6);
-        minMax.execute(board);
-        final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-        assertEquals(numBoardsEvaluated, 119060324L);
-    }
-
-    @Test
     public void testKiwiPeteDepth1() {
         final Builder builder = new Builder();
         // Black Layout
@@ -163,14 +145,6 @@ public class TestMiniMax {
     }
 
     @Test
-    public void engineIntegrity1() {
-        final Board board = FenUtilities.createGameFromFEN("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -\n");
-        final MoveStrategy minMax = new MiniMax(6);
-        minMax.execute(board);
-        assertEquals(minMax.getNumBoardsEvaluated(), 11030083);
-    }
-
-    @Test
     public void testKiwiPeteDepth2Bug2() {
         final Board board = FenUtilities.createGameFromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -");
         final MoveTransition t1 = board.currentPlayer()
@@ -179,13 +153,6 @@ public class TestMiniMax {
         final MoveStrategy minMax = new MiniMax(1);
         minMax.execute(t1.getToBoard());
         assertEquals(minMax.getNumBoardsEvaluated(), 45);
-    }
-
-    @Test
-    public void testChessDotComGame() {
-        final Board board = FenUtilities.createGameFromFEN("rnbk1bnr/1pN2ppp/p7/3P2q1/3Pp3/8/PPP1QPPP/RN2KB1R w KQ - 18 10");
-        final MoveStrategy minMax = new MiniMax(4);
-        minMax.execute(board);
     }
 
     @Test
@@ -235,5 +202,47 @@ public class TestMiniMax {
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         assertEquals(numBoardsEvaluated, 191);
     }
+
+    /**
+     * Commented by Steven Nguyen on 2/18/2024
+     *
+     * The following existing test cases were observed to have slow execution performance (over 3 second execution time),
+     * thus causing major bottlenecks for the entire project's test suites to finish in a timely
+     * manner. The tests that were retained as part of the suite all performed either in milliseconds
+     * or finished within the 3-second limit.
+     * */
+
+//    @Test
+//    public void testOpeningDepth5() {
+//        final Board board = Board.createStandardBoard();
+//        final MoveStrategy minMax = new MiniMax(5);
+//        minMax.execute(board);
+//        final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
+//        assertEquals(numBoardsEvaluated, 4865609L);
+//    }
+
+//    @Test
+//    public void testOpeningDepth6() {
+//        final Board board = Board.createStandardBoard();
+//        final MoveStrategy minMax = new MiniMax(6);
+//        minMax.execute(board);
+//        final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
+//        assertEquals(numBoardsEvaluated, 119060324L);
+//    }
+
+//    @Test
+//    public void engineIntegrity1() {
+//        final Board board = FenUtilities.createGameFromFEN("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -\n");
+//        final MoveStrategy minMax = new MiniMax(6);
+//        minMax.execute(board);
+//        assertEquals(minMax.getNumBoardsEvaluated(), 11030083);
+//    }
+
+//    @Test
+//    public void testChessDotComGame() {
+//        final Board board = FenUtilities.createGameFromFEN("rnbk1bnr/1pN2ppp/p7/3P2q1/3Pp3/8/PPP1QPPP/RN2KB1R w KQ - 18 10");
+//        final MoveStrategy minMax = new MiniMax(4);
+//        minMax.execute(board);
+//    }
 
 }

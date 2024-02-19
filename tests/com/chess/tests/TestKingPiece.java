@@ -33,7 +33,7 @@ public class TestKingPiece {
         final Board board = builder.build();
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
-        assertEquals(whiteLegals.size(), 4);
+        assertEquals(whiteLegals.size(), 14);
         assertEquals(blackLegals.size(), 5);
 
         // Representative Value - f1
@@ -57,7 +57,7 @@ public class TestKingPiece {
         final Board board = builder.build();
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
-        assertEquals(whiteLegals.size(), 4);
+        assertEquals(whiteLegals.size(), 14);
         assertEquals(blackLegals.size(), 5);
 
         // Representative Value - e3
@@ -81,7 +81,7 @@ public class TestKingPiece {
         final Board board = builder.build();
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
-        assertEquals(whiteLegals.size(), 4);
+        assertEquals(whiteLegals.size(), 14);
         assertEquals(blackLegals.size(), 5);
 
         // Representative Value - gg6

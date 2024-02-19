@@ -1,5 +1,5 @@
-//package com.chess.tests;
-//
+package com.chess.tests;
+
 //import static junit.framework.Assert.assertEquals;
 //
 //import com.chess.engine.classic.pieces.Rook;
@@ -10,8 +10,15 @@
 //import com.chess.engine.classic.board.Board;
 //import com.chess.engine.classic.board.Board.Builder;
 //import com.chess.engine.classic.pieces.King;
-//
-//public class TestRookStructure {
+
+/**
+ * Commented by Steven Nguyen 2/18/2024:
+ *
+ * This test class only has a few tests but no assertions. Based on observation, the
+ * creator made a change within the program at some point in time that broke this test case,
+ * and so he commented out the test cases. However, he did not get back to it since.
+ * */
+public class TestRookStructure {
 //
 //    @Test
 //    public void test1() {
@@ -37,4 +44,4 @@
 //    }
 //
 //
-//}
+}

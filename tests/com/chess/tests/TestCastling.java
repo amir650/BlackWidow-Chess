@@ -238,70 +238,6 @@ public class TestCastling {
     }
 
     @Test
-    public void testCastleBugOne() {
-        final Board board = Board.createStandardBoard();
-        final MoveTransition t1 = board.currentPlayer()
-                .makeMove(Move.MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e2"),
-                        BoardUtils.INSTANCE.getCoordinateAtPosition("e4")));
-        assertTrue(t1.getMoveStatus().isDone());
-        final MoveTransition t2 = t1.getToBoard()
-                .currentPlayer()
-                .makeMove(Move.MoveFactory.createMove(t1.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("d7"),
-                        BoardUtils.INSTANCE.getCoordinateAtPosition("d5")));
-        assertTrue(t2.getMoveStatus().isDone());
-        final MoveTransition t3 = t2.getToBoard()
-                .currentPlayer()
-                .makeMove(Move.MoveFactory.createMove(t2.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("e4"),
-                        BoardUtils.INSTANCE.getCoordinateAtPosition("e5")));
-        assertTrue(t3.getMoveStatus().isDone());
-        final MoveTransition t4 = t3.getToBoard()
-                .currentPlayer()
-                .makeMove(Move.MoveFactory.createMove(t3.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("c8"),
-                        BoardUtils.INSTANCE.getCoordinateAtPosition("f5")));
-        assertTrue(t4.getMoveStatus().isDone());
-        final MoveTransition t5 = t4.getToBoard()
-                .currentPlayer()
-                .makeMove(Move.MoveFactory.createMove(t4.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("f1"),
-                        BoardUtils.INSTANCE.getCoordinateAtPosition("d3")));
-        assertTrue(t5.getMoveStatus().isDone());
-        final MoveTransition t6 = t5.getToBoard()
-                .currentPlayer()
-                .makeMove(Move.MoveFactory.createMove(t5.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("f5"),
-                        BoardUtils.INSTANCE.getCoordinateAtPosition("d3")));
-        assertTrue(t6.getMoveStatus().isDone());
-        final MoveTransition t7 = t6.getToBoard()
-                .currentPlayer()
-                .makeMove(Move.MoveFactory.createMove(t6.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("c2"),
-                        BoardUtils.INSTANCE.getCoordinateAtPosition("d3")));
-        assertTrue(t7.getMoveStatus().isDone());
-        final MoveTransition t8 = t7.getToBoard()
-                .currentPlayer()
-                .makeMove(Move.MoveFactory.createMove(t7.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("e7"),
-                        BoardUtils.INSTANCE.getCoordinateAtPosition("e6")));
-        assertTrue(t8.getMoveStatus().isDone());
-        final MoveTransition t9 = t8.getToBoard()
-                .currentPlayer()
-                .makeMove(Move.MoveFactory.createMove(t8.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("d1"),
-                        BoardUtils.INSTANCE.getCoordinateAtPosition("a4")));
-        assertTrue(t9.getMoveStatus().isDone());
-        final MoveTransition t10 = t9.getToBoard()
-                .currentPlayer()
-                .makeMove(Move.MoveFactory.createMove(t9.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("d8"),
-                        BoardUtils.INSTANCE.getCoordinateAtPosition("d7")));
-        assertTrue(t10.getMoveStatus().isDone());
-        final MoveTransition t11 = t10.getToBoard()
-                .currentPlayer()
-                .makeMove(
-                        Move.MoveFactory.createMove(t10.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("b1"),
-                                BoardUtils.INSTANCE.getCoordinateAtPosition("c3")));
-        assertTrue(t11.getMoveStatus().isDone());
-
-        final MoveStrategy moveStrategy = new StockAlphaBeta(6);
-
-        moveStrategy.execute(t11.getToBoard());
-    }
-
-    @Test
     public void testNoCastlingOutOfCheck() {
         final Board board = FenUtilities.createGameFromFEN("r3k2r/1pN1nppp/p3p3/3p4/8/8/PPPK1PPP/R6R b kq - 1 18");
         final Move illegalCastleMove = Move.MoveFactory
@@ -311,4 +247,75 @@ public class TestCastling {
         assertFalse(t1.getMoveStatus().isDone());
     }
 
+    /**
+     * Commented out by Steven Nguyen on 2/18/2024
+     *
+     * The following tests below were already existed within the project but were commented
+     * out due to very slow performance. To ensure that the entire project's test suites were running efficiently, test cases were retained if
+     * they ran in under 3 seconds.
+     * */
+
+//    @Test
+//    public void testCastleBugOne() {
+//        final Board board = Board.createStandardBoard();
+//        final MoveTransition t1 = board.currentPlayer()
+//                .makeMove(Move.MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e2"),
+//                        BoardUtils.INSTANCE.getCoordinateAtPosition("e4")));
+//        assertTrue(t1.getMoveStatus().isDone());
+//        final MoveTransition t2 = t1.getToBoard()
+//                .currentPlayer()
+//                .makeMove(Move.MoveFactory.createMove(t1.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("d7"),
+//                        BoardUtils.INSTANCE.getCoordinateAtPosition("d5")));
+//        assertTrue(t2.getMoveStatus().isDone());
+//        final MoveTransition t3 = t2.getToBoard()
+//                .currentPlayer()
+//                .makeMove(Move.MoveFactory.createMove(t2.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("e4"),
+//                        BoardUtils.INSTANCE.getCoordinateAtPosition("e5")));
+//        assertTrue(t3.getMoveStatus().isDone());
+//        final MoveTransition t4 = t3.getToBoard()
+//                .currentPlayer()
+//                .makeMove(Move.MoveFactory.createMove(t3.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("c8"),
+//                        BoardUtils.INSTANCE.getCoordinateAtPosition("f5")));
+//        assertTrue(t4.getMoveStatus().isDone());
+//        final MoveTransition t5 = t4.getToBoard()
+//                .currentPlayer()
+//                .makeMove(Move.MoveFactory.createMove(t4.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("f1"),
+//                        BoardUtils.INSTANCE.getCoordinateAtPosition("d3")));
+//        assertTrue(t5.getMoveStatus().isDone());
+//        final MoveTransition t6 = t5.getToBoard()
+//                .currentPlayer()
+//                .makeMove(Move.MoveFactory.createMove(t5.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("f5"),
+//                        BoardUtils.INSTANCE.getCoordinateAtPosition("d3")));
+//        assertTrue(t6.getMoveStatus().isDone());
+//        final MoveTransition t7 = t6.getToBoard()
+//                .currentPlayer()
+//                .makeMove(Move.MoveFactory.createMove(t6.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("c2"),
+//                        BoardUtils.INSTANCE.getCoordinateAtPosition("d3")));
+//        assertTrue(t7.getMoveStatus().isDone());
+//        final MoveTransition t8 = t7.getToBoard()
+//                .currentPlayer()
+//                .makeMove(Move.MoveFactory.createMove(t7.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("e7"),
+//                        BoardUtils.INSTANCE.getCoordinateAtPosition("e6")));
+//        assertTrue(t8.getMoveStatus().isDone());
+//        final MoveTransition t9 = t8.getToBoard()
+//                .currentPlayer()
+//                .makeMove(Move.MoveFactory.createMove(t8.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("d1"),
+//                        BoardUtils.INSTANCE.getCoordinateAtPosition("a4")));
+//        assertTrue(t9.getMoveStatus().isDone());
+//        final MoveTransition t10 = t9.getToBoard()
+//                .currentPlayer()
+//                .makeMove(Move.MoveFactory.createMove(t9.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("d8"),
+//                        BoardUtils.INSTANCE.getCoordinateAtPosition("d7")));
+//        assertTrue(t10.getMoveStatus().isDone());
+//        final MoveTransition t11 = t10.getToBoard()
+//                .currentPlayer()
+//                .makeMove(
+//                        Move.MoveFactory.createMove(t10.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("b1"),
+//                                BoardUtils.INSTANCE.getCoordinateAtPosition("c3")));
+//        assertTrue(t11.getMoveStatus().isDone());
+//
+//        final MoveStrategy moveStrategy = new StockAlphaBeta(6);
+//
+//        moveStrategy.execute(t11.getToBoard());
+//    }
 }

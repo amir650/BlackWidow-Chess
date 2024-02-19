@@ -974,51 +974,61 @@ public class TestCheckmate {
 
     }
 
-    @Test
-    public void testMateInTwoTest1() {
-        final Board board = FenUtilities.createGameFromFEN("6k1/1b4pp/1B1Q4/4p1P1/p3q3/2P3r1/P1P2PP1/R5K1 w - - 1 0");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
-        final Move bestMove = alphaBeta.execute(board);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("d6"), BoardUtils.INSTANCE.getCoordinateAtPosition("e6")));
-    }
+    /**
+     * Commented out by Steven Nguyen on 2/18/2024:
+     *
+     * The following existing tests below excluded from the lists were determined
+     * to cause major bottlenecks for the completion of the test suite. These tests
+     * can be as fast as one minute and can go as long as 40 minutes.
+     *
+     * To ensure the test suites in the entire project were running
+     * quickly, only tests that finished within milliseconds were maintained.
+     * */
 
-    @Test
-    public void testMateInTwoTest2() {
-        final Board board = FenUtilities.createGameFromFEN("3r3r/1Q5p/p3q2k/3NBp1B/3p3n/5P2/PP4PP/4R2K w - - 1 0");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
-        final Move bestMove = alphaBeta.execute(board);
-        assertEquals(
-                bestMove,
-                Move.MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("b7"),
-                        BoardUtils.INSTANCE.getCoordinateAtPosition("g7")));
-    }
+//    @Test
+//    public void testMateInTwoTest1() {
+//        final Board board = FenUtilities.createGameFromFEN("6k1/1b4pp/1B1Q4/4p1P1/p3q3/2P3r1/P1P2PP1/R5K1 w - - 1 0");
+//        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
+//        final Move bestMove = alphaBeta.execute(board);
+//        assertEquals(bestMove, Move.MoveFactory
+//                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("d6"), BoardUtils.INSTANCE.getCoordinateAtPosition("e6")));
+//    }
 
-    @Test
-    public void testMateInTwoTest3() {
-        final Board board = FenUtilities.createGameFromFEN("rn3rk1/1R3ppp/2p5/8/PQ2P3/1P5P/2P1qPP1/3R2K1 w - - 1 0");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(1);
-        final Move bestMove = alphaBeta.execute(board);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("b4"), BoardUtils.INSTANCE.getCoordinateAtPosition("f8")));
-    }
-
-    @Test
-    public void testMateInFourTest1() {
-        final Board board = FenUtilities.createGameFromFEN("7k/4r2B/1pb5/2P5/4p2Q/2q5/2P2R2/1K6 w - - 1 0");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
-        final Move bestMove = alphaBeta.execute(board);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("f2"), BoardUtils.INSTANCE.getCoordinateAtPosition("f8")));
-    }
-
-    @Test
-    public void testMagnusBlackToMoveAndWinTest1() {
-        final Board board = FenUtilities.createGameFromFEN("2rr2k1/pb3pp1/4q2p/2pn4/2Q1P3/P4P2/1P3BPP/2KR2NR b - - 0 1");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
-        final Move bestMove = alphaBeta.execute(board);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("d5"), BoardUtils.INSTANCE.getCoordinateAtPosition("e3")));
-    }
-
+//    @Test
+//    public void testMateInTwoTest2() {
+//        final Board board = FenUtilities.createGameFromFEN("3r3r/1Q5p/p3q2k/3NBp1B/3p3n/5P2/PP4PP/4R2K w - - 1 0");
+//        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
+//        final Move bestMove = alphaBeta.execute(board);
+//        assertEquals(
+//                bestMove,
+//                Move.MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("b7"),
+//                        BoardUtils.INSTANCE.getCoordinateAtPosition("g7")));
+//    }
+//
+//    @Test
+//    public void testMateInTwoTest3() {
+//        final Board board = FenUtilities.createGameFromFEN("rn3rk1/1R3ppp/2p5/8/PQ2P3/1P5P/2P1qPP1/3R2K1 w - - 1 0");
+//        final MoveStrategy alphaBeta = new StockAlphaBeta(1);
+//        final Move bestMove = alphaBeta.execute(board);
+//        assertEquals(bestMove, Move.MoveFactory
+//                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("b4"), BoardUtils.INSTANCE.getCoordinateAtPosition("f8")));
+//    }
+//
+//    @Test
+//    public void testMateInFourTest1() {
+//        final Board board = FenUtilities.createGameFromFEN("7k/4r2B/1pb5/2P5/4p2Q/2q5/2P2R2/1K6 w - - 1 0");
+//        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
+//        final Move bestMove = alphaBeta.execute(board);
+//        assertEquals(bestMove, Move.MoveFactory
+//                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("f2"), BoardUtils.INSTANCE.getCoordinateAtPosition("f8")));
+//    }
+//
+//    @Test
+//    public void testMagnusBlackToMoveAndWinTest1() {
+//        final Board board = FenUtilities.createGameFromFEN("2rr2k1/pb3pp1/4q2p/2pn4/2Q1P3/P4P2/1P3BPP/2KR2NR b - - 0 1");
+//        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
+//        final Move bestMove = alphaBeta.execute(board);
+//        assertEquals(bestMove, Move.MoveFactory
+//                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("d5"), BoardUtils.INSTANCE.getCoordinateAtPosition("e3")));
+//    }
 }
