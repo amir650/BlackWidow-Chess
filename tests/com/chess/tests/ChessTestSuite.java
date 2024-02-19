@@ -20,7 +20,8 @@ import org.junit.runners.Suite;
     TestKnightPiece.class,
     TestPawnPiece.class,
     TestQueenPiece.class,
-    TestGameFiniteStates.class
+    TestGameFiniteStates.class,
+        TestCoverage.class
 })
 public class ChessTestSuite {
 }
