@@ -58,7 +58,7 @@ public class TestBishopPieceOOBMoves {
         this.board = boardBuilder.build();
     }
 
-    @Parameterized.Parameters(name="Invalid Move: \"{0}\" -> \"{1}\"")
+    @Parameterized.Parameters(name="Out of Bound Move: \"{0}\" -> \"{1}\"")
     public static Collection testMoveParameters() {
         return Arrays.asList(new Object[][] {
             { "e4", "aa5" },

@@ -4,20 +4,13 @@ import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
-import com.chess.engine.classic.board.MoveTransition;
-import com.chess.engine.classic.pieces.King;
-import com.chess.engine.classic.pieces.Pawn;
+import com.chess.engine.classic.pieces.*;
 import com.chess.engine.classic.player.ai.BoardEvaluator;
+import com.chess.engine.classic.player.ai.KingSafetyAnalyzer;
 import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
-import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Collection;
-
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
 
 public class TestCoverage {
     @Test
@@ -51,5 +44,78 @@ public class TestCoverage {
                 "Final Score = " + 0);
         System.out.println(result);
         assertEquals(StandardBoardEvaluator.get().evaluationDetails(board,0), result);
+    }
+
+    // Testing that the Move hashCodes are the same if two different piece move instances
+    // are created but are moving to the same position on the chess board
+    @Test
+    public void testMoveHashCodes () {
+        final var boardUtils = BoardUtils.INSTANCE;
+        var boardBuilder = new Board.Builder();
+
+        var blackKingPiece = new King(Alliance.BLACK, 8, false, false);
+        boardBuilder.setPiece(blackKingPiece);
+
+        var whiteKingPiece = new King(Alliance.WHITE, 1, false, false);
+        var pawnPiece = new Pawn(Alliance.WHITE, boardUtils.getCoordinateAtPosition("a2"));
+
+        boardBuilder.setPiece(whiteKingPiece);
+        boardBuilder.setPiece(pawnPiece);
+
+        // Set the current player's turn
+        boardBuilder.setMoveMaker(Alliance.WHITE);
+
+        var board = boardBuilder.build();
+        var movePosition = boardUtils.getCoordinateAtPosition("a3");
+
+        // Perform the action
+        var pawnMove1 = new Move.PawnMove(board, pawnPiece, movePosition);
+        var pawnMove2 = new Move.PawnMove(board, pawnPiece, movePosition);
+
+        // Assert
+        assertEquals(pawnMove1.hashCode(), pawnMove2.hashCode());
+    }
+
+    // Testing the enemy King's piece safety. We will set up the board one step away from
+    // a check and then assert that the distance from attack is calculated correctly
+    // Expected:
+    // tropism distance = 0 --> enemy king piece is in danger!
+    // tropism distance = 1 --> enemy king piece is not in danger!
+    @Test
+    public void testEnemyKingPieceSafety () {
+        var boardBuilder = new Board.Builder();
+        var boardUtils = BoardUtils.INSTANCE;
+
+        // Set up Black Alliance pieces
+        var blackKingPosition = boardUtils.getCoordinateAtPosition("g8");
+        var blackKingPiece = new King(Alliance.BLACK, blackKingPosition, false, false);
+        boardBuilder.setPiece(blackKingPiece);
+
+        // Set up White Alliance pieces
+        var whiteKingPosition = boardUtils.getCoordinateAtPosition("f6");
+        var whiteKingPiece = new King(Alliance.WHITE, whiteKingPosition, false, false);
+        boardBuilder.setPiece(whiteKingPiece);
+
+        var whiteRookPosition = boardUtils.getCoordinateAtPosition("h2");
+        var whiteRookPiece = new Rook(Alliance.WHITE, whiteRookPosition);
+        boardBuilder.setPiece(whiteRookPiece);
+
+        // Set the current player's turn
+        boardBuilder.setMoveMaker(Alliance.WHITE);
+
+        final Board board = boardBuilder.build();
+
+        var initialPosition = boardUtils.getCoordinateAtPosition("h2");
+        var finalPosition = boardUtils.getCoordinateAtPosition("h8");
+
+        var moveTransition = board.currentPlayer()
+                .makeMove(Move.MoveFactory.createMove(board, initialPosition, finalPosition));
+
+        // perform the act of running the king analyzer
+        var safetyAnalyzer = KingSafetyAnalyzer.get();
+        var result = safetyAnalyzer.calculateKingTropism(moveTransition.getToBoard().blackPlayer());
+
+        // assert
+        assertEquals(0, result.getDistance());
     }
 }
