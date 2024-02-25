@@ -47,29 +47,30 @@
         <pathelement location="${main.build.dir}"/>
     </path>
 
-    <target name="compile">
+    <target name="compile-main-project">
         <mkdir dir="${main.build.dir}"/>
         <javac srcdir="${main.src.dir}" destdir="${main.build.dir}" includeantruntime="false"/>
     </target>
 
-    <target name="test-compile" depends="compile">
+    <target name="compile-test-project" depends="compile-main-project">
         <mkdir dir="${test.build.dir}"/>
         <javac srcdir="${test.src.dir}" destdir="${test.build.dir}" includeantruntime="false">
             <classpath refid="classpath.test"/>
         </javac>
     </target>
 
-    <target name="test" depends="test-compile">
-    <junit printsummary="on" haltonfailure="yes" fork="true">
-        <classpath>
-            <path refid="classpath.test"/>
-            <pathelement location="${test.build.dir}"/>
-        </classpath>
-        <formatter type="brief" usefile="false" />
-        <batchtest>
-            <fileset dir="${test.src.dir}" includes="**/*Test.java" />
-        </batchtest>
-    </junit>
+    <target name="test" depends="compile-test-project">
+        <junit printsummary="on" haltonfailure="yes" fork="true">
+            <classpath>
+                <path refid="classpath.test"/>
+                <pathelement location="${test.build.dir}"/>
+            </classpath>
+            <formatter type="brief" usefile="false" />
+            <batchtest>
+                <fileset dir="${test.src.dir}" includes="**/*Test.java" />
+            </batchtest>
+        </junit>
+    </target>
 
     <!-- end of JUnit4 build + run material -->
 
