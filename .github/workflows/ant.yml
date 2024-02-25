@@ -5,8 +5,9 @@
 # Sources: 
 # https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-ant
 # https://docs.github.com/en/actions/quickstart
+# https://github.com/junit-team/junit4/wiki/Getting-started-–-Ant
 
-name: ChessMSWE Continuous Integration
+name: CI for ChessMSWE
 
 # trigger the pipeline on push regardless of what branch it is
 # (feature or master branch)
@@ -15,7 +16,7 @@ on: [push]
 # running the jobs for this pipeline
 jobs:
   # name of the job
-  build-and-run-tests-with-ant:
+  build-project:
     # specify the server OS to use
     runs-on: ubuntu-latest
     steps:
