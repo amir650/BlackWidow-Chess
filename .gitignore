@@ -3,4 +3,5 @@
 *.settings
 build/
 out/*
+dist/*
 .DS_Store

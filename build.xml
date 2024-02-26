@@ -1,12 +1,23 @@
-<project name="BlackWidow" basedir=".">
+<!--
+    To test if your build.xml file is working correctly:
+        1. install apache ant onto your local computer. This will vary depending on OS. For Mac, Homebrew package installer
+        must be used.
+        2. Go to root directory of this project
+        3. Run <targetname>  ant -verbose -buildfile build.xml, where target name is the "name" attribute of a target tag
+        4. Evaluate the verbose output to see if there is any issue. Build time should take some time!
+-->
 
-    <description>Build file for BlackWidow Chess</description>
+<project name="ChessMSWE" basedir=".">
+    <description>Build file for ChessMSWE source project. Excludes test files.</description>
 
-    <property name="build.dir" value="build" />
+    <property name="src.dir" value="src" />
+    <property name="build.dir" value="out" />
+    <property name="test.dir" value="tests" />
+    <property name="build.test.dir" value="out/test" />
     <property name="lib.dir" value="lib" />
     <property name="resources.dir" value="art" />
     <property name="dist.dir" value="dist" />
-    <property name="manifest.file" value="${jar.dir}/MANIFEST.MF" />
+    <property name="manifest.file" value="dist/ChessMSWE.jar/MANIFEST.MF" />
     <property name="main.class" value="com.chess.BlackWidow" />
 
     <path id="master-classpath">
@@ -16,42 +27,78 @@
         <pathelement path="${build.dir}"/>
     </path>
 
-    <target name="initialize"
-            description="initial directory setup">
-        <mkdir dir="build"/>
+    <target
+        name="initialize"
+        description="initial directory setup">
+        <mkdir dir="${build.dir}"/>
     </target>
 
     <target name="clean"
             description="removes all unwanted files">
-        <delete dir="build"/>
+        <delete dir="${build.dir}"/>
     </target>
 
-    <target name="compile"
+    <target name="compile-src-project"
             depends="initialize"
             description="compiles source files">
         <javac srcdir="src"
-               destdir="build"
+               destdir="${build.dir}"
                includeAntRuntime="no"
                failonerror="true"
-               classpath="xyz.jar"
+               classpath="ChessMSWE.jar"
                excludes="tests/**/*.java">
             <classpath refid="master-classpath"/>
         </javac>
     </target>
 
-    <target name="jar"
-            depends="compile"
-            description="builds jar file">
-        <jar destfile="${dist.dir}/BlackWidow.jar" basedir="${build.dir}">
+    <target
+        name="initialize-build-test-folder"
+        description="initial directory setup">
+        <mkdir dir="${build.test.dir}"/>
+    </target>
+
+    <target name="compile-test-project"
+            depends="initialize"
+            description="compiles junit4 test project">
+        <javac srcdir="${test.dir}"
+               destdir="${build.test.dir}"
+               classpath="${lib.dir}/junit-4.13.2.jar"
+               includeAntRuntime="no"
+               failonerror="true"
+               excludes="src/**/Test*.java">
+            <classpath refid="master-classpath"/>
+        </javac>
+    </target>
+
+    <target name="run-junit-tests" depends="compile-test-project">
+        <junit
+            printsummary="on"
+            haltonfailure="yes"
+            fork="true">
+            <classpath>
+                <path refid="master-classpath"/>
+                <pathelement location="${build.test.dir}"/>
+            </classpath>
+            <formatter type="brief" usefile="false" />
+            <batchtest
+                skipNonTests="true">
+                <fileset dir="${test.dir}" includes="**/Test*.java" />
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="deploy-jar"
+            depends="compile-src-project"
+            description="build and deploy .jar file">
+        <jar destfile="${dist.dir}/ChessMSWE.jar" basedir="${build.dir}">
             <fileset dir="${build.dir}" includes="**/*.class" />
             <fileset dir="${resources.dir}" />
             <zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
             <manifest>
-                <attribute name="built-by" value="amir.afghani" />
+                <attribute name="built-by" value="team-chess-mswe" />
                 <attribute name="Manifest-Version" value="1.0" />
                 <attribute name="Main-Class" value="${main.class}" />
             </manifest>
         </jar>
     </target>
-
 </project>

@@ -1,0 +1,43 @@
+# ChessMSWE utilizes the Apache Ant build tool rather than the more modern Gradle/Maven approach. This can be
+# observed by finding the build.xml file withou the root of the project. To build the script for Continuous Integration
+# the following link was used to get started:
+
+# Sources: 
+# https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-ant
+# https://docs.github.com/en/actions/quickstart
+# https://github.com/junit-team/junit4/wiki/Getting-started-–-Ant
+# https://ant.apache.org/manual/Tasks/junit.html
+# https://ant.apache.org/manual/Tasks/javac.html
+
+name: CI for ChessMSWE
+
+# trigger the pipeline on push regardless of what branch it is
+# (feature or master branch)
+on: [push]
+
+# running the jobs for this pipeline
+jobs:
+  # name of the job
+  job-compile-and-run-tests:
+    # specify the server OS to use
+    runs-on: ubuntu-latest
+    # write all the steps involving the job
+    steps:
+    - uses: actions/checkout@v3
+    - name: 1. Set up JDK Version 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+    - name: 2. Create build directory (if not exists)
+      run: ant -verbose -buildfile build.xml initialize
+    - name: 3. Clear build directory (if exists)
+      run: ant -verbose -buildfile build.xml clean
+    - name: 4. Compile src project with Ant
+      run: ant -verbose -buildfile build.xml compile-src-project
+    - name: 5. Create build test directory (if not exists)
+      run: ant -verbose -buildfile build.xml initialize-build-test-folder
+    - name: 6. Compile test project with Ant
+      run: ant -verbose -buildfile build.xml compile-test-project
+    - name: 7. Run JUnit4 Tests
+      run: ant -verbose -buildfile build.xml run-junit-tests
