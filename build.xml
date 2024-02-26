@@ -1,13 +1,12 @@
-<project name="ChessMSWE" basedir=".">
-    <description>ANT Build File for ChessMSWE Project</description>
+<project name="BlackWidow" basedir=".">
+    <description>Build file for BlackWidow Chess</description>
 
-    <property name="src.dir" value="src" />
-    <property name="build.dir" value="out" />
+    <property name="build.dir" value="build" />
     <property name="lib.dir" value="lib" />
     <property name="resources.dir" value="art" />
     <property name="dist.dir" value="dist" />
     <property name="manifest.file" value="${jar.dir}/MANIFEST.MF" />
-    <property name="entrypoint.class" value="com.chess.BlackWidow" />
+    <property name="main.class" value="com.chess.BlackWidow" />
 
     <path id="master-classpath">
         <fileset dir="${lib.dir}/">
@@ -18,38 +17,36 @@
 
     <target name="initialize"
             description="initial directory setup">
-        <mkdir dir="${build.dir}"/>
+        <mkdir dir="build"/>
     </target>
 
     <target name="clean"
-            description="clean all contents of build dir if exists">
-        <delete dir="${build.dir}"/>
+            description="removes all unwanted files">
+        <delete dir="build"/>
     </target>
 
-    <target name="chess-project-compile"
+    <target name="project-compile"
             depends="initialize"
-            description="compiles chess project source files">
-        <javac srcdir="${src.dir}"
-               destdir="${build.dir}"
+            description="compiles source files">
+        <javac srcdir="src"
+               destdir="build"
                includeAntRuntime="no"
                failonerror="true"
-               classpath="ChessMSWE.jar"
-               excludes="**/Test*.java">
+               classpath="xyz.jar"
+               excludes="tests/**/*.java">
             <classpath refid="master-classpath"/>
         </javac>
     </target>
 
-    <target name="export jar"
-            depends="chess-project-compile"
-            description="build ChessMSWE Export File">
-        <jar
-            destfile="${dist.dir}/ChessMSWE.jar"
-            basedir="${build.dir}">
+    <target name="jar"
+            depends="compile"
+            description="builds jar file">
+        <jar destfile="${dist.dir}/BlackWidow.jar" basedir="${build.dir}">
             <fileset dir="${build.dir}" includes="**/*.class" />
             <fileset dir="${resources.dir}" />
             <zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
             <manifest>
-                <attribute name="built-by" value="team-chess-mswe" />
+                <attribute name="built-by" value="amir.afghani" />
                 <attribute name="Manifest-Version" value="1.0" />
                 <attribute name="Main-Class" value="${main.class}" />
             </manifest>
