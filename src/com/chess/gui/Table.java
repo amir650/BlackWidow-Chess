@@ -401,7 +401,8 @@ public final class Table extends Observable {
 
     private static void loadPGNFile(final File pgnFile) {
         try {
-            persistPGNFile(pgnFile);
+            var database = MySqlGamePersistence.get();
+            persistPGNFile(pgnFile, database);
         }
         catch (final IOException e) {
             e.printStackTrace();

@@ -31,7 +31,7 @@ public class PGNUtilities {
         throw new RuntimeException("Not Instantiable!");
     }
 
-    public static void persistPGNFile(final File pgnFile) throws IOException {
+    public static void persistPGNFile(final File pgnFile, PGNPersistence persistence) throws IOException {
 
         int count = 0;
         int validCount = 0;
@@ -57,7 +57,7 @@ public class PGNUtilities {
                             final Game game = GameFactory.createGame(tagsBuilder.build(), gameText, outcome);
                             System.out.println("(" +(++count)+") Finished parsing " +game+ " count = " + (++count));
                             if(game.isValid()) {
-                                MySqlGamePersistence.get().persistGame(game);
+                                persistence.persistGame(game);
                                 validCount++;
                             }
                         }
