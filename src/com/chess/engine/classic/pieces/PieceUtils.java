@@ -2,92 +2,98 @@ package com.chess.engine.classic.pieces;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.BoardUtils;
-import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.Table;
+
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 
 enum PieceUtils {
 
     INSTANCE;
 
-    private final Table<Alliance, Integer, Queen> ALL_POSSIBLE_QUEENS = PieceUtils.createAllPossibleMovedQueens();
-    private final Table<Alliance, Integer, Rook> ALL_POSSIBLE_ROOKS = PieceUtils.createAllPossibleMovedRooks();
-    private final Table<Alliance, Integer, Knight> ALL_POSSIBLE_KNIGHTS = PieceUtils.createAllPossibleMovedKnights();
-    private final Table<Alliance, Integer, Bishop> ALL_POSSIBLE_BISHOPS = PieceUtils.createAllPossibleMovedBishops();
-    private final Table<Alliance, Integer, Pawn> ALL_POSSIBLE_PAWNS = PieceUtils.createAllPossibleMovedPawns();
+    private final Map<Alliance, Map<Integer, Queen>> ALL_POSSIBLE_QUEENS = createAllPossibleMovedQueens();
+    private final Map<Alliance, Map<Integer, Rook>> ALL_POSSIBLE_ROOKS = createAllPossibleMovedRooks();
+    private final Map<Alliance, Map<Integer, Knight>> ALL_POSSIBLE_KNIGHTS = createAllPossibleMovedKnights();
+    private final Map<Alliance, Map<Integer, Bishop>> ALL_POSSIBLE_BISHOPS = createAllPossibleMovedBishops();
+    private final Map<Alliance, Map<Integer, Pawn>> ALL_POSSIBLE_PAWNS = createAllPossibleMovedPawns();
 
-    Pawn getMovedPawn(final Alliance alliance,
-                      final int destinationCoordinate) {
-        return ALL_POSSIBLE_PAWNS.get(alliance, destinationCoordinate);
+    Pawn getMovedPawn(final Alliance alliance, final int destinationCoordinate) {
+        return ALL_POSSIBLE_PAWNS.get(alliance).get(destinationCoordinate);
     }
 
-    Knight getMovedKnight(final Alliance alliance,
-                          final int destinationCoordinate) {
-        return ALL_POSSIBLE_KNIGHTS.get(alliance, destinationCoordinate);
+    Knight getMovedKnight(final Alliance alliance, final int destinationCoordinate) {
+        return ALL_POSSIBLE_KNIGHTS.get(alliance).get(destinationCoordinate);
     }
 
-    Bishop getMovedBishop(final Alliance alliance,
-                          final int destinationCoordinate) {
-        return ALL_POSSIBLE_BISHOPS.get(alliance, destinationCoordinate);
+    Bishop getMovedBishop(final Alliance alliance, final int destinationCoordinate) {
+        return ALL_POSSIBLE_BISHOPS.get(alliance).get(destinationCoordinate);
     }
 
-    Rook getMovedRook(final Alliance alliance,
-                      final int destinationCoordinate) {
-        return ALL_POSSIBLE_ROOKS.get(alliance, destinationCoordinate);
+    Rook getMovedRook(final Alliance alliance, final int destinationCoordinate) {
+        return ALL_POSSIBLE_ROOKS.get(alliance).get(destinationCoordinate);
     }
 
-    Queen getMovedQueen(final Alliance alliance,
-                        final int destinationCoordinate) {
-        return ALL_POSSIBLE_QUEENS.get(alliance, destinationCoordinate);
+    Queen getMovedQueen(final Alliance alliance, final int destinationCoordinate) {
+        return ALL_POSSIBLE_QUEENS.get(alliance).get(destinationCoordinate);
     }
 
-    private static Table<Alliance, Integer, Pawn> createAllPossibleMovedPawns() {
-        final ImmutableTable.Builder<Alliance, Integer, Pawn> pieces = ImmutableTable.builder();
-        for(final Alliance alliance : Alliance.values()) {
-            for(int i = 0; i < BoardUtils.NUM_TILES; i++) {
-                pieces.put(alliance, i, new Pawn(alliance, i, false));
+    private static Map<Alliance, Map<Integer, Pawn>> createAllPossibleMovedPawns() {
+        Map<Alliance, Map<Integer, Pawn>> pieces = new EnumMap<>(Alliance.class);
+        for (Alliance alliance : Alliance.values()) {
+            Map<Integer, Pawn> map = new HashMap<>();
+            for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
+                map.put(i, new Pawn(alliance, i, false));
             }
+            pieces.put(alliance, map);
         }
-        return pieces.build();
+        return pieces;
     }
 
-    private static Table<Alliance, Integer, Knight> createAllPossibleMovedKnights() {
-        final ImmutableTable.Builder<Alliance, Integer, Knight> pieces = ImmutableTable.builder();
-        for(final Alliance alliance : Alliance.values()) {
-            for(int i = 0; i < BoardUtils.NUM_TILES; i++) {
-                pieces.put(alliance, i, new Knight(alliance, i, false));
+    private static Map<Alliance, Map<Integer, Knight>> createAllPossibleMovedKnights() {
+        Map<Alliance, Map<Integer, Knight>> pieces = new EnumMap<>(Alliance.class);
+        for (Alliance alliance : Alliance.values()) {
+            Map<Integer, Knight> map = new HashMap<>();
+            for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
+                map.put(i, new Knight(alliance, i, false));
             }
+            pieces.put(alliance, map);
         }
-        return pieces.build();
+        return pieces;
     }
 
-    private static Table<Alliance, Integer, Bishop> createAllPossibleMovedBishops() {
-        final ImmutableTable.Builder<Alliance, Integer, Bishop> pieces = ImmutableTable.builder();
-        for(final Alliance alliance : Alliance.values()) {
-            for(int i = 0; i < BoardUtils.NUM_TILES; i++) {
-                pieces.put(alliance, i, new Bishop(alliance, i, false));
+    private static Map<Alliance, Map<Integer, Bishop>> createAllPossibleMovedBishops() {
+        Map<Alliance, Map<Integer, Bishop>> pieces = new EnumMap<>(Alliance.class);
+        for (Alliance alliance : Alliance.values()) {
+            Map<Integer, Bishop> map = new HashMap<>();
+            for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
+                map.put(i, new Bishop(alliance, i, false));
             }
+            pieces.put(alliance, map);
         }
-        return pieces.build();
+        return pieces;
     }
 
-    private static Table<Alliance, Integer, Rook> createAllPossibleMovedRooks() {
-        final ImmutableTable.Builder<Alliance, Integer, Rook> pieces = ImmutableTable.builder();
-        for(final Alliance alliance : Alliance.values()) {
-            for(int i = 0; i < BoardUtils.NUM_TILES; i++) {
-                pieces.put(alliance, i, new Rook(alliance, i, false));
+    private static Map<Alliance, Map<Integer, Rook>> createAllPossibleMovedRooks() {
+        Map<Alliance, Map<Integer, Rook>> pieces = new EnumMap<>(Alliance.class);
+        for (Alliance alliance : Alliance.values()) {
+            Map<Integer, Rook> map = new HashMap<>();
+            for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
+                map.put(i, new Rook(alliance, i, false));
             }
+            pieces.put(alliance, map);
         }
-        return pieces.build();
+        return pieces;
     }
 
-    private static Table<Alliance, Integer, Queen> createAllPossibleMovedQueens() {
-        final ImmutableTable.Builder<Alliance, Integer, Queen> pieces = ImmutableTable.builder();
-        for(final Alliance alliance : Alliance.values()) {
-            for(int i = 0; i < BoardUtils.NUM_TILES; i++) {
-                pieces.put(alliance, i, new Queen(alliance, i, false));
+    private static Map<Alliance, Map<Integer, Queen>> createAllPossibleMovedQueens() {
+        Map<Alliance, Map<Integer, Queen>> pieces = new EnumMap<>(Alliance.class);
+        for (Alliance alliance : Alliance.values()) {
+            Map<Integer, Queen> map = new HashMap<>();
+            for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
+                map.put(i, new Queen(alliance, i, false));
             }
+            pieces.put(alliance, map);
         }
-        return pieces.build();
+        return pieces;
     }
-
 }

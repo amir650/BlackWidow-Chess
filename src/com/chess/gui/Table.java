@@ -8,6 +8,7 @@ import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
 import com.chess.engine.classic.player.ai.StockAlphaBeta;
 import com.chess.pgn.FenUtilities;
 import com.chess.pgn.MySqlGamePersistence;
+import com.chess.pgn.PGNUtilities;
 import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
@@ -22,7 +23,6 @@ import java.util.*;
 import java.util.List;
 
 import static com.chess.pgn.PGNUtilities.persistPGNFile;
-import static com.chess.pgn.PGNUtilities.writeGameToPGNFile;
 import static javax.swing.JFrame.setDefaultLookAndFeelDecorated;
 import static javax.swing.SwingUtilities.*;
 
@@ -401,20 +401,26 @@ public final class Table extends Observable {
 
     private static void loadPGNFile(final File pgnFile) {
         try {
-            persistPGNFile(pgnFile);
-        }
-        catch (final IOException e) {
+            MySqlGamePersistence persistence = new MySqlGamePersistence();
+            PGNUtilities.persistPGNFile(pgnFile, persistence);
+        } catch (final Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    Table.get().getGameFrame(),
+                    "Error importing PGN file: " + e.getMessage(),
+                    "Import Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
     private static void savePGNFile(final File pgnFile) {
-        try {
-            writeGameToPGNFile(pgnFile, Table.get().getMoveLog());
-        }
-        catch (final IOException e) {
-            e.printStackTrace();
-        }
+        //try {
+        //    writeGameToPGNFile(pgnFile, Table.get().getMoveLog());
+        //}
+        //catch (final IOException e) {
+        //    e.printStackTrace();
+        //}
     }
 
     private void undoLastMove() {
@@ -441,15 +447,26 @@ public final class Table extends Observable {
     private static class TableGameAIWatcher
             implements Observer {
 
+        public static java.sql.Connection createConnection() {
+            final String url = "jdbc:mysql://localhost:3306/your_db"; // <-- Update for your DB!
+            final String user = "your_user";
+            final String pass = "your_pass";
+            try {
+                return java.sql.DriverManager.getConnection(url, user, pass);
+            } catch (java.sql.SQLException e) {
+                throw new RuntimeException("Unable to connect to database!", e);
+            }
+        }
+
         @Override
         public void update(final Observable o,
                            final Object arg) {
 
             if (Table.get().getGameSetup().isAIPlayer(Table.get().getGameBoard().currentPlayer()) &&
-                !Table.get().getGameBoard().currentPlayer().isInCheckMate() &&
-                !Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
+                    !Table.get().getGameBoard().currentPlayer().isInCheckMate() &&
+                    !Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
                 System.out.println(Table.get().getGameBoard().currentPlayer() + " is set to AI, thinking....");
-                final AIThinkTank thinkTank = new AIThinkTank();
+                AIThinkTank thinkTank = new AIThinkTank(new MySqlGamePersistence());
                 thinkTank.execute();
             }
 
@@ -476,16 +493,20 @@ public final class Table extends Observable {
 
     private static class AIThinkTank extends SwingWorker<Move, String> {
 
-        private AIThinkTank() {
+
+        private final MySqlGamePersistence persistence;
+
+        private AIThinkTank(MySqlGamePersistence persistence) {
+            this.persistence = persistence;
         }
 
         @Override
         protected Move doInBackground() {
             final Move bestMove;
             final Move bookMove = Table.get().getUseBook()
-                    ? MySqlGamePersistence.get().getNextBestMove(Table.get().getGameBoard(),
-                    Table.get().getGameBoard().currentPlayer(),
-                    Table.get().getMoveLog().getMoves().toString().replaceAll("\\[", "").replaceAll("]", ""))
+                    ? persistence.getNextBestMove(
+                    Table.get().getGameBoard(),
+                    Table.get().getGameBoard().currentPlayer())
                     : MoveFactory.getNullMove();
             if (Table.get().getUseBook() && bookMove != MoveFactory.getNullMove()) {
                 bestMove = bookMove;
@@ -553,7 +574,7 @@ public final class Table extends Observable {
         }
 
         void setTileLightColor(final Board board,
-                                      final Color lightColor) {
+                               final Color lightColor) {
             for (final TilePanel boardTile : boardTiles) {
                 boardTile.setLightTileColor(lightColor);
             }
@@ -642,7 +663,7 @@ public final class Table extends Observable {
                 public void mouseClicked(final MouseEvent event) {
 
                     if(Table.get().getGameSetup().isAIPlayer(Table.get().getGameBoard().currentPlayer()) ||
-                       BoardUtils.isEndGame(Table.get().getGameBoard())) {
+                            BoardUtils.isEndGame(Table.get().getGameBoard())) {
                         return;
                     }
 
@@ -672,7 +693,7 @@ public final class Table extends Observable {
                         gameHistoryPanel.redo(chessBoard, moveLog);
                         takenPiecesPanel.redo(moveLog);
                         //if (gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
-                            Table.get().moveMadeUpdate(PlayerType.HUMAN);
+                        Table.get().moveMadeUpdate(PlayerType.HUMAN);
                         //}
                         boardPanel.drawBoard(chessBoard);
                         debugPanel.redo();
@@ -718,8 +739,8 @@ public final class Table extends Observable {
 
         private void highlightTileBorder(final Board board) {
             if(humanMovedPiece != null &&
-               humanMovedPiece.getPieceAllegiance() == board.currentPlayer().getAlliance() &&
-               humanMovedPiece.getPiecePosition() == this.tileId) {
+                    humanMovedPiece.getPieceAllegiance() == board.currentPlayer().getAlliance() &&
+                    humanMovedPiece.getPiecePosition() == this.tileId) {
                 setBorder(BorderFactory.createLineBorder(Color.cyan));
             } else {
                 setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -775,14 +796,14 @@ public final class Table extends Observable {
 
         private void assignTileColor() {
             if (BoardUtils.INSTANCE.FIRST_ROW.get(this.tileId) ||
-                BoardUtils.INSTANCE.THIRD_ROW.get(this.tileId) ||
-                BoardUtils.INSTANCE.FIFTH_ROW.get(this.tileId) ||
-                BoardUtils.INSTANCE.SEVENTH_ROW.get(this.tileId)) {
+                    BoardUtils.INSTANCE.THIRD_ROW.get(this.tileId) ||
+                    BoardUtils.INSTANCE.FIFTH_ROW.get(this.tileId) ||
+                    BoardUtils.INSTANCE.SEVENTH_ROW.get(this.tileId)) {
                 setBackground(this.tileId % 2 == 0 ? lightTileColor : darkTileColor);
             } else if(BoardUtils.INSTANCE.SECOND_ROW.get(this.tileId) ||
-                      BoardUtils.INSTANCE.FOURTH_ROW.get(this.tileId) ||
-                      BoardUtils.INSTANCE.SIXTH_ROW.get(this.tileId)  ||
-                      BoardUtils.INSTANCE.EIGHTH_ROW.get(this.tileId)) {
+                    BoardUtils.INSTANCE.FOURTH_ROW.get(this.tileId) ||
+                    BoardUtils.INSTANCE.SIXTH_ROW.get(this.tileId)  ||
+                    BoardUtils.INSTANCE.EIGHTH_ROW.get(this.tileId)) {
                 setBackground(this.tileId % 2 != 0 ? lightTileColor : darkTileColor);
             }
         }

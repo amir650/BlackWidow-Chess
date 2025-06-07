@@ -1,6 +1,5 @@
 package com.chess.pgn;
 
-
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.BoardUtils;
@@ -18,13 +17,18 @@ public class FenUtilities {
         return parseFEN(fenString);
     }
 
+    public static Board createStandardBoard() {
+        return Board.createStandardBoard();
+    }
+
     public static String createFENFromGame(final Board board) {
         return calculateBoardText(board) + " " +
-               calculateCurrentPlayerText(board) + " " +
-               calculateCastleText(board) + " " +
-               calculateEnPassantSquare(board) + " " +
-               "0 1";
+                calculateCurrentPlayerText(board) + " " +
+                calculateCastleText(board) + " " +
+                calculateEnPassantSquare(board) + " " +
+                "0 1";
     }
+
 
     private static Board parseFEN(final String fenString) {
         final String[] fenPartitions = fenString.trim().split(" ");
@@ -47,73 +51,29 @@ public class FenUtilities {
         int i = 0;
         while (i < boardTiles.length) {
             switch (boardTiles[i]) {
-                case 'r':
-                    builder.setPiece(new Rook(Alliance.BLACK, i));
-                    i++;
-                    break;
-                case 'n':
-                    builder.setPiece(new Knight(Alliance.BLACK, i));
-                    i++;
-                    break;
-                case 'b':
-                    builder.setPiece(new Bishop(Alliance.BLACK, i));
-                    i++;
-                    break;
-                case 'q':
-                    builder.setPiece(new Queen(Alliance.BLACK, i));
-                    i++;
-                    break;
-                case 'k':
-                    final boolean isCastled = !blackKingSideCastle && !blackQueenSideCastle;
-                    builder.setPiece(new King(Alliance.BLACK, i, blackKingSideCastle, blackQueenSideCastle));
-                    i++;
-                    break;
-                case 'p':
-                    builder.setPiece(new Pawn(Alliance.BLACK, i));
-                    i++;
-                    break;
-                case 'R':
-                    builder.setPiece(new Rook(Alliance.WHITE, i));
-                    i++;
-                    break;
-                case 'N':
-                    builder.setPiece(new Knight(Alliance.WHITE, i));
-                    i++;
-                    break;
-                case 'B':
-                    builder.setPiece(new Bishop(Alliance.WHITE, i));
-                    i++;
-                    break;
-                case 'Q':
-                    builder.setPiece(new Queen(Alliance.WHITE, i));
-                    i++;
-                    break;
-                case 'K':
-                    builder.setPiece(new King(Alliance.WHITE, i, whiteKingSideCastle, whiteQueenSideCastle));
-                    i++;
-                    break;
-                case 'P':
-                    builder.setPiece(new Pawn(Alliance.WHITE, i));
-                    i++;
-                    break;
-                case '-':
-                    i++;
-                    break;
-                default:
-                    throw new RuntimeException("Invalid FEN String " +gameConfiguration);
+                case 'r': builder.setPiece(new Rook(Alliance.BLACK, i)); break;
+                case 'n': builder.setPiece(new Knight(Alliance.BLACK, i)); break;
+                case 'b': builder.setPiece(new Bishop(Alliance.BLACK, i)); break;
+                case 'q': builder.setPiece(new Queen(Alliance.BLACK, i)); break;
+                case 'k': builder.setPiece(new King(Alliance.BLACK, i, blackKingSideCastle, blackQueenSideCastle)); break;
+                case 'p': builder.setPiece(new Pawn(Alliance.BLACK, i)); break;
+                case 'R': builder.setPiece(new Rook(Alliance.WHITE, i)); break;
+                case 'N': builder.setPiece(new Knight(Alliance.WHITE, i)); break;
+                case 'B': builder.setPiece(new Bishop(Alliance.WHITE, i)); break;
+                case 'Q': builder.setPiece(new Queen(Alliance.WHITE, i)); break;
+                case 'K': builder.setPiece(new King(Alliance.WHITE, i, whiteKingSideCastle, whiteQueenSideCastle)); break;
+                case 'P': builder.setPiece(new Pawn(Alliance.WHITE, i)); break;
+                case '-': break; // empty square
+                default: throw new RuntimeException("Invalid FEN String " + gameConfiguration);
             }
+            i++;
         }
         builder.setMoveMaker(moveMaker(fenPartitions[1]));
         return builder.build();
     }
 
     private static Alliance moveMaker(final String moveMakerString) {
-        if(moveMakerString.equals("w")) {
-            return Alliance.WHITE;
-        } else if(moveMakerString.equals("b")) {
-            return Alliance.BLACK;
-        }
-        throw new RuntimeException("Invalid FEN String " +moveMakerString);
+        return moveMakerString.equals("w") ? Alliance.WHITE : Alliance.BLACK;
     }
 
     private static boolean whiteKingSideCastle(final String fenCastleString) {
@@ -134,28 +94,18 @@ public class FenUtilities {
 
     private static String calculateCastleText(final Board board) {
         final StringBuilder builder = new StringBuilder();
-        if(board.whitePlayer().isKingSideCastleCapable()) {
-            builder.append("K");
-        }
-        if(board.whitePlayer().isQueenSideCastleCapable()) {
-            builder.append("Q");
-        }
-        if(board.blackPlayer().isKingSideCastleCapable()) {
-            builder.append("k");
-        }
-        if(board.blackPlayer().isQueenSideCastleCapable()) {
-            builder.append("q");
-        }
-        final String result = builder.toString();
-
-        return result.isEmpty() ? "-" : result;
+        if (board.whitePlayer().isKingSideCastleCapable()) builder.append("K");
+        if (board.whitePlayer().isQueenSideCastleCapable()) builder.append("Q");
+        if (board.blackPlayer().isKingSideCastleCapable()) builder.append("k");
+        if (board.blackPlayer().isQueenSideCastleCapable()) builder.append("q");
+        return builder.length() == 0 ? "-" : builder.toString();
     }
 
     private static String calculateEnPassantSquare(final Board board) {
         final Pawn enPassantPawn = board.getEnPassantPawn();
-        if(enPassantPawn != null) {
-            return BoardUtils.INSTANCE.getPositionAtCoordinate(enPassantPawn.getPiecePosition() +
-                    (8) * enPassantPawn.getPieceAllegiance().getOppositeDirection());
+        if (enPassantPawn != null) {
+            return BoardUtils.INSTANCE.getPositionAtCoordinate(
+                    enPassantPawn.getPiecePosition() + (8 * enPassantPawn.getPieceAllegiance().getOppositeDirection()));
         }
         return "-";
     }
@@ -165,7 +115,7 @@ public class FenUtilities {
         for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
             final String tileText = board.getPiece(i) == null ? "-" :
                     board.getPiece(i).getPieceAllegiance().isWhite() ? board.getPiece(i).toString() :
-                    board.getPiece(i).toString().toLowerCase();
+                            board.getPiece(i).toString().toLowerCase();
             builder.append(tileText);
         }
         builder.insert(8, "/");

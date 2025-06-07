@@ -1,12 +1,16 @@
 package com.chess.tests;
 
 import com.chess.engine.classic.board.Board;
+import com.chess.engine.classic.board.Move;
+import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.ai.MiniMax;
 import com.chess.engine.classic.player.ai.MoveStrategy;
 import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by amir.afghani on 6/4/17.
@@ -158,6 +162,83 @@ public class TestEngine {
         minMax.execute(board);
         assertEquals(minMax.getNumBoardsEvaluated(), 62379L);
     }
+
+    @Test
+    public void testPromotionAndCastleLegality() {
+        final Board board = FenUtilities.createGameFromFEN("4k3/6P1/8/8/8/8/8/4K2R w K - 0 1");
+
+        // Step 1: Promote pawn g7-g8=Q
+        Move promotion = null;
+        for (Move move : board.whitePlayer().getLegalMoves()) {
+            if (move.getDestinationCoordinate() == 6 && move instanceof Move.PawnPromotion) { // g8 is square 6
+                promotion = move;
+                break;
+            }
+        }
+        assertNotNull("No promotion move found", promotion);
+        Board afterPromotion = promotion.execute();
+
+        // Step 2: Confirm castling still possible
+        boolean canCastle = afterPromotion.whitePlayer().getLegalMoves().stream().anyMatch(Move::isCastlingMove);
+        System.out.println("Castling after promotion? " + canCastle);
+        assertTrue("White should be able to castle after promotion", canCastle);
+
+        // Step 3: Try to make the castle move
+        Move castleMove = null;
+        for (Move move : afterPromotion.whitePlayer().getLegalMoves()) {
+            if (move.isCastlingMove()) {
+                castleMove = move;
+                break;
+            }
+        }
+        assertNotNull("No castling move available after promotion!", castleMove);
+        Board afterCastle = castleMove.execute();
+
+        // Step 4: King should be on g1 (square 62), rook on f1 (square 61)
+        assertNotNull(afterCastle.getPiece(62));
+        assertEquals(Piece.PieceType.KING, afterCastle.getPiece(62).getPieceType());
+        assertNotNull(afterCastle.getPiece(61));
+        assertEquals(Piece.PieceType.ROOK, afterCastle.getPiece(61).getPieceType());
+    }
+
+
+
+
+    @Test
+    public void testSimpleCastleLeavesKing() {
+        final Board board = FenUtilities.createGameFromFEN("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+
+        boolean foundKingSideCastle = false;
+        boolean foundQueenSideCastle = false;
+
+        for (Move move : board.currentPlayer().getLegalMoves()) {
+            if (move.isCastlingMove()) {
+                Board after = move.execute();
+                boolean kingPresent = false;
+                int[] active = after.whitePlayer().getAlliance().isWhite()
+                        ? after.getWhitePieces()
+                        : after.getBlackPieces();
+                for (int i : active) {
+                    Piece p = after.getPiece(i);
+                    if (p.getPieceType() == Piece.PieceType.KING) {
+                        kingPresent = true;
+                        break;
+                    }
+                }
+                assertTrue("White king should remain after castling", kingPresent);
+
+                if (move instanceof Move.KingSideCastleMove) {
+                    foundKingSideCastle = true;
+                } else if (move instanceof Move.QueenSideCastleMove) {
+                    foundQueenSideCastle = true;
+                }
+            }
+        }
+
+        assertTrue("Should find king-side castle move", foundKingSideCastle);
+        assertTrue("Should find queen-side castle move", foundQueenSideCastle);
+    }
+
 
     @Test
     public void testPosition5Depth4() {

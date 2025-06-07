@@ -1,15 +1,16 @@
 package com.chess.engine.classic.player.ai;
 
+import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.List;
 
 public final class PawnStructureAnalyzer {
 
     private static final PawnStructureAnalyzer INSTANCE = new PawnStructureAnalyzer();
-
     public static final int ISOLATED_PAWN_PENALTY = -10;
     public static final int DOUBLED_PAWN_PENALTY = -10;
 
@@ -34,7 +35,16 @@ public final class PawnStructureAnalyzer {
     }
 
     private static Collection<Piece> calculatePlayerPawns(final Player player) {
-        return player.getActivePieces().stream().filter(piece -> piece.getPieceType() == Piece.PieceType.PAWN).collect(Collectors.toList());
+        final Board board = player.getBoard();
+        final int[] activeIndexes = player.getActivePieces();
+        final List<Piece> pawns = new ArrayList<>();
+        for (int index : activeIndexes) {
+            final Piece piece = board.getPiece(index);
+            if (piece.getPieceType() == Piece.PieceType.PAWN) {
+                pawns.add(piece);
+            }
+        }
+        return pawns;
     }
 
     private static int calculatePawnColumnStack(final int[] pawnsOnColumnTable) {

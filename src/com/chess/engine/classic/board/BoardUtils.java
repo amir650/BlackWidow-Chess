@@ -104,13 +104,49 @@ public enum  BoardUtils {
                piece.getPieceAllegiance() != king.getPieceAllegiance();
     }
 
-    public static int mvvlva(final Move move) {
-        final Piece movingPiece = move.getMovedPiece();
-        if(move.isAttack()) {
-            final Piece attackedPiece = move.getAttackedPiece();
-            return (attackedPiece.getPieceValue() - movingPiece.getPieceValue() +  Piece.PieceType.KING.getPieceValue()) * 100;
+    public static int scoreMove(final Move move) {
+        int score = 0;
+
+        // MVV-LVA heuristic
+        if (move.isAttack()) {
+            int victim = move.getAttackedPiece().getPieceValue();
+            int attacker = move.getMovedPiece().getPieceValue();
+            score += (victim * 10) - attacker;
         }
-        return Piece.PieceType.KING.getPieceValue() - movingPiece.getPieceValue();
+
+        // King threats
+        if (BoardUtils.kingThreat(move)) {
+            score += 500;
+        }
+
+        // Castling (slightly lower priority than attack)
+        if (move.isCastlingMove()) {
+            score += 300;
+        }
+
+        // Promotion bonus
+        if (move instanceof Move.PawnPromotion) {
+            score += 800;
+        }
+
+        // Central square bonus
+        int dest = move.getDestinationCoordinate();
+        if (BoardUtils.INSTANCE.isCenterSquare(dest)) {
+            score += 100;
+        } else if (BoardUtils.INSTANCE.isExtendedCenterSquare(dest)) {
+            score += 25;
+        }
+
+        return score;
+    }
+
+    public static int mvvlva(final Move move) {
+        if (!move.isAttack()) {
+            return 0;
+        }
+        int victimValue = move.getAttackedPiece().getPieceValue();
+        int attackerValue = move.getMovedPiece().getPieceValue();
+        return (victimValue * 10) - attackerValue;
     }
 
     public static List<Move> lastNMoves(final Board board, int N) {
@@ -129,4 +165,45 @@ public enum  BoardUtils {
         return board.currentPlayer().isInCheckMate() ||
                board.currentPlayer().isInStaleMate();
     }
+
+    public boolean isCenterSquare(int coord) {
+        return coord == 27 || coord == 28 || coord == 35 || coord == 36; // d4, e4, d5, e5
+    }
+
+    public boolean isExtendedCenterSquare(int coord) {
+        return coord >= 18 && coord <= 21 || coord >= 26 && coord <= 29 ||
+                coord >= 34 && coord <= 37 || coord >= 42 && coord <= 45;
+    }
+
+    public static String humanReadableElapsedTime(long millis) {
+        if (millis < 0) {
+            throw new IllegalArgumentException("Duration must be non-negative");
+        }
+
+        long seconds = millis / 1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long days = hours / 24;
+
+        seconds %= 60;
+        minutes %= 60;
+        hours %= 24;
+
+        StringBuilder sb = new StringBuilder();
+        if (days > 0) sb.append(days).append(days == 1 ? " day" : " days");
+        if (hours > 0) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(hours).append(hours == 1 ? " hour" : " hours");
+        }
+        if (minutes > 0) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(minutes).append(minutes == 1 ? " minute" : " minutes");
+        }
+        if (seconds > 0 || sb.length() == 0) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(seconds).append(seconds == 1 ? " second" : " seconds");
+        }
+        return sb.toString();
+    }
+
 }

@@ -6,6 +6,7 @@ import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.KingSideCastleMove;
 import com.chess.engine.classic.board.Move.QueenSideCastleMove;
+import com.chess.engine.classic.pieces.King;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.pieces.Rook;
 
@@ -19,9 +20,10 @@ import static com.chess.engine.classic.pieces.Piece.PieceType.ROOK;
 public final class WhitePlayer extends Player {
 
     public WhitePlayer(final Board board,
+                       final King playerKing,
                        final Collection<Move> whiteStandardLegals,
                        final Collection<Move> blackStandardLegals) {
-        super(board, whiteStandardLegals, blackStandardLegals);
+        super(board, playerKing, whiteStandardLegals, blackStandardLegals);
     }
 
     @Override
@@ -71,7 +73,7 @@ public final class WhitePlayer extends Player {
     }
 
     @Override
-    public Collection<Piece> getActivePieces() {
+    public int[] getActivePieces() {
         return this.board.getWhitePieces();
     }
 

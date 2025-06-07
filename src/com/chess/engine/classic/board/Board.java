@@ -9,16 +9,16 @@ import com.chess.engine.classic.player.WhitePlayer;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class Board {
 
-    private final Map<Integer, Piece> boardConfig;
-    private final Collection<Piece> whitePieces;
-    private final Collection<Piece> blackPieces;
+    private final Piece[] boardConfig;
+    private final int[] whitePieces;
+    private final int[] blackPieces;
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
@@ -28,14 +28,14 @@ public final class Board {
     private static final Board STANDARD_BOARD = createStandardBoardImpl();
 
     private Board(final Builder builder) {
-        this.boardConfig = Collections.unmodifiableMap(builder.boardConfig);
-        this.whitePieces = calculateActivePieces(builder, Alliance.WHITE);
-        this.blackPieces = calculateActivePieces(builder, Alliance.BLACK);
+        this.boardConfig = builder.boardConfig;
+        this.whitePieces = calculateActiveIndexes(builder.boardConfig, Alliance.WHITE);
+        this.blackPieces = calculateActiveIndexes(builder.boardConfig, Alliance.BLACK);
         this.enPassantPawn = builder.enPassantPawn;
-        final Collection<Move> whiteStandardMoves = calculateLegalMoves(this.whitePieces);
-        final Collection<Move> blackStandardMoves = calculateLegalMoves(this.blackPieces);
-        this.whitePlayer = new WhitePlayer(this, whiteStandardMoves, blackStandardMoves);
-        this.blackPlayer = new BlackPlayer(this, whiteStandardMoves, blackStandardMoves);
+        final Collection<Move> whiteStandardMoves = calculateLegalMoves(builder.boardConfig, this.whitePieces);
+        final Collection<Move> blackStandardMoves = calculateLegalMoves(builder.boardConfig, this.blackPieces);
+        this.whitePlayer = new WhitePlayer(this, establishKing(this.whitePieces, this.boardConfig), whiteStandardMoves, blackStandardMoves);
+        this.blackPlayer = new BlackPlayer(this, establishKing(this.blackPieces, this.boardConfig), whiteStandardMoves, blackStandardMoves);
         this.currentPlayer = builder.nextMoveMaker.choosePlayerByAlliance(this.whitePlayer, this.blackPlayer);
         this.transitionMove = builder.transitionMove != null ? builder.transitionMove : MoveFactory.getNullMove();
     }
@@ -44,7 +44,7 @@ public final class Board {
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
-            final String tileText = prettyPrint(this.boardConfig.get(i));
+            final String tileText = prettyPrint(this.boardConfig[i]);
             builder.append(String.format("%3s", tileText));
             if ((i + 1) % 8 == 0) {
                 builder.append("\n");
@@ -56,27 +56,48 @@ public final class Board {
     private static String prettyPrint(final Piece piece) {
         if(piece != null) {
             return piece.getPieceAllegiance().isBlack() ?
-                   piece.toString().toLowerCase() : piece.toString();
+                    piece.toString().toLowerCase() : piece.toString();
         }
         return "-";
     }
 
-    public Collection<Piece> getBlackPieces() {
+    public Piece[] getBoardCopy() {
+        return this.boardConfig.clone();
+    }
+
+    public int[] getBlackPieces() {
         return this.blackPieces;
     }
 
-    public Collection<Piece> getWhitePieces() {
+    public int[] getWhitePieces() {
         return this.whitePieces;
     }
 
     public Collection<Piece> getAllPieces() {
-        return Stream.concat(this.whitePieces.stream(),
-                             this.blackPieces.stream()).collect(Collectors.toList());
+        final List<Piece> allPieces = new ArrayList<>(this.whitePieces.length + this.blackPieces.length);
+        for (final int index : this.whitePieces) {
+            allPieces.add(this.boardConfig[index]);
+        }
+        for (final int index : this.blackPieces) {
+            allPieces.add(this.boardConfig[index]);
+        }
+        return Collections.unmodifiableList(allPieces);
     }
 
     public Collection<Move> getAllLegalMoves() {
         return Stream.concat(this.whitePlayer.getLegalMoves().stream(),
-                             this.blackPlayer.getLegalMoves().stream()).collect(Collectors.toList());
+                this.blackPlayer.getLegalMoves().stream()).collect(Collectors.toList());
+    }
+
+    private static King establishKing(final int[] activeIndexes,
+                                      final Piece[] boardConfig) {
+        for (int index : activeIndexes) {
+            final Piece piece = boardConfig[index];
+            if (piece.getPieceType() == Piece.PieceType.KING) {
+                return (King) piece;
+            }
+        }
+        throw new RuntimeException("No king found for player!");
     }
 
     public WhitePlayer whitePlayer() {
@@ -92,7 +113,7 @@ public final class Board {
     }
 
     public Piece getPiece(final int coordinate) {
-        return this.boardConfig.get(coordinate);
+        return this.boardConfig[coordinate];
     }
 
     public Pawn getEnPassantPawn() {
@@ -149,31 +170,54 @@ public final class Board {
         return builder.build();
     }
 
-    private Collection<Move> calculateLegalMoves(final Collection<Piece> pieces) {
-        return pieces.stream().flatMap(piece -> piece.calculateLegalMoves(this).stream())
-                      .collect(Collectors.toList());
+    private Collection<Move> calculateLegalMoves(final Piece[] boardConfig,
+                                                 final int[] pieces) {
+        final Collection<Move> legalsMoves = new ArrayList<>();
+        for (final int piece_index : pieces) {
+            legalsMoves.addAll(boardConfig[piece_index].calculateLegalMoves(this));
+        }
+        return legalsMoves;
     }
 
-    private static Collection<Piece> calculateActivePieces(final Builder builder,
-                                                           final Alliance alliance) {
-        return builder.boardConfig.values().stream()
-               .filter(piece -> piece.getPieceAllegiance() == alliance)
-               .collect(Collectors.toList());
+    private static int[] calculateActiveIndexes(final Piece[] boardConfig,
+                                                final Alliance alliance) {
+        int count = 0;
+        // First, count how many pieces of the given alliance there are
+        for (final Piece piece : boardConfig) {
+            if (piece != null && piece.getPieceAllegiance() == alliance) {
+                count++;
+            }
+        }
+        // Then populate the array with their indexes
+        final int[] activeIndexes = new int[count];
+        int i = 0;
+        for (int idx = 0; idx < boardConfig.length; idx++) {
+            final Piece piece = boardConfig[idx];
+            if (piece != null && piece.getPieceAllegiance() == alliance) {
+                activeIndexes[i++] = idx;
+            }
+        }
+        return activeIndexes;
     }
 
     public static class Builder {
 
-        Map<Integer, Piece> boardConfig;
+        Piece[] boardConfig;
         Alliance nextMoveMaker;
         Pawn enPassantPawn;
         Move transitionMove;
 
         public Builder() {
-            this.boardConfig = new HashMap<>(32, 1.0f);
+            this.boardConfig = new Piece[BoardUtils.NUM_TILES];
+        }
+
+        public Builder setBoardConfiguration(final Piece[] boardConfig) {
+            this.boardConfig = boardConfig;
+            return this;
         }
 
         public Builder setPiece(final Piece piece) {
-            this.boardConfig.put(piece.getPiecePosition(), piece);
+            this.boardConfig[piece.getPiecePosition()] = piece;
             return this;
         }
 
@@ -195,7 +239,5 @@ public final class Board {
         public Board build() {
             return new Board(this);
         }
-
     }
-
 }

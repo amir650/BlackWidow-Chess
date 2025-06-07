@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
@@ -495,12 +496,18 @@ public class TestPieces {
     @Test
     public void testHashCode() {
         final Board board = Board.createStandardBoard();
-        final Set<Piece> pieceSet = Sets.newHashSet(board.getAllPieces());
-        final Set<Piece> whitePieceSet = Sets.newHashSet(board.getWhitePieces());
-        final Set<Piece> blackPieceSet = Sets.newHashSet(board.getBlackPieces());
-        assertTrue(pieceSet.size() == 32);
-        assertTrue(whitePieceSet.size() == 16);
-        assertTrue(blackPieceSet.size() == 16);
+
+        Set<Piece> allPieces = new HashSet<>();
+        for (int idx : board.getWhitePieces()) {
+            allPieces.add(board.getPiece(idx));
+        }
+        for (int idx : board.getBlackPieces()) {
+            allPieces.add(board.getPiece(idx));
+        }
+
+        assertEquals("Total pieces should be 32", 32, allPieces.size());
+        assertEquals("White pieces should be 16", 16, board.getWhitePieces().length);
+        assertEquals("Black pieces should be 16", 16, board.getBlackPieces().length);
     }
 
 }

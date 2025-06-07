@@ -1006,7 +1006,7 @@ public class TestCheckmate {
     @Test
     public void testMateInFourTest1() {
         final Board board = FenUtilities.createGameFromFEN("7k/4r2B/1pb5/2P5/4p2Q/2q5/2P2R2/1K6 w - - 1 0");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
+        final MoveStrategy alphaBeta = new StockAlphaBeta(7);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("f2"), BoardUtils.INSTANCE.getCoordinateAtPosition("f8")));

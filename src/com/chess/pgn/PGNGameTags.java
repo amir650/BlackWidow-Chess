@@ -7,10 +7,24 @@ import com.google.common.collect.ImmutableMap;
 
 public class PGNGameTags {
 
-    private final Map<String,String> gameTags;
+    private final Map<String, String> gameTags;
 
-    private PGNGameTags(final TagsBuilder builder) {
+    PGNGameTags(final TagsBuilder builder) {
         this.gameTags = ImmutableMap.copyOf(builder.gameTags);
+    }
+
+    /**
+     * Returns the value for a tag or a default if not present.
+     */
+    public String getTagOrDefault(String key, String defaultValue) {
+        return this.gameTags.getOrDefault(key, defaultValue);
+    }
+
+    /**
+     * Returns the raw tag map (unmodifiable).
+     */
+    public Map<String, String> getAllTags() {
+        return this.gameTags;
     }
 
     @Override
@@ -20,14 +34,13 @@ public class PGNGameTags {
 
     public static class TagsBuilder {
 
-        final Map<String,String> gameTags;
+        private final Map<String, String> gameTags;
 
         public TagsBuilder() {
             this.gameTags = new HashMap<>();
         }
 
-        public TagsBuilder addTag(final String tagKey,
-                                  final String tagValue) {
+        public TagsBuilder addTag(final String tagKey, final String tagValue) {
             this.gameTags.put(tagKey, tagValue);
             return this;
         }
@@ -35,7 +48,5 @@ public class PGNGameTags {
         public PGNGameTags build() {
             return new PGNGameTags(this);
         }
-
     }
-
 }

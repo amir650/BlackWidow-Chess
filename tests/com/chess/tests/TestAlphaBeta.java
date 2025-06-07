@@ -12,8 +12,7 @@ import com.chess.engine.classic.player.ai.StockAlphaBeta;
 import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TestAlphaBeta {
 
@@ -159,10 +158,10 @@ public class TestAlphaBeta {
     @Test
     public void testQualityFourDepth6() {
         final Board board = FenUtilities.createGameFromFEN("r1b1k2r/pp3pbp/1qn1p1p1/2pnP3/3p1PP1/1P1P1NBP/P1P5/RN1QKB1R b KQkq - 2 11");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
+        final MoveStrategy alphaBeta = new StockAlphaBeta(7);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e8"), BoardUtils.INSTANCE.getCoordinateAtPosition("g8")));
+                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("d5"), BoardUtils.INSTANCE.getCoordinateAtPosition("e3")));
     }
 
     @Test
@@ -227,7 +226,7 @@ public class TestAlphaBeta {
         builder.setMoveMaker(Alliance.WHITE);
         final Board board = builder.build();
         System.out.println(FenUtilities.createFENFromGame(board));
-        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
+        final MoveStrategy alphaBeta = new StockAlphaBeta(8);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("g3"), BoardUtils.INSTANCE.getCoordinateAtPosition("g6")));
@@ -327,6 +326,41 @@ public class TestAlphaBeta {
     }
 
     @Test
+    public void testMajorAttackMoveArrayPatching() {
+        // Board: White knight on c3, Black queen on d5, white to move
+        final Board board = FenUtilities.createGameFromFEN("rnb1kbnr/ppp1pppp/8/3q4/8/2N5/PPPP1PPP/R1BQKBNR w KQkq - 0 3");
+
+        // The move: Nc3xd5
+        final int knightPos = BoardUtils.INSTANCE.getCoordinateAtPosition("c3");
+        final int queenPos = BoardUtils.INSTANCE.getCoordinateAtPosition("d5");
+        final Move move = Move.MoveFactory.createMove(board, knightPos, queenPos);
+
+        // Should be a MajorAttackMove
+        assertTrue(move instanceof Move.MajorAttackMove);
+
+        // Execute the move
+        final MoveTransition t1 = board.currentPlayer().makeMove(move);
+
+        // The move should be done, and the new board should have a knight on d5 and no queen
+        assertTrue(t1.getMoveStatus().isDone());
+        final Board nextBoard = t1.getToBoard();
+
+        // The knight is now on d5
+        final Piece pieceOnD5 = nextBoard.getPiece(queenPos);
+        assertNotNull(pieceOnD5);
+        assertEquals(Piece.PieceType.KNIGHT, pieceOnD5.getPieceType());
+        assertEquals(board.currentPlayer().getAlliance(), pieceOnD5.getPieceAllegiance());
+
+        // There is no piece left on c3
+        assertNull(nextBoard.getPiece(knightPos));
+
+        // The black queen is gone from the board
+        boolean blackQueenExists = nextBoard.getAllPieces().stream()
+                .anyMatch(p -> p.getPieceType() == Piece.PieceType.QUEEN && p.getPieceAllegiance().isBlack());
+        assertFalse(blackQueenExists);
+    }
+
+    @Test
     public void testMackHackScenario() {
         final Board board = FenUtilities.createGameFromFEN("1r1k1r2/p5Q1/2p3p1/8/1q1p2n1/3P2P1/P3RPP1/4RK2 b - - 0 1");
         final MoveStrategy alphaBeta = new StockAlphaBeta(8);
@@ -365,7 +399,7 @@ public class TestAlphaBeta {
     @Test
     public void testBratcoKopec2() {
         final Board board = FenUtilities.createGameFromFEN("3r1k2/4npp1/1ppr3p/p6P/P2PPPP1/1NR5/5K2/2R5 w - - 0 1");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
+        final MoveStrategy alphaBeta = new StockAlphaBeta(8);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e4"), BoardUtils.INSTANCE.getCoordinateAtPosition("e5")));
@@ -380,7 +414,7 @@ public class TestAlphaBeta {
         final MoveStrategy alphaBeta = new StockAlphaBeta(6);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("g7"), BoardUtils.INSTANCE.getCoordinateAtPosition("g5")));
+                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("d5"), BoardUtils.INSTANCE.getCoordinateAtPosition("e6")));
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(bestMove);
         assertTrue(t1.getMoveStatus().isDone());
@@ -389,7 +423,7 @@ public class TestAlphaBeta {
     @Test
     public void testBratcoKopec19() {
         final Board board = FenUtilities.createGameFromFEN("3rr3/2pq2pk/p2p1pnp/8/2QBPP2/1P6/P5PP/4RRK1 b - -");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(2);
+        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("d6"), BoardUtils.INSTANCE.getCoordinateAtPosition("d5")));

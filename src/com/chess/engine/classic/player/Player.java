@@ -6,31 +6,34 @@ import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.MoveStatus;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.King;
-import com.chess.engine.classic.pieces.Piece;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.stream.Collectors;
+import java.util.List;
 
-import static com.chess.engine.classic.board.MoveUtils.NULL_MOVE;
-import static com.chess.engine.classic.pieces.Piece.PieceType.KING;
-import static java.util.stream.Collectors.collectingAndThen;
 
 public abstract class Player {
 
     protected final Board board;
     protected final King playerKing;
     protected final Collection<Move> legalMoves;
+
     protected final boolean isInCheck;
 
     Player(final Board board,
+           final King playerKing,
            final Collection<Move> playerLegals,
            final Collection<Move> opponentLegals) {
         this.board = board;
-        this.playerKing = establishKing();
+        this.playerKing = playerKing;
         this.isInCheck = !calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegals).isEmpty();
         playerLegals.addAll(calculateKingCastles(playerLegals, opponentLegals));
         this.legalMoves = Collections.unmodifiableCollection(playerLegals);
+    }
+
+    public Board getBoard() {
+        return this.board;
     }
 
     public boolean isInCheck() {
@@ -61,28 +64,27 @@ public abstract class Player {
         return this.playerKing;
     }
 
-    private King establishKing() {
-        return (King) getActivePieces().stream()
-                                       .filter(piece -> piece.getPieceType() == KING)
-                                       .findAny()
-                                       .orElseThrow(RuntimeException::new);
-    }
-
     private boolean hasEscapeMoves() {
-        return this.legalMoves.stream()
-                              .anyMatch(move -> makeMove(move)
-                              .getMoveStatus().isDone());
+        for (final Move move : this.legalMoves) {
+            if (makeMove(move).getMoveStatus().isDone()) {
+                return true;
+            }
+        }
+        return false;
     }
-
     public Collection<Move> getLegalMoves() {
         return this.legalMoves;
     }
 
     static Collection<Move> calculateAttacksOnTile(final int tile,
                                                    final Collection<Move> moves) {
-        return moves.stream()
-                    .filter(move -> move.getDestinationCoordinate() == tile)
-                    .collect(collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        final List<Move> attackMoves = new ArrayList<>();
+        for (final Move move : moves) {
+            if (move.getDestinationCoordinate() == tile) {
+                attackMoves.add(move);
+            }
+        }
+        return Collections.unmodifiableList(attackMoves);
     }
 
     public MoveTransition makeMove(final Move move) {
@@ -99,7 +101,7 @@ public abstract class Player {
         return new MoveTransition(this.board, move.undo(), move, MoveStatus.DONE);
     }
 
-    public abstract Collection<Piece> getActivePieces();
+    public abstract int[] getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
     protected abstract Collection<Move> calculateKingCastles(Collection<Move> playerLegals,

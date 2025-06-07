@@ -29,10 +29,10 @@ public final class Rook extends Piece {
     private static Map<Integer, MoveUtils.Line[]> computeCandidates() {
         final Map<Integer, MoveUtils.Line[]> candidates = new HashMap<>();
         for (int position = 0; position < BoardUtils.NUM_TILES; position++) {
-            List<MoveUtils.Line> lines = new ArrayList<>();
+            final List<MoveUtils.Line> lines = new ArrayList<>();
             for (int offset : CANDIDATE_MOVE_COORDINATES) {
                 int destination = position;
-                MoveUtils.Line line = new MoveUtils.Line();
+                final MoveUtils.Line line = new MoveUtils.Line();
                 while (BoardUtils.isValidTileCoordinate(destination)) {
                     if (isColumnExclusion(destination, offset)) {
                         break;

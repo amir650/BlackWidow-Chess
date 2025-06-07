@@ -1,29 +1,31 @@
 package com.chess.tests;
 
+import com.chess.engine.classic.player.Player;
+import com.chess.engine.classic.player.ai.KingSafetyAnalyzer;
+import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
-import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Board.Builder;
-import com.chess.engine.classic.pieces.King;
-import com.chess.engine.classic.pieces.Pawn;
+
+
+import static org.junit.Assert.assertEquals;
 
 public class TestKingSafety {
 
     @Test
-    public void test1() {
-        final Builder builder = new Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        builder.setPiece(new Pawn(Alliance.BLACK, 12));
-        // White Layout
-        builder.setPiece(new Pawn(Alliance.WHITE, 52));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        builder.setMoveMaker(Alliance.WHITE);
-        // Set the current player
-        final Board board = builder.build();
+    public void testKingUncastledInCenter() {
+        final Board board = FenUtilities.createGameFromFEN("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
+        final Player whitePlayer = board.currentPlayer();
+        System.out.println(KingSafetyAnalyzer.get().gptKingSafety(whitePlayer));
+        assertEquals(-KingSafetyAnalyzer.CENTER_KING_PENALTY, KingSafetyAnalyzer.get().gptKingSafety(whitePlayer));
+    }
 
-        //assertEquals(KingSafetyAnalyzer.get().calculateKingTropism(board.whitePlayer()).tropismScore(), 40);
+    @Test
+    public void testKingUncastledNotInCenter() {
+        // White king on b1 (uncastled, not center), black king on b8
+        final Board board = FenUtilities.createGameFromFEN("1k6/8/8/8/8/8/8/1K6 w - - 0 1");
+        final Player whitePlayer = board.currentPlayer();
+        assertEquals(-KingSafetyAnalyzer.UNCASTLED_KING_PENALTY, KingSafetyAnalyzer.get().gptKingSafety(whitePlayer));
     }
 
 }

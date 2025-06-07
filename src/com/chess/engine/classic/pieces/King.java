@@ -44,14 +44,14 @@ public final class King extends Piece {
     private static Map<Integer, int[]> computeCandidates() {
         final Map<Integer, int[]> candidates = new HashMap<>();
         for (int position = 0; position < BoardUtils.NUM_TILES; position++) {
-            int[] legalOffsets = new int[CANDIDATE_MOVE_COORDINATES.length];
+            final int[] legalOffsets = new int[CANDIDATE_MOVE_COORDINATES.length];
             int numLegalOffsets = 0;
             for (int offset : CANDIDATE_MOVE_COORDINATES) {
                 if (isFirstColumnExclusion(position, offset) ||
                         isEighthColumnExclusion(position, offset)) {
                     continue;
                 }
-                int destination = position + offset;
+                final int destination = position + offset;
                 if (BoardUtils.isValidTileCoordinate(destination)) {
                     legalOffsets[numLegalOffsets++] = offset;
                 }

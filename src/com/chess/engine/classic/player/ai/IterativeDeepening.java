@@ -30,17 +30,12 @@ public class IterativeDeepening extends Observable implements MoveStrategy {
             }
         };
 
-        public static Comparator<Move> SMART_SORT = new Comparator<Move>() {
-            @Override
-            public int compare(final Move move1, final Move move2) {
-                return ComparisonChain.start()
-                        .compareTrueFirst(BoardUtils.isThreatenedBoardImmediate(move1.getBoard()), BoardUtils.isThreatenedBoardImmediate(move2.getBoard()))
-                        .compareTrueFirst(move1.isAttack(), move2.isAttack())
-                        .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
-                        .compare(move2.getMovedPiece().getPieceValue(), move1.getMovedPiece().getPieceValue())
-                        .result();
-            }
-        };
+        public static Comparator<Move> SMART_SORT = (move1, move2) -> ComparisonChain.start()
+                .compareTrueFirst(BoardUtils.isThreatenedBoardImmediate(move1.getBoard()), BoardUtils.isThreatenedBoardImmediate(move2.getBoard()))
+                .compareTrueFirst(move1.isAttack(), move2.isAttack())
+                .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
+                .compare(move2.getMovedPiece().getPieceValue(), move1.getMovedPiece().getPieceValue())
+                .result();
 
         abstract Collection<Move> sort(Collection<Move> moves);
     }
@@ -195,27 +190,15 @@ public class IterativeDeepening extends Observable implements MoveStrategy {
     enum Ordering {
         ASC {
             @Override
-            List<MoveScoreRecord> order(final List<MoveScoreRecord> moveScoreRecords) {
-                Collections.sort(moveScoreRecords, new Comparator<MoveScoreRecord>() {
-                    @Override
-                    public int compare(final MoveScoreRecord o1,
-                                       final MoveScoreRecord o2) {
-                        return Ints.compare(o1.getScore(), o2.getScore());
-                    }
-                });
+            final List<MoveScoreRecord> order(final List<MoveScoreRecord> moveScoreRecords) {
+                Collections.sort(moveScoreRecords, (o1, o2) -> Ints.compare(o1.getScore(), o2.getScore()));
                 return moveScoreRecords;
             }
         },
         DESC {
             @Override
             List<MoveScoreRecord> order(final List<MoveScoreRecord> moveScoreRecords) {
-                Collections.sort(moveScoreRecords, new Comparator<MoveScoreRecord>() {
-                    @Override
-                    public int compare(final MoveScoreRecord o1,
-                                       final MoveScoreRecord o2) {
-                        return Ints.compare(o2.getScore(), o1.getScore());
-                    }
-                });
+                Collections.sort(moveScoreRecords, (o1, o2) -> Ints.compare(o2.getScore(), o1.getScore()));
                 return moveScoreRecords;
             }
         };

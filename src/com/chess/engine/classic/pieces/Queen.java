@@ -33,7 +33,7 @@ public final class Queen extends Piece {
             List<MoveUtils.Line> lines = new ArrayList<>();
             for (int offset : CANDIDATE_MOVE_COORDINATES) {
                 int destination = position;
-                MoveUtils.Line line = new MoveUtils.Line();
+                final MoveUtils.Line line = new MoveUtils.Line();
                 while (BoardUtils.isValidTileCoordinate(destination)) {
                     if (isFirstColumnExclusion(destination, offset) ||
                             isEightColumnExclusion(destination, offset)) {
