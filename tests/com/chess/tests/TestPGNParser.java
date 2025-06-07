@@ -1,17 +1,11 @@
 package com.chess.tests;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-
 import com.chess.pgn.*;
 import org.junit.Test;
 
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
-import com.chess.engine.classic.board.MoveTransition;
-import com.google.common.io.Resources;
+
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;

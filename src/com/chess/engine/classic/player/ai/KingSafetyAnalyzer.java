@@ -4,9 +4,9 @@ import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.engine.classic.player.Player;
-import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class KingSafetyAnalyzer {
@@ -34,7 +34,7 @@ public final class KingSafetyAnalyzer {
         columns.add(BoardUtils.INSTANCE.SIXTH_COLUMN);
         columns.add(BoardUtils.INSTANCE.SEVENTH_COLUMN);
         columns.add(BoardUtils.INSTANCE.EIGHTH_COLUMN);
-        return ImmutableList.copyOf(columns);
+        return Collections.unmodifiableList(columns);
     }
 
     public int gptKingSafety(final Player player) {

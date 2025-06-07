@@ -6,7 +6,6 @@ import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.*;
-import com.google.common.collect.Sets;
 import org.junit.Assert;
 import org.junit.Test;
 

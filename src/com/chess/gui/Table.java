@@ -9,7 +9,6 @@ import com.chess.engine.classic.player.ai.StockAlphaBeta;
 import com.chess.pgn.FenUtilities;
 import com.chess.pgn.MySqlGamePersistence;
 import com.chess.pgn.PGNUtilities;
-import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -22,7 +21,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
-import static com.chess.pgn.PGNUtilities.persistPGNFile;
 import static javax.swing.JFrame.setDefaultLookAndFeelDecorated;
 import static javax.swing.SwingUtilities.*;
 
@@ -228,7 +226,7 @@ public final class Table extends Observable {
 
         final JMenuItem legalMovesMenuItem = new JMenuItem("Current State", KeyEvent.VK_L);
         legalMovesMenuItem.addActionListener(e -> {
-            System.out.println(chessBoard.getWhitePieces());
+            System.out.println(Arrays.toString(chessBoard.getWhitePieces()));
             System.out.println(chessBoard.getBlackPieces());
             System.out.println(playerInfo(chessBoard.currentPlayer()));
             System.out.println(playerInfo(chessBoard.currentPlayer().getOpponent()));
@@ -598,7 +596,9 @@ public final class Table extends Observable {
         FLIPPED {
             @Override
             List<TilePanel> traverse(final List<TilePanel> boardTiles) {
-                return Lists.reverse(boardTiles);
+                final List<TilePanel> reversed = new ArrayList<>(boardTiles);
+                Collections.reverse(reversed);
+                return reversed;
             }
 
             @Override

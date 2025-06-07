@@ -12,6 +12,7 @@ public abstract class Move {
     protected final Board board;
     protected final int destinationCoordinate;
     protected final Piece movedPiece;
+
     protected final boolean isFirstMove;
 
     private Move(final Board board,
@@ -248,10 +249,10 @@ public abstract class Move {
             newBoardConfig[this.movedPiece.getPiecePosition()] = null;
             newBoardConfig[this.destinationCoordinate] = this.movedPiece.movePiece(this);
             final Builder builder = new Builder();
-            builder.setBoardConfiguration(newBoardConfig);
-            builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
-            builder.setMoveTransition(this);
-            return builder.build();
+            return builder.setBoardConfiguration(newBoardConfig)
+                          .setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance())
+                          .setMoveTransition(this)
+                          .build();
         }
 
         @Override
@@ -282,10 +283,9 @@ public abstract class Move {
             newBoardConfig[this.movedPiece.getPiecePosition()] = null;
             newBoardConfig[this.destinationCoordinate] = this.movedPiece.movePiece(this);
             final Builder builder = new Builder();
-            builder.setBoardConfiguration(newBoardConfig);
-            builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
-            builder.setMoveTransition(this);
-            return builder.build();
+            return builder.setBoardConfiguration(newBoardConfig)
+                          .setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance())
+                          .setMoveTransition(this).build();
         }
 
         @Override
@@ -316,12 +316,11 @@ public abstract class Move {
             newBoardConfig[this.movedPiece.getPiecePosition()] = null;
             newBoardConfig[this.destinationCoordinate] = this.movedPiece.movePiece(this);
             final Builder builder = new Builder();
-            builder.setBoardConfiguration(newBoardConfig);
-            builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
-            builder.setMoveTransition(this);
-            return builder.build();
+            return builder.setBoardConfiguration(newBoardConfig)
+                          .setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance())
+                          .setMoveTransition(this)
+                          .build();
         }
-
 
         @Override
         public boolean equals(final Object other) {
@@ -352,10 +351,10 @@ public abstract class Move {
             newBoardConfig[this.movedPiece.getPiecePosition()] = null;
             newBoardConfig[this.destinationCoordinate] = this.movedPiece.movePiece(this);
             final Builder builder = new Builder();
-            builder.setBoardConfiguration(newBoardConfig);
-            builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
-            builder.setMoveTransition(this);
-            return builder.build();
+            return builder.setBoardConfiguration(newBoardConfig)
+                          .setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance())
+                          .setMoveTransition(this)
+                          .build();
         }
 
         @Override
@@ -453,11 +452,11 @@ public abstract class Move {
             final Pawn movedPawn = (Pawn)this.movedPiece.movePiece(this);
             newBoardConfig[this.destinationCoordinate] = movedPawn;
             final Builder builder = new Builder();
-            builder.setBoardConfiguration(newBoardConfig);
-            builder.setEnPassantPawn(movedPawn);
-            builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
-            builder.setMoveTransition(this);
-            return builder.build();
+            return builder.setBoardConfiguration(newBoardConfig)
+                          .setEnPassantPawn(movedPawn)
+                          .setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance())
+                          .setMoveTransition(this)
+                          .build();
         }
 
         @Override
@@ -505,9 +504,9 @@ public abstract class Move {
             newBoardConfig[this.castleRookStart] = null;
             newBoardConfig[this.castleRookDestination] = new Rook(this.movedPiece.getPieceAllegiance(), this.castleRookDestination);
             final Builder builder = new Builder();
-            builder.setBoardConfiguration(newBoardConfig);
-            builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
-            builder.setMoveTransition(this);
+            builder.setBoardConfiguration(newBoardConfig)
+                   .setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance())
+                   .setMoveTransition(this);
             return builder.build();
         }
 

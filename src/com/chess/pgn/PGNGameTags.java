@@ -1,16 +1,16 @@
 package com.chess.pgn;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
 
 public class PGNGameTags {
 
     private final Map<String, String> gameTags;
 
     PGNGameTags(final TagsBuilder builder) {
-        this.gameTags = ImmutableMap.copyOf(builder.gameTags);
+        this.gameTags = Collections.unmodifiableMap(new HashMap<>(builder.gameTags));
     }
 
     /**

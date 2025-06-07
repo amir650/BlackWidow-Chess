@@ -21,7 +21,6 @@ import javax.swing.border.EtchedBorder;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.pieces.Piece;
 import com.chess.gui.Table.MoveLog;
-import com.google.common.primitives.Ints;
 
 class TakenPiecesPanel extends JPanel {
 
@@ -66,19 +65,8 @@ class TakenPiecesPanel extends JPanel {
             }
         }
 
-        Collections.sort(whiteTakenPieces, new Comparator<Piece>() {
-            @Override
-            public int compare(final Piece p1, final Piece p2) {
-                return Ints.compare(p1.getPieceValue(), p2.getPieceValue());
-            }
-        });
-
-        Collections.sort(blackTakenPieces, new Comparator<Piece>() {
-            @Override
-            public int compare(final Piece p1, final Piece p2) {
-                return Ints.compare(p1.getPieceValue(), p2.getPieceValue());
-            }
-        });
+        whiteTakenPieces.sort(Comparator.comparingInt(Piece::getPieceValue));
+        blackTakenPieces.sort(Comparator.comparingInt(Piece::getPieceValue));
         
         for (final Piece takenPiece : whiteTakenPieces) {
             try {

@@ -7,8 +7,10 @@ import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.pieces.*;
 import com.chess.engine.classic.player.ai.BoardEvaluator;
 import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
-import com.google.common.collect.Iterables;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -38,15 +40,35 @@ public class TestBoard {
         assertTrue(board.blackPlayer().toString().equals("Black"));
 
         final Iterable<Piece> allPieces = board.getAllPieces();
-        final Iterable<Move> allMoves = Iterables.concat(board.whitePlayer().getLegalMoves(), board.blackPlayer().getLegalMoves());
+
+        // --- Guava removal begins ---
+        // Combine two Iterables of Moves into a List
+        List<Move> allMoves = new ArrayList<>();
+        for (Move m : board.whitePlayer().getLegalMoves()) {
+            allMoves.add(m);
+        }
+        for (Move m : board.blackPlayer().getLegalMoves()) {
+            allMoves.add(m);
+        }
+        // --- Guava removal ends ---
+
         for(final Move move : allMoves) {
             assertFalse(move.isAttack());
             assertFalse(move.isCastlingMove());
             assertEquals(MoveUtils.exchangeScore(move), 1);
         }
 
-        assertEquals(Iterables.size(allMoves), 40);
-        assertEquals(Iterables.size(allPieces), 32);
+        // --- Guava removal begins ---
+        // Count moves and pieces using Java's for-each
+        assertEquals(allMoves.size(), 40);
+
+        int allPiecesCount = 0;
+        for (Piece p : allPieces) {
+            allPiecesCount++;
+        }
+        assertEquals(allPiecesCount, 32);
+        // --- Guava removal ends ---
+
         assertFalse(BoardUtils.isEndGame(board));
         assertFalse(BoardUtils.isThreatenedBoardImmediate(board));
         assertEquals(StandardBoardEvaluator.get().evaluate(board, 0), 0);
@@ -165,7 +187,6 @@ public class TestBoard {
 
         assertTrue(t14.getToBoard().whitePlayer().getActivePieces().length == calculatedActivesFor(t14.getToBoard(), Alliance.WHITE));
         assertTrue(t14.getToBoard().blackPlayer().getActivePieces().length == calculatedActivesFor(t14.getToBoard(), Alliance.BLACK));
-
     }
 
     @Test(expected=RuntimeException.class)
@@ -243,6 +264,4 @@ public class TestBoard {
         }
         return count;
     }
-
 }
-
