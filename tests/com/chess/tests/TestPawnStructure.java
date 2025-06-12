@@ -1,16 +1,13 @@
 package com.chess.tests;
 
-import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Board.Builder;
-import com.chess.engine.classic.pieces.King;
-import com.chess.engine.classic.pieces.Pawn;
 import com.chess.engine.classic.player.ai.PawnStructureAnalyzer;
 import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
 import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+
 
 public class TestPawnStructure {
 
@@ -37,22 +34,8 @@ public class TestPawnStructure {
 
     @Test
     public void testIsolatedPawnByExample3() {
-        final Builder builder = new Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        builder.setPiece(new Pawn(Alliance.BLACK, 12));
-        builder.setPiece(new Pawn(Alliance.BLACK, 20));
-        builder.setPiece(new Pawn(Alliance.BLACK, 28));
-        builder.setPiece(new Pawn(Alliance.BLACK, 8));
-        builder.setPiece(new Pawn(Alliance.BLACK, 16));
-        // White Layout
-        builder.setPiece(new Pawn(Alliance.WHITE, 52));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        builder.setMoveMaker(Alliance.WHITE);
-        // Set the current player
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("4k3/p3p3/p3p3/4p3/8/8/4P3/4K3 w - - 0 1");
         System.out.println(FenUtilities.createFENFromGame(board));
-
         assertEquals(PawnStructureAnalyzer.get().isolatedPawnPenalty(board.whitePlayer()), PawnStructureAnalyzer.ISOLATED_PAWN_PENALTY);
         assertEquals(PawnStructureAnalyzer.get().isolatedPawnPenalty(board.blackPlayer()), PawnStructureAnalyzer.ISOLATED_PAWN_PENALTY * 5);
     }

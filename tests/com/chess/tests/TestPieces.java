@@ -1,11 +1,11 @@
 package com.chess.tests;
 
-import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.*;
+import com.chess.pgn.FenUtilities;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,15 +22,8 @@ public class TestPieces {
 
     @Test
     public void testMiddleQueenOnEmptyBoard() {
-        final Board.Builder builder = new Board.Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        // White Layout
-        builder.setPiece(new Queen(Alliance.WHITE, 36));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("4k3/8/8/8/4Q3/8/8/4K3 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 31);
@@ -65,17 +58,7 @@ public class TestPieces {
 
     @Test
     public void testLegalMoveAllAvailable() {
-
-        final Board.Builder boardBuilder = new Board.Builder();
-        // Black Layout
-        boardBuilder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        boardBuilder.setPiece(new Knight(Alliance.BLACK, 28));
-        // White Layout
-        boardBuilder.setPiece(new Knight(Alliance.WHITE, 36));
-        boardBuilder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        // Set the current player
-        boardBuilder.setMoveMaker(Alliance.WHITE);
-        final Board board = boardBuilder.build();
+        final Board board = FenUtilities.createGameFromFEN("4k3/8/8/4n3/4N3/8/8/4K3 w - - 0 1\n");
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 13);
         final Move wm1 = Move.MoveFactory
@@ -104,16 +87,8 @@ public class TestPieces {
         assertTrue(whiteLegals.contains(wm7));
         assertTrue(whiteLegals.contains(wm8));
 
-        final Board.Builder boardBuilder2 = new Board.Builder();
-        // Black Layout
-        boardBuilder2.setPiece(new King(Alliance.BLACK, 4, false, false));
-        boardBuilder2.setPiece(new Knight(Alliance.BLACK, 28));
-        // White Layout
-        boardBuilder2.setPiece(new Knight(Alliance.WHITE, 36));
-        boardBuilder2.setPiece(new King(Alliance.WHITE, 60, false, false));
-        // Set the current player
-        boardBuilder2.setMoveMaker(Alliance.BLACK);
-        final Board board2 = boardBuilder2.build();
+        final Board board2 = FenUtilities.createGameFromFEN("4k3/8/8/4n3/4N3/8/8/4K3 b - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board2));
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
 
         final Move bm1 = Move.MoveFactory
@@ -147,13 +122,8 @@ public class TestPieces {
 
     @Test
     public void testKnightInCorners() {
-        final Board.Builder boardBuilder = new Board.Builder();
-        boardBuilder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        boardBuilder.setPiece(new Knight(Alliance.BLACK, 0));
-        boardBuilder.setPiece(new Knight(Alliance.WHITE, 56));
-        boardBuilder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        boardBuilder.setMoveMaker(Alliance.WHITE);
-        final Board board = boardBuilder.build();
+        final Board board = FenUtilities.createGameFromFEN("n3k3/8/8/8/8/8/8/N3K3 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 7);
@@ -175,16 +145,8 @@ public class TestPieces {
 
     @Test
     public void testMiddleBishopOnEmptyBoard() {
-        final Board.Builder builder = new Board.Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        // White Layout
-        builder.setPiece(new Bishop(Alliance.WHITE, 35));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        //build the board
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("4k3/8/8/8/3B4/8/8/4K3 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 18);
@@ -205,16 +167,8 @@ public class TestPieces {
 
     @Test
     public void testTopLeftBishopOnEmptyBoard() {
-        Board.Builder builder = new Board.Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        // White Layout
-        builder.setPiece(new Bishop(Alliance.WHITE, 0));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        //build the board
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("B3k3/8/8/8/8/8/8/4K3 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(board.getPiece(0), board.getPiece(0));
@@ -239,16 +193,8 @@ public class TestPieces {
 
     @Test
     public void testTopRightBishopOnEmptyBoard() {
-        Board.Builder builder = new Board.Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        // White Layout
-        builder.setPiece(new Bishop(Alliance.WHITE, 7));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        //build the board
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("4k2B/8/8/8/8/8/8/4K3 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 12);
@@ -271,16 +217,8 @@ public class TestPieces {
 
     @Test
     public void testBottomLeftBishopOnEmptyBoard() {
-        Board.Builder builder = new Board.Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        // White Layout
-        builder.setPiece(new Bishop(Alliance.WHITE, 56));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        //build the board
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("4k3/8/8/8/8/8/8/B3K3 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 12);
@@ -303,16 +241,8 @@ public class TestPieces {
 
     @Test
     public void testBottomRightBishopOnEmptyBoard() {
-        Board.Builder builder = new Board.Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        // White Layout
-        builder.setPiece(new Bishop(Alliance.WHITE, 63));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        //build the board
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("4k3/8/8/8/8/8/8/4K2B w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 12);
@@ -335,15 +265,9 @@ public class TestPieces {
 
     @Test
     public void testMiddleRookOnEmptyBoard() {
-        final Board.Builder builder = new Board.Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        // White Layout
-        builder.setPiece(new Rook(Alliance.WHITE, 36));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("4k3/8/8/8/4R3/8/8/4K3 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
+
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();
         final Collection<Move> blackLegals = board.blackPlayer().getLegalMoves();
         assertEquals(whiteLegals.size(), 18);
@@ -378,16 +302,8 @@ public class TestPieces {
 
     @Test
     public void testPawnPromotion() {
-        final Board.Builder builder = new Board.Builder();
-        // Black Layout
-        builder.setPiece(new Rook(Alliance.BLACK, 3));
-        builder.setPiece(new King(Alliance.BLACK, 22, false, false));
-        // White Layout
-        builder.setPiece(new Pawn(Alliance.WHITE, 15));
-        builder.setPiece(new King(Alliance.WHITE, 52, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("3r4/7P/6k1/8/8/8/4K3/8 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final Move m1 = Move.MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition(
                 "h7"), BoardUtils.INSTANCE.getCoordinateAtPosition("h8"));
         final MoveTransition t1 = board.currentPlayer().makeMove(m1);
@@ -402,16 +318,8 @@ public class TestPieces {
 
     @Test
     public void testSimpleWhiteEnPassant() {
-        final Board.Builder builder = new Board.Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        builder.setPiece(new Pawn(Alliance.BLACK, 11));
-        // White Layout
-        builder.setPiece(new Pawn(Alliance.WHITE, 52));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("4k3/3p4/8/8/8/8/4P3/4K3 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final Move m1 = Move.MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition(
                 "e2"), BoardUtils.INSTANCE.getCoordinateAtPosition("e4"));
         final MoveTransition t1 = board.currentPlayer().makeMove(m1);
@@ -432,16 +340,8 @@ public class TestPieces {
 
     @Test
     public void testSimpleBlackEnPassant() {
-        final Board.Builder builder = new Board.Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        builder.setPiece(new Pawn(Alliance.BLACK, 11));
-        // White Layout
-        builder.setPiece(new Pawn(Alliance.WHITE, 52));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("4k3/3p4/8/8/8/8/4P3/4K3 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final Move m1 = Move.MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition(
                 "e1"), BoardUtils.INSTANCE.getCoordinateAtPosition("d1"));
         final MoveTransition t1 = board.currentPlayer().makeMove(m1);
@@ -496,7 +396,7 @@ public class TestPieces {
     public void testHashCode() {
         final Board board = Board.createStandardBoard();
 
-        Set<Piece> allPieces = new HashSet<>();
+        final Set<Piece> allPieces = new HashSet<>();
         for (int idx : board.getWhitePieces()) {
             allPieces.add(board.getPiece(idx));
         }

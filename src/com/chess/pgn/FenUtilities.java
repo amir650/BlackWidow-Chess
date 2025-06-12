@@ -51,18 +51,18 @@ public class FenUtilities {
         int i = 0;
         while (i < boardTiles.length) {
             switch (boardTiles[i]) {
-                case 'r': builder.setPiece(new Rook(Alliance.BLACK, i)); break;
-                case 'n': builder.setPiece(new Knight(Alliance.BLACK, i)); break;
-                case 'b': builder.setPiece(new Bishop(Alliance.BLACK, i)); break;
-                case 'q': builder.setPiece(new Queen(Alliance.BLACK, i)); break;
+                case 'r': builder.setPiece(PieceUtils.INSTANCE.getRook(Alliance.BLACK, i, false)); break;
+                case 'n': builder.setPiece(PieceUtils.INSTANCE.getKnight(Alliance.BLACK, i, false)); break;
+                case 'b': builder.setPiece(PieceUtils.INSTANCE.getBishop(Alliance.BLACK, i, false)); break;
+                case 'q': builder.setPiece(PieceUtils.INSTANCE.getQueen(Alliance.BLACK, i, false)); break;
+                case 'p': builder.setPiece(PieceUtils.INSTANCE.getPawn(Alliance.BLACK, i, false)); break;
                 case 'k': builder.setPiece(new King(Alliance.BLACK, i, blackKingSideCastle, blackQueenSideCastle)); break;
-                case 'p': builder.setPiece(new Pawn(Alliance.BLACK, i)); break;
-                case 'R': builder.setPiece(new Rook(Alliance.WHITE, i)); break;
-                case 'N': builder.setPiece(new Knight(Alliance.WHITE, i)); break;
-                case 'B': builder.setPiece(new Bishop(Alliance.WHITE, i)); break;
-                case 'Q': builder.setPiece(new Queen(Alliance.WHITE, i)); break;
+                case 'R': builder.setPiece(PieceUtils.INSTANCE.getRook(Alliance.WHITE, i, false)); break;
+                case 'N': builder.setPiece(PieceUtils.INSTANCE.getKnight(Alliance.WHITE, i, false)); break;
+                case 'B': builder.setPiece(PieceUtils.INSTANCE.getBishop(Alliance.WHITE, i, false)); break;
+                case 'Q': builder.setPiece(PieceUtils.INSTANCE.getQueen(Alliance.WHITE, i, false)); break;
                 case 'K': builder.setPiece(new King(Alliance.WHITE, i, whiteKingSideCastle, whiteQueenSideCastle)); break;
-                case 'P': builder.setPiece(new Pawn(Alliance.WHITE, i)); break;
+                case 'P': builder.setPiece(PieceUtils.INSTANCE.getPawn(Alliance.WHITE, i, false)); break;
                 case '-': break; // empty square
                 default: throw new RuntimeException("Invalid FEN String " + gameConfiguration);
             }

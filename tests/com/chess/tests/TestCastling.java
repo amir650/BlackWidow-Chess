@@ -9,8 +9,8 @@ import com.chess.engine.classic.player.ai.StockAlphaBeta;
 import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TestCastling {
 
@@ -398,12 +398,18 @@ public class TestCastling {
         // Print the final board before the search
         System.out.println("Final board before search:");
         System.out.println(t11.getToBoard());
-
+        System.out.println(FenUtilities.createFENFromGame(t11.getToBoard()));
         final MoveStrategy moveStrategy = new StockAlphaBeta(6);
 
         moveStrategy.execute(t11.getToBoard());
     }
 
+    @Test
+    public void testIslateBug() {
+        final Board board = FenUtilities.createGameFromFEN("rn2kbnr/pppq1ppp/4p3/3pP3/Q7/2NP4/PP1P1PPP/R1B1K1NR b KQkq - 0 1");
+        final MoveStrategy moveStrategy = new StockAlphaBeta(6);
+        moveStrategy.execute(board);
+    }
 
     @Test
     public void testNoCastlingOutOfCheck() {

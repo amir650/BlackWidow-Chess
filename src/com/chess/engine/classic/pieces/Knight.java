@@ -14,14 +14,9 @@ public final class Knight extends Piece {
     private final static int[] CANDIDATE_MOVE_COORDINATES = { -17, -15, -10, -6, 6, 10, 15, 17 };
     private final static Map<Integer, int[]> PRECOMPUTED_CANDIDATES = computeCandidates();
 
-    public Knight(final Alliance alliance,
-                  final int piecePosition) {
-        super(PieceType.KNIGHT, alliance, piecePosition, true);
-    }
-
-    public Knight(final Alliance alliance,
-                  final int piecePosition,
-                  final boolean isFirstMove) {
+    Knight(final Alliance alliance,
+           final int piecePosition,
+           final boolean isFirstMove) {
         super(PieceType.KNIGHT, alliance, piecePosition, isFirstMove);
     }
 
@@ -71,8 +66,13 @@ public final class Knight extends Piece {
     }
 
     @Override
-    public Knight movePiece(final Move move) {
-        return PieceUtils.INSTANCE.getMovedKnight(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    public Knight getMovedPiece(final Move move) {
+        return PieceUtils.INSTANCE.getKnight(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), true);
+    }
+
+    @Override
+    public Knight getMovedPiece(final Alliance alliance, final int to) {
+        return PieceUtils.INSTANCE.getKnight(alliance, to, true);
     }
 
     @Override

@@ -1,21 +1,15 @@
 package com.chess.tests;
 
-import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.board.MoveTransition;
-import com.chess.engine.classic.pieces.Bishop;
-import com.chess.engine.classic.pieces.King;
-import com.chess.engine.classic.pieces.Rook;
 import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
+import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class TestPlayer {
 
@@ -60,17 +54,8 @@ public class TestPlayer {
 
     @Test
     public void testDiscoveredCheck() {
-        final Builder builder = new Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        builder.setPiece(new Rook(Alliance.BLACK, 24));
-        // White Layout
-        builder.setPiece(new Bishop(Alliance.WHITE, 44));
-        builder.setPiece(new Rook(Alliance.WHITE, 52));
-        builder.setPiece(new King(Alliance.WHITE, 58, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("4k3/8/8/r7/8/4B3/4R3/2K5 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e3"),
                                 BoardUtils.INSTANCE.getCoordinateAtPosition("b6")));

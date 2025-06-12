@@ -16,15 +16,9 @@ public final class Bishop extends Piece {
 
     private final static Map<Integer, MoveUtils.Line[]> PRECOMPUTED_CANDIDATES = computeCandidates();
 
-
-    public Bishop(final Alliance alliance,
-                  final int piecePosition) {
-        super(PieceType.BISHOP, alliance, piecePosition, true);
-    }
-
-    public Bishop(final Alliance alliance,
-                  final int piecePosition,
-                  final boolean isFirstMove) {
+    Bishop(final Alliance alliance,
+           final int piecePosition,
+           final boolean isFirstMove) {
         super(PieceType.BISHOP, alliance, piecePosition, isFirstMove);
     }
 
@@ -84,8 +78,13 @@ public final class Bishop extends Piece {
     }
 
     @Override
-    public Bishop movePiece(final Move move) {
-        return PieceUtils.INSTANCE.getMovedBishop(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    public Bishop getMovedPiece(final Move move) {
+        return PieceUtils.INSTANCE.getBishop(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), true);
+    }
+
+    @Override
+    public Bishop getMovedPiece(final Alliance alliance, final int to) {
+        return PieceUtils.INSTANCE.getBishop(alliance, to, true);
     }
 
     @Override

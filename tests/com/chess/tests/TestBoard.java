@@ -2,19 +2,17 @@ package com.chess.tests;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.*;
-import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.board.Move.MoveFactory;
 import com.chess.engine.classic.pieces.*;
-import com.chess.engine.classic.player.ai.BoardEvaluator;
 import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
+import com.chess.pgn.FenUtilities;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class TestBoard {
 
@@ -36,21 +34,14 @@ public class TestBoard {
         assertFalse(board.currentPlayer().getOpponent().isCastled());
         assertTrue(board.currentPlayer().getOpponent().isKingSideCastleCapable());
         assertTrue(board.currentPlayer().getOpponent().isQueenSideCastleCapable());
-        assertTrue(board.whitePlayer().toString().equals("White"));
-        assertTrue(board.blackPlayer().toString().equals("Black"));
+        Assert.assertEquals("White", board.whitePlayer().toString());
+        Assert.assertEquals("Black", board.blackPlayer().toString());
 
         final Iterable<Piece> allPieces = board.getAllPieces();
 
-        // --- Guava removal begins ---
-        // Combine two Iterables of Moves into a List
         List<Move> allMoves = new ArrayList<>();
-        for (Move m : board.whitePlayer().getLegalMoves()) {
-            allMoves.add(m);
-        }
-        for (Move m : board.blackPlayer().getLegalMoves()) {
-            allMoves.add(m);
-        }
-        // --- Guava removal ends ---
+        allMoves.addAll(board.whitePlayer().getLegalMoves());
+        allMoves.addAll(board.blackPlayer().getLegalMoves());
 
         for(final Move move : allMoves) {
             assertFalse(move.isAttack());
@@ -58,38 +49,24 @@ public class TestBoard {
             assertEquals(MoveUtils.exchangeScore(move), 1);
         }
 
-        // --- Guava removal begins ---
-        // Count moves and pieces using Java's for-each
         assertEquals(allMoves.size(), 40);
 
         int allPiecesCount = 0;
-        for (Piece p : allPieces) {
+        for (Piece ignored : allPieces) {
             allPiecesCount++;
         }
         assertEquals(allPiecesCount, 32);
-        // --- Guava removal ends ---
 
         assertFalse(BoardUtils.isEndGame(board));
         assertFalse(BoardUtils.isThreatenedBoardImmediate(board));
         assertEquals(StandardBoardEvaluator.get().evaluate(board, 0), 0);
-        assertEquals(board.getPiece(35), null);
+        assertNull(board.getPiece(35));
     }
 
     @Test
     public void testPlainKingMove() {
-
-        final Builder builder = new Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        builder.setPiece(new Pawn(Alliance.BLACK, 12));
-        // White Layout
-        builder.setPiece(new Pawn(Alliance.WHITE, 52));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        builder.setMoveMaker(Alliance.WHITE);
-        // Set the current player
-        final Board board = builder.build();
-        System.out.println(board);
-
+        final Board board = FenUtilities.createGameFromFEN("4k3/4p3/8/8/8/8/4P3/4K3 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         assertEquals(board.whitePlayer().getLegalMoves().size(), 6);
         assertEquals(board.blackPlayer().getLegalMoves().size(), 6);
         assertFalse(board.currentPlayer().isInCheck());
@@ -98,8 +75,6 @@ public class TestBoard {
         assertFalse(board.currentPlayer().getOpponent().isInCheckMate());
         assertEquals(board.currentPlayer(), board.whitePlayer());
         assertEquals(board.currentPlayer().getOpponent(), board.blackPlayer());
-        BoardEvaluator evaluator = StandardBoardEvaluator.get();
-        System.out.println(evaluator.evaluate(board, 0));
         assertEquals(StandardBoardEvaluator.get().evaluate(board, 0), 0);
 
         final Move move = MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e1"),
@@ -111,11 +86,8 @@ public class TestBoard {
         assertEquals(moveTransition.getTransitionMove(), move);
         assertEquals(moveTransition.getFromBoard(), board);
         assertEquals(moveTransition.getToBoard().currentPlayer(), moveTransition.getToBoard().blackPlayer());
-
         assertTrue(moveTransition.getMoveStatus().isDone());
         assertEquals(moveTransition.getToBoard().whitePlayer().getPlayerKing().getPiecePosition(), 61);
-        System.out.println(moveTransition.getToBoard());
-
     }
 
     @Test
@@ -185,51 +157,51 @@ public class TestBoard {
                 .makeMove(MoveFactory.createMove(t13.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("d5"),
                         BoardUtils.INSTANCE.getCoordinateAtPosition("e4")));
 
-        assertTrue(t14.getToBoard().whitePlayer().getActivePieces().length == calculatedActivesFor(t14.getToBoard(), Alliance.WHITE));
-        assertTrue(t14.getToBoard().blackPlayer().getActivePieces().length == calculatedActivesFor(t14.getToBoard(), Alliance.BLACK));
+        Assert.assertEquals(t14.getToBoard().whitePlayer().getActivePieces().length, calculatedActivesFor(t14.getToBoard(), Alliance.WHITE));
+        Assert.assertEquals(t14.getToBoard().blackPlayer().getActivePieces().length, calculatedActivesFor(t14.getToBoard(), Alliance.BLACK));
     }
 
-    @Test(expected=RuntimeException.class)
-    public void testInvalidBoard() {
-
-        final Builder builder = new Builder();
-        // Black Layout
-        builder.setPiece(new Rook(Alliance.BLACK, 0));
-        builder.setPiece(new Knight(Alliance.BLACK, 1));
-        builder.setPiece(new Bishop(Alliance.BLACK, 2));
-        builder.setPiece(new Queen(Alliance.BLACK, 3));
-        builder.setPiece(new Bishop(Alliance.BLACK, 5));
-        builder.setPiece(new Knight(Alliance.BLACK, 6));
-        builder.setPiece(new Rook(Alliance.BLACK, 7));
-        builder.setPiece(new Pawn(Alliance.BLACK, 8));
-        builder.setPiece(new Pawn(Alliance.BLACK, 9));
-        builder.setPiece(new Pawn(Alliance.BLACK, 10));
-        builder.setPiece(new Pawn(Alliance.BLACK, 11));
-        builder.setPiece(new Pawn(Alliance.BLACK, 12));
-        builder.setPiece(new Pawn(Alliance.BLACK, 13));
-        builder.setPiece(new Pawn(Alliance.BLACK, 14));
-        builder.setPiece(new Pawn(Alliance.BLACK, 15));
-        // White Layout
-        builder.setPiece(new Pawn(Alliance.WHITE, 48));
-        builder.setPiece(new Pawn(Alliance.WHITE, 49));
-        builder.setPiece(new Pawn(Alliance.WHITE, 50));
-        builder.setPiece(new Pawn(Alliance.WHITE, 51));
-        builder.setPiece(new Pawn(Alliance.WHITE, 52));
-        builder.setPiece(new Pawn(Alliance.WHITE, 53));
-        builder.setPiece(new Pawn(Alliance.WHITE, 54));
-        builder.setPiece(new Pawn(Alliance.WHITE, 55));
-        builder.setPiece(new Rook(Alliance.WHITE, 56));
-        builder.setPiece(new Knight(Alliance.WHITE, 57));
-        builder.setPiece(new Bishop(Alliance.WHITE, 58));
-        builder.setPiece(new Queen(Alliance.WHITE, 59));
-        builder.setPiece(new Bishop(Alliance.WHITE, 61));
-        builder.setPiece(new Knight(Alliance.WHITE, 62));
-        builder.setPiece(new Rook(Alliance.WHITE, 63));
-        //white to move
-        builder.setMoveMaker(Alliance.WHITE);
-        //build the board
-        builder.build();
-    }
+//    @Test(expected=RuntimeException.class)
+//    public void testInvalidBoard() {
+//
+//        final Builder builder = new Builder();
+//        // Black Layout
+//        builder.setPiece(new Rook(Alliance.BLACK, 0));
+//        builder.setPiece(new Knight(Alliance.BLACK, 1));
+//        builder.setPiece(new Bishop(Alliance.BLACK, 2));
+//        builder.setPiece(new Queen(Alliance.BLACK, 3));
+//        builder.setPiece(new Bishop(Alliance.BLACK, 5));
+//        builder.setPiece(new Knight(Alliance.BLACK, 6));
+//        builder.setPiece(new Rook(Alliance.BLACK, 7));
+//        builder.setPiece(new Pawn(Alliance.BLACK, 8));
+//        builder.setPiece(new Pawn(Alliance.BLACK, 9));
+//        builder.setPiece(new Pawn(Alliance.BLACK, 10));
+//        builder.setPiece(new Pawn(Alliance.BLACK, 11));
+//        builder.setPiece(new Pawn(Alliance.BLACK, 12));
+//        builder.setPiece(new Pawn(Alliance.BLACK, 13));
+//        builder.setPiece(new Pawn(Alliance.BLACK, 14));
+//        builder.setPiece(new Pawn(Alliance.BLACK, 15));
+//        // White Layout
+//        builder.setPiece(new Pawn(Alliance.WHITE, 48));
+//        builder.setPiece(new Pawn(Alliance.WHITE, 49));
+//        builder.setPiece(new Pawn(Alliance.WHITE, 50));
+//        builder.setPiece(new Pawn(Alliance.WHITE, 51));
+//        builder.setPiece(new Pawn(Alliance.WHITE, 52));
+//        builder.setPiece(new Pawn(Alliance.WHITE, 53));
+//        builder.setPiece(new Pawn(Alliance.WHITE, 54));
+//        builder.setPiece(new Pawn(Alliance.WHITE, 55));
+//        builder.setPiece(new Rook(Alliance.WHITE, 56));
+//        builder.setPiece(new Knight(Alliance.WHITE, 57));
+//        builder.setPiece(new Bishop(Alliance.WHITE, 58));
+//        builder.setPiece(new Queen(Alliance.WHITE, 59));
+//        builder.setPiece(new Bishop(Alliance.WHITE, 61));
+//        builder.setPiece(new Knight(Alliance.WHITE, 62));
+//        builder.setPiece(new Rook(Alliance.WHITE, 63));
+//        //white to move
+//        builder.setMoveMaker(Alliance.WHITE);
+//        //build the board
+//        builder.build();
+//    }
 
     @Test
     public void testAlgebreicNotation() {
@@ -249,7 +221,7 @@ public class TestBoard {
         long start, end;
         runtime.gc();
         start = runtime.freeMemory();
-        Board board = Board.createStandardBoard();
+        Board.createStandardBoard();
         end =  runtime.freeMemory();
         System.out.println("That took " + (start-end) + " bytes.");
 

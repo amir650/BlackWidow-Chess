@@ -12,10 +12,7 @@ import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by amir.afghani on 6/4/17.
- * Tests from: https://chessprogramming.wikispaces.com/Perft+Results
- */
+
 public class TestEngine {
 
     @Test

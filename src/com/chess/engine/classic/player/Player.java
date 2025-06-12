@@ -107,7 +107,7 @@ public abstract class Player {
     protected abstract Collection<Move> calculateKingCastles(Collection<Move> playerLegals,
                                                              Collection<Move> opponentLegals);
     protected boolean hasCastleOpportunities() {
-        return !this.isInCheck && !this.playerKing.isCastled() &&
+        return !(this.isInCheck && !this.playerKing.isCastled()) &&
                 (this.playerKing.isKingSideCastleCapable() || this.playerKing.isQueenSideCastleCapable());
     }
 

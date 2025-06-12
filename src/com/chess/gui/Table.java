@@ -226,6 +226,7 @@ public final class Table extends Observable {
 
         final JMenuItem legalMovesMenuItem = new JMenuItem("Current State", KeyEvent.VK_L);
         legalMovesMenuItem.addActionListener(e -> {
+            System.out.println(FenUtilities.createFENFromGame(chessBoard));
             System.out.println(Arrays.toString(chessBoard.getWhitePieces()));
             System.out.println(chessBoard.getBlackPieces());
             System.out.println(playerInfo(chessBoard.currentPlayer()));

@@ -1,8 +1,6 @@
 package com.chess.tests;
 
-import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Board.Builder;
 import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.MoveTransition;
@@ -18,44 +16,7 @@ public class TestAlphaBeta {
 
     @Test
     public void testOpeningDepth4BlackMovesFirst() {
-        final Builder builder = new Builder();
-        // Black Layout
-        builder.setPiece(new Rook(Alliance.BLACK, 0));
-        builder.setPiece(new Knight(Alliance.BLACK, 1));
-        builder.setPiece(new Bishop(Alliance.BLACK, 2));
-        builder.setPiece(new Queen(Alliance.BLACK, 3));
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        builder.setPiece(new Bishop(Alliance.BLACK, 5));
-        builder.setPiece(new Knight(Alliance.BLACK, 6));
-        builder.setPiece(new Rook(Alliance.BLACK, 7));
-        builder.setPiece(new Pawn(Alliance.BLACK, 8));
-        builder.setPiece(new Pawn(Alliance.BLACK, 9));
-        builder.setPiece(new Pawn(Alliance.BLACK, 10));
-        builder.setPiece(new Pawn(Alliance.BLACK, 11));
-        builder.setPiece(new Pawn(Alliance.BLACK, 12));
-        builder.setPiece(new Pawn(Alliance.BLACK, 13));
-        builder.setPiece(new Pawn(Alliance.BLACK, 14));
-        builder.setPiece(new Pawn(Alliance.BLACK, 15));
-        // White Layout
-        builder.setPiece(new Pawn(Alliance.WHITE, 48));
-        builder.setPiece(new Pawn(Alliance.WHITE, 49));
-        builder.setPiece(new Pawn(Alliance.WHITE, 50));
-        builder.setPiece(new Pawn(Alliance.WHITE, 51));
-        builder.setPiece(new Pawn(Alliance.WHITE, 52));
-        builder.setPiece(new Pawn(Alliance.WHITE, 53));
-        builder.setPiece(new Pawn(Alliance.WHITE, 54));
-        builder.setPiece(new Pawn(Alliance.WHITE, 55));
-        builder.setPiece(new Rook(Alliance.WHITE, 56));
-        builder.setPiece(new Knight(Alliance.WHITE, 57));
-        builder.setPiece(new Bishop(Alliance.WHITE, 58));
-        builder.setPiece(new Queen(Alliance.WHITE, 59));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        builder.setPiece(new Bishop(Alliance.WHITE, 61));
-        builder.setPiece(new Knight(Alliance.WHITE, 62));
-        builder.setPiece(new Rook(Alliance.WHITE, 63));
-        // Set the current player
-        builder.setMoveMaker(Alliance.BLACK);
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b - - 0 1");
         System.out.println(FenUtilities.createFENFromGame(board));
         final MoveStrategy alphaBeta = new StockAlphaBeta(4);
         final Move bestMove = alphaBeta.execute(board);
@@ -65,22 +26,8 @@ public class TestAlphaBeta {
 
     @Test
     public void advancedLevelProblem2NakamuraShirov() {
-        final Builder builder = new Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 5, false, false));
-        builder.setPiece(new Pawn(Alliance.BLACK, 10));
-        builder.setPiece(new Rook(Alliance.BLACK, 25));
-        builder.setPiece(new Bishop(Alliance.BLACK, 29));
-        // White Layout
-        builder.setPiece(new Knight(Alliance.WHITE, 27));
-        builder.setPiece(new Rook(Alliance.WHITE, 36));
-        builder.setPiece(new Pawn(Alliance.WHITE, 39));
-        builder.setPiece(new King(Alliance.WHITE, 42, false, false));
-        builder.setPiece(new Pawn(Alliance.WHITE, 46));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("5k2/2p5/8/1r1N1b2/4R2P/2K3P1/8/8 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final MoveStrategy alphaBeta = new StockAlphaBeta(6);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
@@ -89,37 +36,7 @@ public class TestAlphaBeta {
 
     @Test
     public void eloTest1() {
-        final Builder builder = new Builder();
-        // Black Layout
-        builder.setPiece(new Rook(Alliance.BLACK, 0));
-        builder.setPiece(new Bishop(Alliance.BLACK, 2));
-        builder.setPiece(new King(Alliance.BLACK, 6, false, false));
-        builder.setPiece(new Pawn(Alliance.BLACK, 14));
-        builder.setPiece(new Knight(Alliance.BLACK, 18));
-        builder.setPiece(new Pawn(Alliance.BLACK, 20));
-        builder.setPiece(new Rook(Alliance.BLACK, 21));
-        builder.setPiece(new Pawn(Alliance.BLACK, 23));
-        builder.setPiece(new Queen(Alliance.BLACK, 24));
-        builder.setPiece(new Pawn(Alliance.BLACK, 26));
-        builder.setPiece(new Bishop(Alliance.BLACK, 33));
-        // White Layout
-        builder.setPiece(new Pawn(Alliance.WHITE, 16));
-        builder.setPiece(new Pawn(Alliance.WHITE, 35));
-        builder.setPiece(new Knight(Alliance.WHITE, 42));
-        builder.setPiece(new Knight(Alliance.WHITE, 45));
-        builder.setPiece(new Pawn(Alliance.WHITE, 48));
-        builder.setPiece(new Pawn(Alliance.WHITE, 49));
-        builder.setPiece(new Queen(Alliance.WHITE, 51));
-        builder.setPiece(new Bishop(Alliance.WHITE, 52));
-        builder.setPiece(new Pawn(Alliance.WHITE, 53));
-        builder.setPiece(new Pawn(Alliance.WHITE, 54));
-        builder.setPiece(new Pawn(Alliance.WHITE, 55));
-        builder.setPiece(new Rook(Alliance.WHITE, 56));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        builder.setPiece(new Rook(Alliance.WHITE, 63));
-        // Set the current player
-        builder.setMoveMaker(Alliance.BLACK);
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("r1b3k1/6p1/P1n1pr1p/q1p5/1b1P4/2N2N2/PP1QBPPP/R3K2R b - - 0 1");
         final String fen = FenUtilities.createFENFromGame(board);
         System.out.println(fen);
         final MoveStrategy alphaBeta = new StockAlphaBeta(8);
@@ -166,36 +83,7 @@ public class TestAlphaBeta {
 
     @Test
     public void eloTest2() {
-        final Builder builder = new Builder();
-        // Black Layout
-        builder.setPiece(new Knight(Alliance.BLACK, 2));
-        builder.setPiece(new Queen(Alliance.BLACK, 3));
-        builder.setPiece(new Knight(Alliance.BLACK, 5));
-        builder.setPiece(new King(Alliance.BLACK, 6, false, false));
-        builder.setPiece(new Pawn(Alliance.BLACK, 13));
-        builder.setPiece(new Pawn(Alliance.BLACK, 15));
-        builder.setPiece(new Pawn(Alliance.BLACK, 20));
-        builder.setPiece(new Pawn(Alliance.BLACK, 22));
-        builder.setPiece(new Pawn(Alliance.BLACK, 24));
-        builder.setPiece(new Bishop(Alliance.BLACK, 25));
-        builder.setPiece(new Pawn(Alliance.BLACK, 27));
-        builder.setPiece(new Pawn(Alliance.BLACK, 33));
-        // White Layout
-        builder.setPiece(new Queen(Alliance.WHITE, 23));
-        builder.setPiece(new Pawn(Alliance.WHITE, 28));
-        builder.setPiece(new Knight(Alliance.WHITE, 30));
-        builder.setPiece(new Pawn(Alliance.WHITE, 31));
-        builder.setPiece(new Pawn(Alliance.WHITE, 35));
-        builder.setPiece(new Pawn(Alliance.WHITE, 38));
-        builder.setPiece(new Pawn(Alliance.WHITE, 41));
-        builder.setPiece(new Knight(Alliance.WHITE, 46));
-        builder.setPiece(new Pawn(Alliance.WHITE, 48));
-        builder.setPiece(new Pawn(Alliance.WHITE, 53));
-        builder.setPiece(new Bishop(Alliance.WHITE, 54));
-        builder.setPiece(new King(Alliance.WHITE, 62, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("2nq1nk1/5p1p/4p1pQ/pb1pP1NP/1p1P2P1/1P4N1/P4PB1/6K1 w - - 0 1");
         System.out.println(FenUtilities.createFENFromGame(board));
         final MoveStrategy alphaBeta = new StockAlphaBeta(8);
         final Move bestMove = alphaBeta.execute(board);
@@ -205,26 +93,7 @@ public class TestAlphaBeta {
 
     @Test
     public void eloTest3() {
-        final Builder builder = new Builder();
-        // Black Layout
-        builder.setPiece(new Rook(Alliance.BLACK, 11));
-        builder.setPiece(new Pawn(Alliance.BLACK, 14));
-        builder.setPiece(new Pawn(Alliance.BLACK, 16));
-        builder.setPiece(new Pawn(Alliance.BLACK, 17));
-        builder.setPiece(new Pawn(Alliance.BLACK, 20));
-        builder.setPiece(new Pawn(Alliance.BLACK, 22));
-        builder.setPiece(new King(Alliance.BLACK, 25, false, false));
-        builder.setPiece(new Knight(Alliance.BLACK, 33));
-        // White Layout
-        builder.setPiece(new Bishop(Alliance.WHITE, 19));
-        builder.setPiece(new Pawn(Alliance.WHITE, 26));
-        builder.setPiece(new King(Alliance.WHITE, 36, false, false));
-        builder.setPiece(new Rook(Alliance.WHITE, 46));
-        builder.setPiece(new Pawn(Alliance.WHITE, 49));
-        builder.setPiece(new Pawn(Alliance.WHITE, 53));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("8/3r2p1/pp1Bp1p1/1kP5/1n2K3/6R1/1P3P2/8 w - - 0 1");
         System.out.println(FenUtilities.createFENFromGame(board));
         final MoveStrategy alphaBeta = new StockAlphaBeta(8);
         final Move bestMove = alphaBeta.execute(board);
@@ -243,24 +112,8 @@ public class TestAlphaBeta {
 
     @Test
     public void testCheckmateHorizon() {
-        final Builder builder = new Builder();
-        // Black Layout
-        builder.setPiece(new Rook(Alliance.BLACK, 11));
-        builder.setPiece(new Pawn(Alliance.BLACK, 16));
-        builder.setPiece(new Bishop(Alliance.BLACK, 27));
-        builder.setPiece(new King(Alliance.BLACK, 29, false, false));
-        // White Layout
-        builder.setPiece(new Rook(Alliance.WHITE, 17));
-        builder.setPiece(new Rook(Alliance.WHITE, 26));
-        builder.setPiece(new Pawn(Alliance.WHITE, 35));
-        builder.setPiece(new Pawn(Alliance.WHITE, 45));
-        builder.setPiece(new Bishop(Alliance.WHITE, 51));
-        builder.setPiece(new Pawn(Alliance.WHITE, 54));
-        builder.setPiece(new Pawn(Alliance.WHITE, 55));
-        builder.setPiece(new King(Alliance.WHITE, 63, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("8/3r4/pR6/2Rb1k2/3P4/5P2/3B2PP/7K w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final MoveStrategy alphaBeta = new StockAlphaBeta(4);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
@@ -269,32 +122,8 @@ public class TestAlphaBeta {
 
     @Test
     public void testBlackInTrouble() {
-        final Builder builder = new Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 7, false, false));
-        builder.setPiece(new Pawn(Alliance.BLACK, 8));
-        builder.setPiece(new Pawn(Alliance.BLACK, 9));
-        builder.setPiece(new Pawn(Alliance.BLACK, 10));
-        builder.setPiece(new Queen(Alliance.BLACK, 11));
-        builder.setPiece(new Rook(Alliance.BLACK, 14));
-        builder.setPiece(new Pawn(Alliance.BLACK, 15));
-        builder.setPiece(new Bishop(Alliance.BLACK, 17));
-        builder.setPiece(new Knight(Alliance.BLACK, 18));
-        builder.setPiece(new Pawn(Alliance.BLACK, 19));
-        builder.setPiece(new Pawn(Alliance.BLACK, 21));
-        // White Layout
-        builder.setPiece(new Knight(Alliance.WHITE, 31));
-        builder.setPiece(new Pawn(Alliance.WHITE, 35));
-        builder.setPiece(new Rook(Alliance.WHITE, 36));
-        builder.setPiece(new Queen(Alliance.WHITE, 46));
-        builder.setPiece(new Pawn(Alliance.WHITE, 48));
-        builder.setPiece(new Pawn(Alliance.WHITE, 53));
-        builder.setPiece(new Pawn(Alliance.WHITE, 54));
-        builder.setPiece(new Pawn(Alliance.WHITE, 55));
-        builder.setPiece(new King(Alliance.WHITE, 62, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("7k/pppq2rp/1bnp1p2/7N/3PR3/6Q1/P4PPP/6K1 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final MoveStrategy alphaBeta = new StockAlphaBeta(4);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
@@ -304,6 +133,7 @@ public class TestAlphaBeta {
     @Test
     public void findMate3() {
         final Board board = FenUtilities.createGameFromFEN("5rk1/5Npp/8/3Q4/8/8/8/7K w - - 0");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final MoveStrategy alphaBeta = new StockAlphaBeta(6);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory

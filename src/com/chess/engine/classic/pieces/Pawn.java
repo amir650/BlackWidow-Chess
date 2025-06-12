@@ -16,14 +16,9 @@ public final class Pawn
 
     private final static int[] CANDIDATE_MOVE_COORDINATES = {8, 16, 7, 9};
 
-    public Pawn(final Alliance allegiance,
-                final int piecePosition) {
-        super(PieceType.PAWN, allegiance, piecePosition, true);
-    }
-
-    public Pawn(final Alliance alliance,
-                final int piecePosition,
-                final boolean isFirstMove) {
+    Pawn(final Alliance alliance,
+         final int piecePosition,
+         final boolean isFirstMove) {
         super(PieceType.PAWN, alliance, piecePosition, isFirstMove);
     }
 
@@ -114,10 +109,10 @@ public final class Pawn
                                       final Move baseMove,
                                       final Alliance alliance,
                                       final int destination) {
-        moves.add(new PawnPromotion(baseMove, PieceUtils.INSTANCE.getMovedQueen(alliance, destination)));
-        moves.add(new PawnPromotion(baseMove, PieceUtils.INSTANCE.getMovedRook(alliance, destination)));
-        moves.add(new PawnPromotion(baseMove, PieceUtils.INSTANCE.getMovedBishop(alliance, destination)));
-        moves.add(new PawnPromotion(baseMove, PieceUtils.INSTANCE.getMovedKnight(alliance, destination)));
+        moves.add(new PawnPromotion(baseMove, PieceUtils.INSTANCE.getQueen(alliance, destination, true)));
+        moves.add(new PawnPromotion(baseMove, PieceUtils.INSTANCE.getRook(alliance, destination, true)));
+        moves.add(new PawnPromotion(baseMove, PieceUtils.INSTANCE.getBishop(alliance, destination, true)));
+        moves.add(new PawnPromotion(baseMove, PieceUtils.INSTANCE.getKnight(alliance, destination, true)));
     }
 
     @Override
@@ -126,8 +121,13 @@ public final class Pawn
     }
 
     @Override
-    public Pawn movePiece(final Move move) {
-        return PieceUtils.INSTANCE.getMovedPawn(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    public Pawn getMovedPiece(final Move move) {
+        return PieceUtils.INSTANCE.getPawn(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), true);
+    }
+
+    @Override
+    public Pawn getMovedPiece(final Alliance alliance, final int to) {
+        return PieceUtils.INSTANCE.getPawn(alliance, to, true);
     }
 
 }

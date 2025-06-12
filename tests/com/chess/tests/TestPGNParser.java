@@ -6,9 +6,8 @@ import org.junit.Test;
 import com.chess.engine.classic.board.Board;
 import com.chess.engine.classic.board.Move;
 
+import static org.junit.Assert.assertTrue;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 
 public class TestPGNParser {
 

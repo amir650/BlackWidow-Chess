@@ -12,9 +12,7 @@ import java.util.*;
 public final class King extends Piece {
 
     private final static int[] CANDIDATE_MOVE_COORDINATES = { -9, -8, -7, -1, 1, 7, 8, 9 };
-
     private final static Map<Integer, int[]> PRECOMPUTED_CANDIDATES = computeCandidates();
-
     private final boolean isCastled;
     private final boolean kingSideCastleCapable;
     private final boolean queenSideCastleCapable;
@@ -106,8 +104,14 @@ public final class King extends Piece {
     }
 
     @Override
-    public King movePiece(final Move move) {
-        return new King(this.pieceAlliance, move.getDestinationCoordinate(), false, move.isCastlingMove(), false, false);
+    public King getMovedPiece(final Move move) {
+        return PieceUtils.INSTANCE.getKing(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), move.isCastlingMove(), true);
+    }
+
+    @Override
+    public King getMovedPiece(final Alliance alliance,
+                              final int to) {
+        return null;
     }
 
     @Override

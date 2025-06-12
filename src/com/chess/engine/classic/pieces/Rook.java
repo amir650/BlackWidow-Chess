@@ -16,13 +16,9 @@ public final class Rook extends Piece {
 
     private final static Map<Integer, MoveUtils.Line[]> PRECOMPUTED_CANDIDATES = computeCandidates();
 
-    public Rook(final Alliance alliance, final int piecePosition) {
-        super(PieceType.ROOK, alliance, piecePosition, true);
-    }
-
-    public Rook(final Alliance alliance,
-                final int piecePosition,
-                final boolean isFirstMove) {
+    Rook(final Alliance alliance,
+         final int piecePosition,
+         final boolean isFirstMove) {
         super(PieceType.ROOK, alliance, piecePosition, isFirstMove);
     }
 
@@ -81,8 +77,13 @@ public final class Rook extends Piece {
     }
 
     @Override
-    public Rook movePiece(final Move move) {
-        return PieceUtils.INSTANCE.getMovedRook(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    public Rook getMovedPiece(final Move move) {
+        return PieceUtils.INSTANCE.getRook(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), true);
+    }
+
+    @Override
+    public Rook getMovedPiece(final Alliance alliance, final int to) {
+        return PieceUtils.INSTANCE.getRook(alliance, to, true);
     }
 
     @Override

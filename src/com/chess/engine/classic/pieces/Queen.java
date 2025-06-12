@@ -17,13 +17,9 @@ public final class Queen extends Piece {
 
     private final static Map<Integer, MoveUtils.Line[]> PRECOMPUTED_CANDIDATES = computeCandidates();
 
-    public Queen(final Alliance alliance, final int piecePosition) {
-        super(PieceType.QUEEN, alliance, piecePosition, true);
-    }
-
-    public Queen(final Alliance alliance,
-                 final int piecePosition,
-                 final boolean isFirstMove) {
+    Queen(final Alliance alliance,
+          final int piecePosition,
+          final boolean isFirstMove) {
         super(PieceType.QUEEN, alliance, piecePosition, isFirstMove);
     }
 
@@ -83,8 +79,13 @@ public final class Queen extends Piece {
     }
 
     @Override
-    public Queen movePiece(final Move move) {
-        return PieceUtils.INSTANCE.getMovedQueen(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate());
+    public Queen getMovedPiece(final Move move) {
+        return PieceUtils.INSTANCE.getQueen(move.getMovedPiece().getPieceAllegiance(), move.getDestinationCoordinate(), true);
+    }
+
+    @Override
+    public Queen getMovedPiece(final Alliance alliance, final int to) {
+        return PieceUtils.INSTANCE.getQueen(alliance, to, true);
     }
 
     @Override

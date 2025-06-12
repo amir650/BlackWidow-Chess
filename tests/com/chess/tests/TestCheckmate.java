@@ -840,80 +840,30 @@ public class TestCheckmate {
 
     @Test
     public void testAnastasiaMate() {
-
-        final Builder builder = new Builder();
-
-        // Black Layout
-        builder.setPiece(new Rook(Alliance.BLACK, 0));
-        builder.setPiece(new Rook(Alliance.BLACK, 5));
-        builder.setPiece(new Pawn(Alliance.BLACK, 8));
-        builder.setPiece(new Pawn(Alliance.BLACK, 9));
-        builder.setPiece(new Pawn(Alliance.BLACK, 10));
-        builder.setPiece(new Pawn(Alliance.BLACK, 13));
-        builder.setPiece(new Pawn(Alliance.BLACK, 14));
-        builder.setPiece(new King(Alliance.BLACK, 15, false, false));
-        // White Layout
-        builder.setPiece(new Knight(Alliance.WHITE, 12));
-        builder.setPiece(new Rook(Alliance.WHITE, 27));
-        builder.setPiece(new Pawn(Alliance.WHITE, 41));
-        builder.setPiece(new Pawn(Alliance.WHITE, 48));
-        builder.setPiece(new Pawn(Alliance.WHITE, 53));
-        builder.setPiece(new Pawn(Alliance.WHITE, 54));
-        builder.setPiece(new Pawn(Alliance.WHITE, 55));
-        builder.setPiece(new King(Alliance.WHITE, 62, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("r4r2/ppp1Nppk/8/3R4/8/1P6/P4PPP/6K1 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("d5"),
                                 BoardUtils.INSTANCE.getCoordinateAtPosition("h5")));
-
         assertTrue(t1.getMoveStatus().isDone());
         assertTrue(t1.getToBoard().currentPlayer().isInCheckMate());
     }
 
     @Test
     public void testTwoBishopMate() {
-
-        final Builder builder = new Builder();
-
-        builder.setPiece(new King(Alliance.BLACK, 7, false, false));
-        builder.setPiece(new Pawn(Alliance.BLACK, 8));
-        builder.setPiece(new Pawn(Alliance.BLACK, 10));
-        builder.setPiece(new Pawn(Alliance.BLACK, 15));
-        builder.setPiece(new Pawn(Alliance.BLACK, 17));
-        // White Layout
-        builder.setPiece(new Bishop(Alliance.WHITE, 40));
-        builder.setPiece(new Bishop(Alliance.WHITE, 48));
-        builder.setPiece(new King(Alliance.WHITE, 53, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("7k/p1p4p/1p6/8/8/B7/B4K2/8 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("a3"),
                                 BoardUtils.INSTANCE.getCoordinateAtPosition("b2")));
-
         assertTrue(t1.getMoveStatus().isDone());
         assertTrue(t1.getToBoard().currentPlayer().isInCheckMate());
     }
 
     @Test
     public void testQueenRookMate() {
-
-        final Builder builder = new Builder();
-
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 5, false, false));
-        // White Layout
-        builder.setPiece(new Rook(Alliance.WHITE, 9));
-        builder.setPiece(new Queen(Alliance.WHITE, 16));
-        builder.setPiece(new King(Alliance.WHITE, 59, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("5k2/1R6/Q7/8/8/8/8/3K4 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("a6"),
                                 BoardUtils.INSTANCE.getCoordinateAtPosition("a8")));
@@ -925,53 +875,25 @@ public class TestCheckmate {
 
     @Test
     public void testQueenKnightMate() {
-
-        final Builder builder = new Builder();
-
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        // White Layout
-        builder.setPiece(new Queen(Alliance.WHITE, 15));
-        builder.setPiece(new Knight(Alliance.WHITE, 29));
-        builder.setPiece(new Pawn(Alliance.WHITE, 55));
-        builder.setPiece(new King(Alliance.WHITE, 60, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.WHITE);
-
-        final Board board = builder.build();
+        final Board board = FenUtilities.createGameFromFEN("4k3/7Q/8/5N2/8/8/7P/4K3 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("h7"),
                                 BoardUtils.INSTANCE.getCoordinateAtPosition("e7")));
 
         assertTrue(t1.getMoveStatus().isDone());
         assertTrue(t1.getToBoard().currentPlayer().isInCheckMate());
-
     }
 
     @Test
     public void testBackRankMate() {
-
-        final Builder builder = new Builder();
-        // Black Layout
-        builder.setPiece(new King(Alliance.BLACK, 4, false, false));
-        builder.setPiece(new Rook(Alliance.BLACK, 18));
-        // White Layout
-        builder.setPiece(new Pawn(Alliance.WHITE, 53));
-        builder.setPiece(new Pawn(Alliance.WHITE, 54));
-        builder.setPiece(new Pawn(Alliance.WHITE, 55));
-        builder.setPiece(new King(Alliance.WHITE, 62, false, false));
-        // Set the current player
-        builder.setMoveMaker(Alliance.BLACK);
-
-        final Board board = builder.build();
-
+        final Board board = FenUtilities.createGameFromFEN("4k3/8/2r5/8/8/8/5PPP/6K1 b - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("c6"),
                                 BoardUtils.INSTANCE.getCoordinateAtPosition("c1")));
-
         assertTrue(t1.getMoveStatus().isDone());
         assertTrue(t1.getToBoard().currentPlayer().isInCheckMate());
-
     }
 
     @Test

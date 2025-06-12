@@ -47,10 +47,11 @@ public abstract class Piece {
 
     public abstract int locationBonus();
 
-    public abstract Piece movePiece(Move move);
+    public abstract Piece getMovedPiece(Move move);
+
+    public abstract Piece getMovedPiece(Alliance alliance, int to);
 
     public abstract Collection<Move> calculateLegalMoves(final Board board);
-
 
     @Override
     public boolean equals(final Object other) {
