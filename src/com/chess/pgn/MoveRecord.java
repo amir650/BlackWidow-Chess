@@ -2,10 +2,10 @@ package com.chess.pgn;
 
 public class MoveRecord {
     private int moveNumber;
-    private String player;     // "White" or "Black"
-    private String san;        // Standard Algebraic Notation
-    private String fenBefore;  // FEN before this move
-    private String fenAfter;   // FEN after this move
+    private String player;
+    private String san; // Standard Algebraic Notation
+    private String fenBefore;
+    private String fenAfter;
 
     public MoveRecord(int moveNumber, String player, String san, String fenBefore, String fenAfter) {
         this.moveNumber = moveNumber;

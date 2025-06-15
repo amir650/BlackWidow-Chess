@@ -59,9 +59,7 @@ public final class KingSafetyAnalyzer {
 //        final int kingSquare = player.getPlayerKing().getPiecePosition();
 //        final boolean isWhite = player.isWhite();
 //        final int kingFile = kingSquare % 8;
-//
 //        boolean ksc = player.getPlayerKing().isCastled()
-//
 //        // Castling detection (assumes king on g1/c1/g8/c8)
 //        boolean kingsideCastled = (isWhite && kingSquare == 6) || (!isWhite && kingSquare == 62);
 //        boolean queensideCastled = (isWhite && kingSquare == 2) || (!isWhite && kingSquare == 58);

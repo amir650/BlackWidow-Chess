@@ -12,7 +12,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     private static final int CHECK_MATE_BONUS = 10000;
     private static final int CHECK_BONUS = 45;
     private static final int CASTLE_BONUS = 25;
-    private static final int MOBILITY_MULTIPLIER = 5;
+    private static final int MOBILITY_MULTIPLIER = 1;
     private static final int ATTACK_MULTIPLIER = 1;
     private static final int TWO_BISHOPS_BONUS = 25;
     private static final int CRAMPING_MULTIPLIER = 2;
@@ -31,18 +31,20 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     }
 
     private static int score(final Player player, final int depth) {
-        return mobility(player) +
-               cramping(player) +
-               check_or_checkmate(player, depth) +
-               attacks(player) +
-               castle(player) +
-               pieceEvaluations(player) +
-               pawnStructure(player) +
-               kingSafety(player);
+        final int score =  mobility(player) +
+                           cramping(player) +
+                           check_or_checkmate(player, depth) +
+                           attacks(player) +
+                           castle(player) +
+                           pieceEvaluations(player) +
+                           pawnStructure(player) +
+                           kingSafety(player);
+
+        return score;
     }
 
     private static int mobility(final Player player) {
-        return MOBILITY_MULTIPLIER * player.getLegalMoves().size();
+        return MOBILITY_MULTIPLIER * (player.getLegalMoves().size() - player.getOpponent().getLegalMoves().size());
     }
 
     private static int cramping(final Player player) {
@@ -73,8 +75,9 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
         int score = 0;
         for (final Move move : player.getLegalMoves()) {
             if (move.isAttack()) {
-                Piece mover = move.getMovedPiece();
-                Piece victim = move.getAttackedPiece();
+                final Piece mover = move.getMovedPiece();
+                final Piece victim = move.getAttackedPiece();
+
                 if (mover.getPieceValue() <= victim.getPieceValue()) {
                     score++;
                 }
@@ -86,8 +89,8 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     private static int pieceEvaluations(final Player player) {
         int score = 0;
         int bishops = 0;
-        for (int index : player.getActivePieces()) {
-            Piece p = player.getBoard().getPiece(index);
+        for (final int index : player.getActivePieces()) {
+            final Piece p = player.getBoard().getPiece(index);
             score += p.getPieceValue() + p.locationBonus();
             if (p.getPieceType() == BISHOP) bishops++;
         }
@@ -100,11 +103,11 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
 
     private static int kingSafety(final Player player) {
         int f1 = KingSafetyAnalyzer.get().calculateKingTropism(player);
-        //int f2 = KingSafetyAnalyzer.get().gptKingSafety(player);
+        int f2 = KingSafetyAnalyzer.get().gptKingSafety(player);
         //int f3 = KingSafetyAnalyzer.get().pawnShieldPenalty(player);
         //return 0;
-        //return f1 + f2;
-        return f1;
+        return f1 + f2;
+        //return f1;
     }
 
     public String evaluationDetails(final Board board, final int depth) {

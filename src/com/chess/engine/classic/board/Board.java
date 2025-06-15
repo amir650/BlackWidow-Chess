@@ -173,7 +173,7 @@ public final class Board {
         builder.setPiece(PieceUtils.INSTANCE.getRook(Alliance.WHITE, 63, false));
         //white to move
         builder.setMoveMaker(Alliance.WHITE);
-        //build the board
+
         return builder.build();
     }
 

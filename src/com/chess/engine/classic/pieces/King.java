@@ -46,7 +46,7 @@ public final class King extends Piece {
             int numLegalOffsets = 0;
             for (int offset : CANDIDATE_MOVE_COORDINATES) {
                 if (isFirstColumnExclusion(position, offset) ||
-                        isEighthColumnExclusion(position, offset)) {
+                    isEighthColumnExclusion(position, offset)) {
                     continue;
                 }
                 final int destination = position + offset;

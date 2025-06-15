@@ -7,6 +7,7 @@ import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class TestPawnStructure {
@@ -99,6 +100,21 @@ public class TestPawnStructure {
         assertEquals(PawnStructureAnalyzer.get().doubledPawnPenalty(board.blackPlayer()), PawnStructureAnalyzer.DOUBLED_PAWN_PENALTY * 3);
         assertEquals(PawnStructureAnalyzer.get().isolatedPawnPenalty(board.whitePlayer()), PawnStructureAnalyzer.ISOLATED_PAWN_PENALTY * 3);
         assertEquals(PawnStructureAnalyzer.get().isolatedPawnPenalty(board.blackPlayer()), PawnStructureAnalyzer.ISOLATED_PAWN_PENALTY * 3);
+    }
+
+    @Test
+    public void testPassedPawnByExample1() {
+        // Valid position:
+        // - White pawn on d4 (passed)
+        // - Black pawn on c2 (not blocking)
+        // - Kings present and legal side to move
+        final Board board = FenUtilities.createGameFromFEN("8/8/8/8/3P4/8/2p5/4k2K w - - 0 1");
+
+        final int whiteScore = PawnStructureAnalyzer.get().pawnStructureScore(board.whitePlayer());
+        final int blackScore = PawnStructureAnalyzer.get().pawnStructureScore(board.blackPlayer());
+
+        assertTrue("White should receive a passed pawn bonus", whiteScore > 0);
+        assertEquals("Black should not receive a passed pawn bonus", 0, blackScore);
     }
 
 

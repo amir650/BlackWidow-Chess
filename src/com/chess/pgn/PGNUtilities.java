@@ -99,16 +99,17 @@ public class PGNUtilities {
         persistence.persistGames(games);
         System.out.println("\tDone persisting batch.");
         games.clear();
-        // Prompt user if they want to continue or exit early
-        System.out.print("Continue importing? (Y to continue, N to stop): ");
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine().trim().toUpperCase();
-        if (!input.equals("Y")) {
-            System.out.println("Import stopped early by user.");
-            System.out.printf("Finished (early) building book from PGN: %s | Total games: %d, Valid: %d\n", fileName, count, validCount);
-            return false;
-        }
         return true;
+//        // Prompt user if they want to continue or exit early
+//        System.out.print("Continue importing? (Y to continue, N to stop): ");
+//        Scanner scanner = new Scanner(System.in);
+//        String input = scanner.nextLine().trim().toUpperCase();
+//        if (!input.equals("Y")) {
+//            System.out.println("Import stopped early by user.");
+//            System.out.printf("Finished (early) building book from PGN: %s | Total games: %d, Valid: %d\n", fileName, count, validCount);
+//            return false;
+//        }
+//        return true;
     }
 
 

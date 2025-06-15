@@ -46,7 +46,7 @@ public final class BlackPlayer extends Player {
                         kingSideRook.getPieceType() == ROOK) {
                     if (!BoardUtils.isKingPawnTrap(this.board, this.playerKing, 12)) {
                         kingCastles.add(
-                                new KingSideCastleMove(this.board, this.playerKing, 6, (Rook) kingSideRook, kingSideRook.getPiecePosition(), 5));
+                                new KingSideCastleMove(this.board, this.playerKing, 6, (Rook) kingSideRook, 5));
 
                     }
                 }
@@ -61,7 +61,7 @@ public final class BlackPlayer extends Player {
                         queenSideRook.getPieceType() == ROOK) {
                     if (!BoardUtils.isKingPawnTrap(this.board, this.playerKing, 12)) {
                         kingCastles.add(
-                                new QueenSideCastleMove(this.board, this.playerKing, 2, (Rook) queenSideRook, queenSideRook.getPiecePosition(), 3));
+                                new QueenSideCastleMove(this.board, this.playerKing, 2, (Rook) queenSideRook, 3));
                     }
                 }
             }

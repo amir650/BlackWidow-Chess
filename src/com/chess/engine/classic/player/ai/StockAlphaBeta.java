@@ -28,8 +28,8 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
     };
 
     private static final Comparator<Move> EXPENSIVE_MOVE_COMPARATOR = (m1, m2) -> {
-        int score1 = scoreMove(m1);
-        int score2 = scoreMove(m2);
+        final int score1 = scoreMove(m1);
+        final int score2 = scoreMove(m2);
         return Integer.compare(score2, score1);
     };
 
@@ -105,10 +105,10 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
                     }
                 }
                 final String quiescenceInfo = " " + score(currentPlayer, highestSeenValue, lowestSeenValue) + " q: " + this.quiescenceCount;
-                s = "\t" + toString() + "(" + this.searchDepth + "), m: (" + moveCounter + "/" + numMoves + ") " + move + ", best:  " + bestMove +
+                s = "\t" + this + "(" + this.searchDepth + "), m: (" + moveCounter + "/" + numMoves + ") " + move + ", best:  " + bestMove +
                         quiescenceInfo + ", t: " + calculateTimeTaken(candidateMoveStartTime, System.nanoTime());
             } else {
-                s = "\t" + toString() + "(" + this.searchDepth + ")" + ", m: (" + moveCounter + "/" + numMoves + ") " + move + " is illegal! best: " + bestMove;
+                s = "\t" + this + "(" + this.searchDepth + ")" + ", m: (" + moveCounter + "/" + numMoves + ") " + move + " is illegal! best: " + bestMove;
             }
             System.out.println(s);
             setChanged();
@@ -140,7 +140,7 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 final Board toBoard = moveTransition.getToBoard();
-                currentHighest = Math.max(currentHighest, min(toBoard, calculateQuiescenceDepth(toBoard, depth), currentHighest, lowest));
+                currentHighest = Math.max(currentHighest, min(toBoard, depth - 1, currentHighest, lowest));
                 if (currentHighest >= lowest) {
                     return lowest;
                 }
@@ -159,7 +159,7 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 final Board toBoard = moveTransition.getToBoard();
-                currentLowest = Math.min(currentLowest, max(toBoard, calculateQuiescenceDepth(toBoard, depth), highest, currentLowest));
+                currentLowest = Math.min(currentLowest, max(toBoard, depth - 1, highest, currentLowest));
                 if (currentLowest <= highest) {
                     return highest;
                 }

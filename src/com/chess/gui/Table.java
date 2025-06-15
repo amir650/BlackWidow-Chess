@@ -207,11 +207,20 @@ public final class Table extends Observable {
         optionsMenu.setMnemonic(KeyEvent.VK_O);
 
         final JMenuItem resetMenuItem = new JMenuItem("New Game", KeyEvent.VK_P);
-        resetMenuItem.addActionListener(e -> undoAllMoves());
+        resetMenuItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                undoAllMoves();
+                Table.get().getGameFrame().repaint();
+            }
+        });
         optionsMenu.add(resetMenuItem);
 
         final JMenuItem evaluateBoardMenuItem = new JMenuItem("Evaluate Board", KeyEvent.VK_E);
-        evaluateBoardMenuItem.addActionListener(e -> System.out.println(StandardBoardEvaluator.get().evaluationDetails(chessBoard, gameSetup.getSearchDepth())));
+        evaluateBoardMenuItem.addActionListener(e -> {
+            System.out.println(StandardBoardEvaluator.get().evaluationDetails(chessBoard, gameSetup.getSearchDepth()));
+            System.out.println(FenUtilities.createFENFromGame(chessBoard));
+        });
         optionsMenu.add(evaluateBoardMenuItem);
 
         final JMenuItem escapeAnalysis = new JMenuItem("Escape Analysis Score", KeyEvent.VK_S);

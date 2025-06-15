@@ -6,6 +6,7 @@ import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.player.ai.MiniMax;
 import com.chess.engine.classic.player.ai.MoveStrategy;
+import com.chess.engine.classic.player.ai.StockAlphaBeta;
 import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
@@ -139,6 +140,26 @@ public class TestMiniMax {
         minMax.execute(board);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         assertEquals(numBoardsEvaluated, 191);
+    }
+
+    @Test
+    public void testMissedAttackGold() {
+        final Board board = FenUtilities.createGameFromFEN("r1bq1rk1/pppp1ppp/2nb1n2/1B2p3/3PP3/5N2/PPP2PPP/RNBQ1RK1 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
+        final MoveStrategy minMax = new MiniMax(6);
+        minMax.execute(board);
+        // final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
+        //assertEquals(numBoardsEvaluated, 191);
+    }
+
+    @Test
+    public void testMissedAttackGold2() {
+        final Board board = FenUtilities.createGameFromFEN("r1bq1rk1/pppp1ppp/2nb1n2/1B2p3/3PP3/5N2/PPP2PPP/RNBQ1RK1 w - - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
+        final MoveStrategy minMax = new StockAlphaBeta(6);
+        minMax.execute(board);
+        // final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
+        //assertEquals(numBoardsEvaluated, 191);
     }
 
 }
