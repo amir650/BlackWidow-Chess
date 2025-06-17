@@ -13,12 +13,11 @@ public class MySqlGamePersistence {
     private final Connection dbConnection;
 
     public MySqlGamePersistence() {
-        this.dbConnection = createDBConnection();
+        this.dbConnection = connectToSQl();
         createGameTable();
         createMovesTable();
-        //createIndex("outcome", "OutcomeIndex");
-        //createIndex("moves", "MoveIndex");
-        // Optionally: createOutcomeIndex(); createMovesIndex();
+        createIndex("moves", "idx_moves_game_id_move_number", "game_id", "move_number");
+        createIndex("moves", "idx_moves_fen_before", "fen_before");
     }
 
     private static Connection createDBConnection() {
@@ -32,16 +31,25 @@ public class MySqlGamePersistence {
         }
     }
 
+    private static Connection connectToSQl() {
+        String url = "jdbc:sqlite:mydb.db";
+        try {
+            return java.sql.DriverManager.getConnection(url);
+        } catch (java.sql.SQLException e) {
+            throw new RuntimeException("Unable to connect to database!", e);
+        }
+    }
+
     private void createGameTable() {
         String sql = "CREATE TABLE IF NOT EXISTS games (" +
-                "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
-                "event VARCHAR(255)," +
-                "site VARCHAR(255)," +
-                "date VARCHAR(50)," +
-                "round VARCHAR(50)," +
-                "white VARCHAR(100)," +
-                "black VARCHAR(100)," +
-                "result VARCHAR(20))";
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "event TEXT," +
+                "site TEXT," +
+                "date TEXT," +
+                "round TEXT," +
+                "white TEXT," +
+                "black TEXT," +
+                "result TEXT)";
         try (PreparedStatement ps = dbConnection.prepareStatement(sql)) {
             ps.execute();
         } catch (Exception e) {
@@ -51,13 +59,13 @@ public class MySqlGamePersistence {
 
     private void createMovesTable() {
         String sql = "CREATE TABLE IF NOT EXISTS moves (" +
-                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                "game_id BIGINT NOT NULL, " +
-                "move_number INT NOT NULL, " +
-                "player VARCHAR(10) NOT NULL, " +
-                "san VARCHAR(20) NOT NULL, " +
-                "fen_before VARCHAR(100) NOT NULL, " +
-                "fen_after VARCHAR(100) NOT NULL, " +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "game_id INTEGER NOT NULL, " +
+                "move_number INTEGER NOT NULL, " +
+                "player TEXT NOT NULL, " +
+                "san TEXT NOT NULL, " +
+                "fen_before TEXT NOT NULL, " +
+                "fen_after TEXT NOT NULL, " +
                 "FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE" +
                 ")";
         try (PreparedStatement ps = dbConnection.prepareStatement(sql)) {
@@ -67,7 +75,23 @@ public class MySqlGamePersistence {
         }
     }
 
-    private void createIndex(String column, String indexName) {
+    private void createIndex(final String tableName,
+                             final String indexName,
+                             final String... columns) {
+        if (columns == null || columns.length == 0) {
+            throw new IllegalArgumentException("At least one column must be specified for indexing.");
+        }
+        final String columnList = String.join(",", columns);
+        final String sql = "CREATE INDEX IF NOT EXISTS " + indexName + " ON " + tableName + "(" + columnList + ")";
+        try (final PreparedStatement ps = dbConnection.prepareStatement(sql)) {
+            ps.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createIndex(final String column,
+                             final String indexName) {
         String sql = "CREATE INDEX IF NOT EXISTS " + indexName + " ON games(" + column + ")";
         try (PreparedStatement ps = dbConnection.prepareStatement(sql)) {
             ps.execute();
@@ -76,7 +100,7 @@ public class MySqlGamePersistence {
         }
     }
 
-    public void persistGames(List<Game> games) {
+    public void persistGames(final List<Game> games) {
         try {
             this.dbConnection.setAutoCommit(false); // Begin transaction
             for (final Game game : games) {
@@ -91,31 +115,34 @@ public class MySqlGamePersistence {
     }
 
     public Move getNextBestMove(Board board, Player player) {
-        String fen = FenUtilities.createFENFromGame(board);
-        String sql =
-                "SELECT m.san, COUNT(*) AS times_played, " +
-                        "(SUM(CASE WHEN (g.result = '1-0' AND m.player = 'White') OR " +
-                        "               (g.result = '0-1' AND m.player = 'Black') THEN 1 ELSE 0 END) * 1.0 / COUNT(*)) AS win_rate " +
-                        "FROM moves m " +
-                        "JOIN games g ON m.game_id = g.id " +
-                        "WHERE m.fen_before = ? " + // <--- parameter marker
-                        "GROUP BY m.san " +
-                        "HAVING COUNT(*) > 0 " +
-                        "ORDER BY win_rate DESC, times_played DESC " +
-                        "LIMIT 1";
-        try (PreparedStatement ps = dbConnection.prepareStatement(sql)) {
+        final String fen = FenUtilities.createFENFromGame(board);
+        final String sql = "SELECT san, COUNT(*) AS times_played " +
+                "FROM moves " +
+                "WHERE fen_before = ? " +
+                "GROUP BY san " +
+                "HAVING times_played > 20 " +
+                "ORDER BY times_played DESC " +
+                "LIMIT 1";
+
+        try (final PreparedStatement ps = dbConnection.prepareStatement(sql)) {
             ps.setString(1, fen);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    String bestSAN = rs.getString("san");
-                    for (Move move : player.getLegalMoves()) {
-                        if (move.toString().equals(bestSAN)) {
+                    final String bestSAN = rs.getString("san");
+                    for (final Move move : player.getLegalMoves()) {
+                        // Use your engine's SAN function; fallback to toString if you have no better option
+                        String moveSan = move.toString();
+                        try {
+                            // If your Move has a toSan(Board) method, use it!
+                            moveSan = move.toString();
+                        } catch (Exception ignored) {}
+                        if (moveSan.equals(bestSAN)) {
                             return move;
                         }
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
         return Move.MoveFactory.getNullMove();
