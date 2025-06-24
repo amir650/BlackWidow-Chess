@@ -86,7 +86,7 @@ public final class Board {
 
     public Collection<Move> getAllLegalMoves() {
         return Stream.concat(this.whitePlayer.getLegalMoves().stream(),
-                this.blackPlayer.getLegalMoves().stream()).collect(Collectors.toList());
+                             this.blackPlayer.getLegalMoves().stream()).collect(Collectors.toList());
     }
 
     private static King establishKing(final int[] activeIndexes,

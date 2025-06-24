@@ -114,45 +114,11 @@ public final class KingSafetyAnalyzer {
     }
 
     private static int getFile(final int coordinate) {
-        if(BoardUtils.INSTANCE.FIRST_COLUMN.get(coordinate)) {
-            return 1;
-        } else if(BoardUtils.INSTANCE.SECOND_COLUMN.get(coordinate)) {
-            return 2;
-        } else if(BoardUtils.INSTANCE.THIRD_COLUMN.get(coordinate)) {
-            return 3;
-        } else if(BoardUtils.INSTANCE.FOURTH_COLUMN.get(coordinate)) {
-            return 4;
-        } else if(BoardUtils.INSTANCE.FIFTH_COLUMN.get(coordinate)) {
-            return 5;
-        } else if(BoardUtils.INSTANCE.SIXTH_COLUMN.get(coordinate)) {
-            return 6;
-        } else if(BoardUtils.INSTANCE.SEVENTH_COLUMN.get(coordinate)) {
-            return 7;
-        } else if(BoardUtils.INSTANCE.EIGHTH_COLUMN.get(coordinate)) {
-            return 8;
-        }
-        throw new RuntimeException("should not reach here!");
+        return coordinate % 8;
     }
 
     private static int getRank(final int coordinate) {
-        if(BoardUtils.INSTANCE.FIRST_ROW.get(coordinate)) {
-            return 1;
-        } else if(BoardUtils.INSTANCE.SECOND_ROW.get(coordinate)) {
-            return 2;
-        } else if(BoardUtils.INSTANCE.THIRD_ROW.get(coordinate)) {
-            return 3;
-        } else if(BoardUtils.INSTANCE.FOURTH_ROW.get(coordinate)) {
-            return 4;
-        } else if(BoardUtils.INSTANCE.FIFTH_ROW.get(coordinate)) {
-            return 5;
-        } else if(BoardUtils.INSTANCE.SIXTH_ROW.get(coordinate)) {
-            return 6;
-        } else if(BoardUtils.INSTANCE.SEVENTH_ROW.get(coordinate)) {
-            return 7;
-        } else if(BoardUtils.INSTANCE.EIGHTH_ROW.get(coordinate)) {
-            return 8;
-        }
-        throw new RuntimeException("should not reach here!");
+        return coordinate / 8;
     }
 
     private static class KingDistance {
@@ -167,7 +133,7 @@ public final class KingSafetyAnalyzer {
         }
 
         public int tropismScore() {
-            return (this.enemyPiece.getPieceValue() / 100) * this.distance;
+            return -(this.enemyPiece.getPieceValue() / 100) * (8 - this.distance);
         }
 
     }

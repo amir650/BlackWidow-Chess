@@ -77,6 +77,7 @@ public final class Table extends Observable {
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
         center(this.gameFrame);
         this.gameFrame.setVisible(true);
+        this.gameFrame.setResizable(false);
     }
 
     public static Table get() {

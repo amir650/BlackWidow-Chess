@@ -2,15 +2,14 @@ package com.chess.engine.classic.player;
 
 import com.chess.engine.classic.Alliance;
 import com.chess.engine.classic.board.Board;
+import com.chess.engine.classic.board.BoardUtils;
 import com.chess.engine.classic.board.Move;
 import com.chess.engine.classic.board.Move.MoveStatus;
 import com.chess.engine.classic.board.MoveTransition;
 import com.chess.engine.classic.pieces.King;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 
 public abstract class Player {
@@ -27,7 +26,7 @@ public abstract class Player {
            final Collection<Move> opponentLegals) {
         this.board = board;
         this.playerKing = playerKing;
-        this.isInCheck = !calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegals).isEmpty();
+        this.isInCheck = !BoardUtils.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegals).isEmpty();
         playerLegals.addAll(calculateKingCastles(playerLegals, opponentLegals));
         this.legalMoves = Collections.unmodifiableCollection(playerLegals);
     }
@@ -41,11 +40,11 @@ public abstract class Player {
     }
 
     public boolean isInCheckMate() {
-       return this.isInCheck && !hasEscapeMoves();
+       return this.isInCheck && isTrapped();
     }
 
     public boolean isInStaleMate() {
-        return !this.isInCheck && !hasEscapeMoves();
+        return !this.isInCheck && isTrapped();
     }
 
     public boolean isCastled() {
@@ -64,27 +63,16 @@ public abstract class Player {
         return this.playerKing;
     }
 
-    private boolean hasEscapeMoves() {
+    private boolean isTrapped() {
         for (final Move move : this.legalMoves) {
             if (makeMove(move).getMoveStatus().isDone()) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
     public Collection<Move> getLegalMoves() {
         return this.legalMoves;
-    }
-
-    static Collection<Move> calculateAttacksOnTile(final int tile,
-                                                   final Collection<Move> moves) {
-        final List<Move> attackMoves = new ArrayList<>();
-        for (final Move move : moves) {
-            if (move.getDestinationCoordinate() == tile) {
-                attackMoves.add(move);
-            }
-        }
-        return Collections.unmodifiableList(attackMoves);
     }
 
     public MoveTransition makeMove(final Move move) {

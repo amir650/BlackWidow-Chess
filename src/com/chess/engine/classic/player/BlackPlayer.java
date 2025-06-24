@@ -41,8 +41,8 @@ public final class BlackPlayer extends Player {
             if (this.board.getPiece(5) == null && this.board.getPiece(6) == null) {
                 final Piece kingSideRook = this.board.getPiece(7);
                 if (kingSideRook != null && kingSideRook.isFirstMove() &&
-                        Player.calculateAttacksOnTile(5, opponentLegals).isEmpty() &&
-                        Player.calculateAttacksOnTile(6, opponentLegals).isEmpty() &&
+                        BoardUtils.calculateAttacksOnTile(5, opponentLegals).isEmpty() &&
+                        BoardUtils.calculateAttacksOnTile(6, opponentLegals).isEmpty() &&
                         kingSideRook.getPieceType() == ROOK) {
                     if (!BoardUtils.isKingPawnTrap(this.board, this.playerKing, 12)) {
                         kingCastles.add(
@@ -56,8 +56,8 @@ public final class BlackPlayer extends Player {
                     this.board.getPiece(3) == null) {
                 final Piece queenSideRook = this.board.getPiece(0);
                 if (queenSideRook != null && queenSideRook.isFirstMove() &&
-                        Player.calculateAttacksOnTile(2, opponentLegals).isEmpty() &&
-                        Player.calculateAttacksOnTile(3, opponentLegals).isEmpty() &&
+                        BoardUtils.calculateAttacksOnTile(2, opponentLegals).isEmpty() &&
+                        BoardUtils.calculateAttacksOnTile(3, opponentLegals).isEmpty() &&
                         queenSideRook.getPieceType() == ROOK) {
                     if (!BoardUtils.isKingPawnTrap(this.board, this.playerKing, 12)) {
                         kingCastles.add(

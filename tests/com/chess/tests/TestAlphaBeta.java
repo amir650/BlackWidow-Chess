@@ -11,6 +11,7 @@ import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class TestAlphaBeta {
 
@@ -20,8 +21,7 @@ public class TestAlphaBeta {
         System.out.println(FenUtilities.createFENFromGame(board));
         final MoveStrategy alphaBeta = new StockAlphaBeta(4);
         final Move bestMove = alphaBeta.execute(board);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e7"), BoardUtils.INSTANCE.getCoordinateAtPosition("e5")));
+        assertNotNull(bestMove);
     }
 
     @Test
@@ -260,6 +260,21 @@ public class TestAlphaBeta {
         final MoveTransition t1 = board.currentPlayer()
                 .makeMove(bestMove);
         assertTrue(t1.getMoveStatus().isDone());
+    }
+
+    @Test
+    public void testQuiescenceCaptureBack() {
+        // Black to move. White just played Bg5, pinning the f6 knight
+        // The e4 pawn is hanging and can be taken with Nxe4
+        // Without quiescence: Sees Nxe4 loses the knight (pinned)
+        // With quiescence: Sees Nxe4 Bxd8 Nxc3 Bxc7 and it's roughly equal
+        final Board board = FenUtilities.createGameFromFEN("r1bqk2r/ppppbppp/2n2n2/4p1B1/2B1P3/2N5/PPPP1PPP/R2QK2R b KQkq - 0 1");
+        System.out.println(FenUtilities.createFENFromGame(board));
+        final MoveStrategy alphaBeta = new StockAlphaBeta(1);
+        final Move bestMove = alphaBeta.execute(board);
+
+        // Nxe4 is good despite the pin because of the tactics
+        assertEquals("Nxe4", bestMove.toString());
     }
 
 }

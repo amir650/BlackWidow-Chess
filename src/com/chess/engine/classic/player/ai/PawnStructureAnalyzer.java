@@ -34,10 +34,10 @@ public final class PawnStructureAnalyzer {
 
     public int pawnStructureScore(final Player player) {
 
-        final boolean[] occupancyTable = createOccupancyTable(player);
-        final boolean[] enemyOccupancyTable = createOccupancyTable(player.getOpponent());
+        //final boolean[] occupancyTable = createOccupancyTable(player);
+        //final boolean[] enemyOccupancyTable = createOccupancyTable(player.getOpponent());
         final int[] playerPawns = createPawnColumnTable(player);
-        final int[] enemyPawns = createPawnColumnTable(player.getOpponent());
+        //final int[] enemyPawns = createPawnColumnTable(player.getOpponent());
 
         return calculatePawnColumnStack(playerPawns) +
                calculateIsolatedPawnPenalty(playerPawns); // +

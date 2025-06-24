@@ -51,8 +51,9 @@ public final class MiniMax implements MoveStrategy {
                 final FreqTableRow row = new FreqTableRow(move);
                 this.freqTable[this.freqTableIndex] = row;
                 currentValue = board.currentPlayer().getAlliance().isWhite() ?
-                                min(moveTransition.getToBoard(), this.searchDepth - 1) :
-                                max(moveTransition.getToBoard(), this.searchDepth - 1);
+                                max(moveTransition.getToBoard(), this.searchDepth - 1) :
+                                min(moveTransition.getToBoard(), this.searchDepth - 1);
+
                 System.out.println("\t" + toString() + " analyzing move (" +moveCounter + "/" +numMoves+ ") " + move +
                                    " scores " + currentValue + " " +this.freqTable[this.freqTableIndex]);
                 this.freqTableIndex++;

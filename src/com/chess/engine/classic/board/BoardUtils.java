@@ -54,6 +54,17 @@ public enum  BoardUtils {
         return Collections.unmodifiableList(Arrays.asList(row));
     }
 
+    public static Collection<Move> calculateAttacksOnTile(final int tile,
+                                                          final Collection<Move> moves) {
+        final List<Move> attackMoves = new ArrayList<>();
+        for (final Move move : moves) {
+            if (move.getDestinationCoordinate() == tile) {
+                attackMoves.add(move);
+            }
+        }
+        return Collections.unmodifiableList(attackMoves);
+    }
+
     private Map<String, Integer> initializePositionToCoordinateMap() {
         final Map<String, Integer> positionToCoordinate = new HashMap<>();
         for (int i = START_TILE_INDEX; i < NUM_TILES; i++) {
@@ -193,15 +204,15 @@ public enum  BoardUtils {
         StringBuilder sb = new StringBuilder();
         if (days > 0) sb.append(days).append(days == 1 ? " day" : " days");
         if (hours > 0) {
-            if (sb.length() > 0) sb.append(", ");
+            if (!sb.isEmpty()) sb.append(", ");
             sb.append(hours).append(hours == 1 ? " hour" : " hours");
         }
         if (minutes > 0) {
-            if (sb.length() > 0) sb.append(", ");
+            if (!sb.isEmpty()) sb.append(", ");
             sb.append(minutes).append(minutes == 1 ? " minute" : " minutes");
         }
-        if (seconds > 0 || sb.length() == 0) {
-            if (sb.length() > 0) sb.append(", ");
+        if (seconds > 0 || sb.isEmpty()) {
+            if (!sb.isEmpty()) sb.append(", ");
             sb.append(seconds).append(seconds == 1 ? " second" : " seconds");
         }
         return sb.toString();

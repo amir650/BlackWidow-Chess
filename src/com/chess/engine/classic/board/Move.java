@@ -13,7 +13,6 @@ public abstract class Move {
     protected final Board board;
     protected final int destinationCoordinate;
     protected final Piece movedPiece;
-
     protected final boolean isFirstMove;
 
     private Move(final Board board,
@@ -103,23 +102,23 @@ public abstract class Move {
     }
 
     String disambiguation() {
-        Piece movedPiece = this.getMovedPiece();
-        String from = BoardUtils.INSTANCE.getPositionAtCoordinate(this.getCurrentCoordinate());
-        char fromFile = from.charAt(0);
-        char fromRank = from.charAt(1);
+        final Piece movedPiece = this.getMovedPiece();
+        final String from = BoardUtils.INSTANCE.getPositionAtCoordinate(this.getCurrentCoordinate());
+        final char fromFile = from.charAt(0);
+        final char fromRank = from.charAt(1);
 
         boolean fileNeeded = false;
         boolean rankNeeded = false;
 
-        for (Move other : board.currentPlayer().getLegalMoves()) {
-            if (other == this) continue;
+        for (final Move other : board.currentPlayer().getLegalMoves()) {
+            if (other == this) {
+                continue;
+            }
             if (other.getMovedPiece().getPieceType() == movedPiece.getPieceType() &&
-                    other.getDestinationCoordinate() == this.getDestinationCoordinate()) {
-
-                String otherFrom = BoardUtils.INSTANCE.getPositionAtCoordinate(other.getCurrentCoordinate());
-                char otherFile = otherFrom.charAt(0);
-                char otherRank = otherFrom.charAt(1);
-
+                other.getDestinationCoordinate() == this.getDestinationCoordinate()) {
+                final String otherFrom = BoardUtils.INSTANCE.getPositionAtCoordinate(other.getCurrentCoordinate());
+                final char otherFile = otherFrom.charAt(0);
+                final char otherRank = otherFrom.charAt(1);
                 if (fromFile != otherFile) {
                     fileNeeded = true;
                 }
@@ -129,18 +128,11 @@ public abstract class Move {
             }
         }
 
-        if (fileNeeded) return "" + fromFile;
-        if (rankNeeded) return "" + fromRank;
-        return "";
-    }
-
-
-    String disambiguationFile() {
-        for(final Move move : this.board.currentPlayer().getLegalMoves()) {
-            if(move.getDestinationCoordinate() == this.destinationCoordinate && !this.equals(move) &&
-                    this.movedPiece.getPieceType().equals(move.getMovedPiece().getPieceType())) {
-                return BoardUtils.INSTANCE.getPositionAtCoordinate(this.movedPiece.getPiecePosition()).substring(0, 1);
-            }
+        if (fileNeeded) {
+            return "" + fromFile;
+        }
+        if (rankNeeded) {
+            return "" + fromRank;
         }
         return "";
     }
@@ -184,7 +176,7 @@ public abstract class Move {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(final Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             if (!super.equals(o)) return false;
@@ -235,7 +227,6 @@ public abstract class Move {
 
         @Override
         public String toString() {
-
             Move decorated = this.decoratedMove; // The underlying pawn move or attack
             String san = "";
             if (decorated.isAttack()) {
@@ -249,7 +240,6 @@ public abstract class Move {
                 san = toSquare + "=" + this.promotionPiece.getPieceType();
             }
             return san;
-
             //return disambiguation() + BoardUtils.INSTANCE.getPositionAtCoordinate(this.destinationCoordinate) + "=" + this.promotionPiece.getPieceType();
         }
 
@@ -315,14 +305,9 @@ public abstract class Move {
 
         @Override
         public String toString() {
-
-            final String p1 = movedPiece.getPieceType().toString();
-            final String  p2 = disambiguation();
-            final String p3 = "x";
-            final String p4 = BoardUtils.INSTANCE.getPositionAtCoordinate(this.destinationCoordinate);
-
-            return movedPiece.getPieceType() + disambiguation() + "x" +
-                    BoardUtils.INSTANCE.getPositionAtCoordinate(this.destinationCoordinate);
+            return movedPiece.getPieceType() +
+                              disambiguation() + "x" +
+                              BoardUtils.INSTANCE.getPositionAtCoordinate(this.destinationCoordinate);
         }
 
     }
@@ -344,8 +329,8 @@ public abstract class Move {
 
         @Override
         public String toString() {
-            return BoardUtils.INSTANCE.getPositionAtCoordinate(this.movedPiece.getPiecePosition()).substring(0, 1) + "x" +
-                    BoardUtils.INSTANCE.getPositionAtCoordinate(this.destinationCoordinate);
+            return BoardUtils.INSTANCE.getPositionAtCoordinate(this.movedPiece.getPiecePosition()).charAt(0) + "x" +
+                   BoardUtils.INSTANCE.getPositionAtCoordinate(this.destinationCoordinate);
         }
 
     }
@@ -374,7 +359,6 @@ public abstract class Move {
             final int[] opponentActive = this.board.currentPlayer().getAlliance().isWhite()
                     ? this.board.getBlackPieces()
                     : this.board.getWhitePieces();
-
             // Add current player's pieces (excluding the moved one)
             for (int index : currentActive) {
                 final Piece piece = boardConfig[index];
@@ -382,7 +366,6 @@ public abstract class Move {
                     builder.setPiece(piece);
                 }
             }
-
             // Add opponent pieces (excluding the one being captured)
             for (int index : opponentActive) {
                 final Piece piece = boardConfig[index];
@@ -390,7 +373,6 @@ public abstract class Move {
                     builder.setPiece(piece);
                 }
             }
-
             // Add moved piece to destination
             builder.setPiece(this.movedPiece.getMovedPiece(this));
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());

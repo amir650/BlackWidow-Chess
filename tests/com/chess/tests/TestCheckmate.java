@@ -919,6 +919,7 @@ public class TestCheckmate {
     @Test
     public void testMateInTwoTest3() {
         final Board board = FenUtilities.createGameFromFEN("rn3rk1/1R3ppp/2p5/8/PQ2P3/1P5P/2P1qPP1/3R2K1 w - - 1 0");
+        System.out.println(FenUtilities.createFENFromGame(board));
         final MoveStrategy alphaBeta = new StockAlphaBeta(1);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
