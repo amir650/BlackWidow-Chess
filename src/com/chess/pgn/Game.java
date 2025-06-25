@@ -2,7 +2,7 @@ package com.chess.pgn;
 
 import java.util.List;
 
-interface Game {
+public interface Game {
     boolean isValid();
     PGNGameTags getTags();
     List<MoveRecord> getMoves();
