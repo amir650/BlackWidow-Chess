@@ -10,8 +10,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Move;
+import com.chess.engine.board.Board;
+import com.chess.engine.board.Move;
 import com.chess.gui.Table.MoveLog;
 
 class GameHistoryPanel extends JPanel {
@@ -47,7 +47,7 @@ class GameHistoryPanel extends JPanel {
             }
         }
 
-        if(moveHistory.getMoves().size() > 0) {
+        if(!moveHistory.getMoves().isEmpty()) {
             final Move lastMove = moveHistory.getMoves().get(moveHistory.size() - 1);
             final String moveText = lastMove.toString();
 

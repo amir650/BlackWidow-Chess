@@ -6,10 +6,10 @@ import static org.junit.Assert.assertTrue;
 import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
-import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.BoardUtils;
-import com.chess.engine.classic.board.Move.MoveFactory;
-import com.chess.engine.classic.board.MoveTransition;
+import com.chess.engine.board.Board;
+import com.chess.engine.board.BoardUtils;
+import com.chess.engine.board.Move.MoveFactory;
+import com.chess.engine.board.MoveTransition;
 
 
 public class TestStaleMate {

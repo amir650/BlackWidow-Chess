@@ -1,13 +1,18 @@
 package com.chess.pgn;
 
-public class MoveRecord {
-    private int moveNumber;
-    private String player;
-    private String san; // Standard Algebraic Notation
-    private String fenBefore;
-    private String fenAfter;
+public final class MoveRecord {
 
-    public MoveRecord(int moveNumber, String player, String san, String fenBefore, String fenAfter) {
+    private final int moveNumber;
+    private final String player;
+    private final String san; // Standard Algebraic Notation
+    private final String fenBefore;
+    private final String fenAfter;
+
+    public MoveRecord(final int moveNumber,
+                      final String player,
+                      final String san,
+                      final String fenBefore,
+                      final String fenAfter) {
         this.moveNumber = moveNumber;
         this.player = player;
         this.san = san;
@@ -19,40 +24,20 @@ public class MoveRecord {
         return moveNumber;
     }
 
-    public void setMoveNumber(int moveNumber) {
-        this.moveNumber = moveNumber;
-    }
-
     public String getPlayer() {
         return player;
-    }
-
-    public void setPlayer(String player) {
-        this.player = player;
     }
 
     public String getSan() {
         return san;
     }
 
-    public void setSan(String san) {
-        this.san = san;
-    }
-
     public String getFenBefore() {
         return fenBefore;
     }
 
-    public void setFenBefore(String fenBefore) {
-        this.fenBefore = fenBefore;
-    }
-
     public String getFenAfter() {
         return fenAfter;
-    }
-
-    public void setFenAfter(String fenAfter) {
-        this.fenAfter = fenAfter;
     }
 
     @Override

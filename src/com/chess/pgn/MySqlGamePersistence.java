@@ -1,8 +1,8 @@
 package com.chess.pgn;
 
-import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Move;
-import com.chess.engine.classic.player.Player;
+import com.chess.engine.board.Board;
+import com.chess.engine.board.Move;
+import com.chess.engine.player.Player;
 
 import java.sql.*;
 import java.util.List;

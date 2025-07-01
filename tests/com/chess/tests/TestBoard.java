@@ -1,10 +1,10 @@
 package com.chess.tests;
 
-import com.chess.engine.classic.Alliance;
-import com.chess.engine.classic.board.*;
-import com.chess.engine.classic.board.Move.MoveFactory;
-import com.chess.engine.classic.pieces.*;
-import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
+import com.chess.engine.Alliance;
+import com.chess.engine.board.*;
+import com.chess.engine.board.Move.MoveFactory;
+import com.chess.engine.pieces.Piece;
+import com.chess.engine.player.ai.StandardBoardEvaluator;
 import com.chess.pgn.FenUtilities;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,8 +20,8 @@ public class TestBoard {
     public void initialBoard() {
 
         final Board board = Board.createStandardBoard();
-        assertEquals(board.currentPlayer().getLegalMoves().size(), 20);
-        assertEquals(board.currentPlayer().getOpponent().getLegalMoves().size(), 20);
+        assertEquals(20, board.currentPlayer().getLegalMoves().size());
+        assertEquals(20, board.currentPlayer().getOpponent().getLegalMoves().size());
         assertFalse(board.currentPlayer().isInCheck());
         assertFalse(board.currentPlayer().isInCheckMate());
         assertFalse(board.currentPlayer().isCastled());
@@ -46,20 +46,20 @@ public class TestBoard {
         for(final Move move : allMoves) {
             assertFalse(move.isAttack());
             assertFalse(move.isCastlingMove());
-            assertEquals(MoveUtils.exchangeScore(move), 1);
+            assertEquals(1, MoveUtils.exchangeScore(move));
         }
 
-        assertEquals(allMoves.size(), 40);
+        assertEquals(40, allMoves.size());
 
         int allPiecesCount = 0;
         for (Piece ignored : allPieces) {
             allPiecesCount++;
         }
-        assertEquals(allPiecesCount, 32);
+        assertEquals(32, allPiecesCount);
 
         assertFalse(BoardUtils.isEndGame(board));
         assertFalse(BoardUtils.isThreatenedBoardImmediate(board));
-        assertEquals(StandardBoardEvaluator.get().evaluate(board, 0), 0);
+        assertEquals(0, StandardBoardEvaluator.get().evaluate(board, 0));
         assertNull(board.getPiece(35));
     }
 
@@ -67,15 +67,15 @@ public class TestBoard {
     public void testPlainKingMove() {
         final Board board = FenUtilities.createGameFromFEN("4k3/4p3/8/8/8/8/4P3/4K3 w - - 0 1");
         System.out.println(FenUtilities.createFENFromGame(board));
-        assertEquals(board.whitePlayer().getLegalMoves().size(), 6);
-        assertEquals(board.blackPlayer().getLegalMoves().size(), 6);
+        assertEquals(6, board.whitePlayer().getLegalMoves().size());
+        assertEquals(6, board.blackPlayer().getLegalMoves().size());
         assertFalse(board.currentPlayer().isInCheck());
         assertFalse(board.currentPlayer().isInCheckMate());
         assertFalse(board.currentPlayer().getOpponent().isInCheck());
         assertFalse(board.currentPlayer().getOpponent().isInCheckMate());
         assertEquals(board.currentPlayer(), board.whitePlayer());
         assertEquals(board.currentPlayer().getOpponent(), board.blackPlayer());
-        assertEquals(StandardBoardEvaluator.get().evaluate(board, 0), 0);
+        assertEquals(0, StandardBoardEvaluator.get().evaluate(board, 0));
 
         final Move move = MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("e1"),
                 BoardUtils.INSTANCE.getCoordinateAtPosition("f1"));
@@ -87,7 +87,7 @@ public class TestBoard {
         assertEquals(moveTransition.getFromBoard(), board);
         assertEquals(moveTransition.getToBoard().currentPlayer(), moveTransition.getToBoard().blackPlayer());
         assertTrue(moveTransition.getMoveStatus().isDone());
-        assertEquals(moveTransition.getToBoard().whitePlayer().getPlayerKing().getPiecePosition(), 61);
+        assertEquals(61, moveTransition.getToBoard().whitePlayer().getPlayerKing().getPiecePosition());
     }
 
     @Test
@@ -205,27 +205,16 @@ public class TestBoard {
 
     @Test
     public void testAlgebreicNotation() {
-        assertEquals(BoardUtils.INSTANCE.getPositionAtCoordinate(0), "a8");
-        assertEquals(BoardUtils.INSTANCE.getPositionAtCoordinate(1), "b8");
-        assertEquals(BoardUtils.INSTANCE.getPositionAtCoordinate(2), "c8");
-        assertEquals(BoardUtils.INSTANCE.getPositionAtCoordinate(3), "d8");
-        assertEquals(BoardUtils.INSTANCE.getPositionAtCoordinate(4), "e8");
-        assertEquals(BoardUtils.INSTANCE.getPositionAtCoordinate(5), "f8");
-        assertEquals(BoardUtils.INSTANCE.getPositionAtCoordinate(6), "g8");
-        assertEquals(BoardUtils.INSTANCE.getPositionAtCoordinate(7), "h8");
+        assertEquals("a8", BoardUtils.INSTANCE.getPositionAtCoordinate(0));
+        assertEquals("b8", BoardUtils.INSTANCE.getPositionAtCoordinate(1));
+        assertEquals("c8", BoardUtils.INSTANCE.getPositionAtCoordinate(2));
+        assertEquals("d8", BoardUtils.INSTANCE.getPositionAtCoordinate(3));
+        assertEquals("e8", BoardUtils.INSTANCE.getPositionAtCoordinate(4));
+        assertEquals("f8", BoardUtils.INSTANCE.getPositionAtCoordinate(5));
+        assertEquals("g8", BoardUtils.INSTANCE.getPositionAtCoordinate(6));
+        assertEquals("h8", BoardUtils.INSTANCE.getPositionAtCoordinate(7));
     }
 
-    @Test
-    public void mem() {
-        final Runtime runtime = Runtime.getRuntime();
-        long start, end;
-        runtime.gc();
-        start = runtime.freeMemory();
-        Board.createStandardBoard();
-        end =  runtime.freeMemory();
-        System.out.println("That took " + (start-end) + " bytes.");
-
-    }
     private static int calculatedActivesFor(final Board board,
                                             final Alliance alliance) {
         int count = 0;

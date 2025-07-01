@@ -17,8 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import com.chess.engine.classic.board.Move;
-import com.chess.engine.classic.pieces.Piece;
+import com.chess.engine.board.Move;
+import com.chess.engine.pieces.Piece;
 import com.chess.gui.Table.MoveLog;
 
 class TakenPiecesPanel extends JPanel {

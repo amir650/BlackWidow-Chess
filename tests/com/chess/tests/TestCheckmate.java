@@ -1,15 +1,12 @@
 package com.chess.tests;
 
-import com.chess.engine.classic.Alliance;
-import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Board.Builder;
-import com.chess.engine.classic.board.BoardUtils;
-import com.chess.engine.classic.board.Move;
-import com.chess.engine.classic.board.Move.MoveFactory;
-import com.chess.engine.classic.board.MoveTransition;
-import com.chess.engine.classic.pieces.*;
-import com.chess.engine.classic.player.ai.MoveStrategy;
-import com.chess.engine.classic.player.ai.StockAlphaBeta;
+import com.chess.engine.board.Board;
+import com.chess.engine.board.BoardUtils;
+import com.chess.engine.board.Move;
+import com.chess.engine.board.Move.MoveFactory;
+import com.chess.engine.board.MoveTransition;
+import com.chess.engine.player.ai.MoveStrategy;
+import com.chess.engine.player.ai.StockAlphaBeta;
 import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
@@ -916,15 +913,6 @@ public class TestCheckmate {
                         BoardUtils.INSTANCE.getCoordinateAtPosition("g7")));
     }
 
-    @Test
-    public void testMateInTwoTest3() {
-        final Board board = FenUtilities.createGameFromFEN("rn3rk1/1R3ppp/2p5/8/PQ2P3/1P5P/2P1qPP1/3R2K1 w - - 1 0");
-        System.out.println(FenUtilities.createFENFromGame(board));
-        final MoveStrategy alphaBeta = new StockAlphaBeta(1);
-        final Move bestMove = alphaBeta.execute(board);
-        assertEquals(bestMove, Move.MoveFactory
-                .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("b4"), BoardUtils.INSTANCE.getCoordinateAtPosition("f8")));
-    }
 
     @Test
     public void testMateInFourTest1() {

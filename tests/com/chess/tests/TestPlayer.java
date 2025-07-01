@@ -1,11 +1,11 @@
 package com.chess.tests;
 
-import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.BoardUtils;
-import com.chess.engine.classic.board.Move;
-import com.chess.engine.classic.board.Move.MoveFactory;
-import com.chess.engine.classic.board.MoveTransition;
-import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
+import com.chess.engine.board.Board;
+import com.chess.engine.board.BoardUtils;
+import com.chess.engine.board.Move;
+import com.chess.engine.board.Move.MoveFactory;
+import com.chess.engine.board.MoveTransition;
+import com.chess.engine.player.ai.StandardBoardEvaluator;
 import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class TestPlayer {
                 .makeMove(MoveFactory.createMove(t1.getToBoard(), BoardUtils.INSTANCE.getCoordinateAtPosition("e7"),
                         BoardUtils.INSTANCE.getCoordinateAtPosition("e5")));
         assertTrue(t2.getMoveStatus().isDone());
-        assertEquals(StandardBoardEvaluator.get().evaluate(t2.getToBoard(), 0), 0);
+        assertEquals(0, StandardBoardEvaluator.get().evaluate(t2.getToBoard(), 0));
     }
 
     @Test

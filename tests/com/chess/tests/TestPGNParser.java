@@ -3,10 +3,10 @@ package com.chess.tests;
 import com.chess.pgn.*;
 import org.junit.Test;
 
-import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Move;
+import com.chess.engine.board.Board;
+import com.chess.engine.board.Move;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 public class TestPGNParser {
@@ -16,7 +16,7 @@ public class TestPGNParser {
         final Board board = FenUtilities.createGameFromFEN("6k1/3r3p/pR4p1/P3p3/4P3/1p3P2/2r3PP/1R4K1 w - - 0 1");
         final String san = "R6xb3";
         final Move move = PGNUtilities.createMove(board, san);
-        assertTrue(move != null);
+        assertNotNull(move);
     }
 
     @Test
@@ -26,7 +26,7 @@ public class TestPGNParser {
         System.out.println(bad_move.toString());
         final String san = "Nbxd5";
         final Move move = PGNUtilities.createMove(board, san);
-        assertTrue(move != Move.MoveFactory.getNullMove());
+        assertNotSame(move, Move.MoveFactory.getNullMove());
     }
 
     @Test
@@ -36,7 +36,7 @@ public class TestPGNParser {
         System.out.println(bad_move.toString());
         final String san = "exd1=Q";
         final Move move = PGNUtilities.createMove(board, san);
-        assertTrue(move != Move.MoveFactory.getNullMove());
+        assertNotSame(move, Move.MoveFactory.getNullMove());
     }
 
 }

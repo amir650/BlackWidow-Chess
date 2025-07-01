@@ -7,13 +7,10 @@ public class InvalidGame implements Game {
     private final String reason;           // Why this game is invalid (e.g., parse error)
     private final PGNGameTags tags;        // Optionally, whatever tags could be parsed
 
-    public InvalidGame(String reason, PGNGameTags tags) {
+    public InvalidGame(final String reason,
+                       final PGNGameTags tags) {
         this.reason = reason;
         this.tags = tags;
-    }
-
-    public InvalidGame(String reason) {
-        this(reason, null);
     }
 
     @Override

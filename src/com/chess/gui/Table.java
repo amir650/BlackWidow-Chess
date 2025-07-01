@@ -1,11 +1,11 @@
 package com.chess.gui;
 
-import com.chess.engine.classic.board.*;
-import com.chess.engine.classic.board.Move.MoveFactory;
-import com.chess.engine.classic.pieces.Piece;
-import com.chess.engine.classic.player.Player;
-import com.chess.engine.classic.player.ai.StandardBoardEvaluator;
-import com.chess.engine.classic.player.ai.StockAlphaBeta;
+import com.chess.engine.board.*;
+import com.chess.engine.board.Move.MoveFactory;
+import com.chess.engine.pieces.Piece;
+import com.chess.engine.player.Player;
+import com.chess.engine.player.ai.StandardBoardEvaluator;
+import com.chess.engine.player.ai.StockAlphaBeta;
 import com.chess.pgn.FenUtilities;
 import com.chess.pgn.MySqlGamePersistence;
 import com.chess.pgn.PGNUtilities;
@@ -237,8 +237,8 @@ public final class Table extends Observable {
         final JMenuItem legalMovesMenuItem = new JMenuItem("Current State", KeyEvent.VK_L);
         legalMovesMenuItem.addActionListener(e -> {
             System.out.println(FenUtilities.createFENFromGame(chessBoard));
-            System.out.println(Arrays.toString(chessBoard.getWhitePieces()));
-            System.out.println(chessBoard.getBlackPieces());
+            System.out.println(Arrays.toString(chessBoard.getWhitePieceCoordinates()));
+            System.out.println(Arrays.toString(chessBoard.getBlackPieceCoordinates()));
             System.out.println(playerInfo(chessBoard.currentPlayer()));
             System.out.println(playerInfo(chessBoard.currentPlayer().getOpponent()));
         });
@@ -413,13 +413,13 @@ public final class Table extends Observable {
             MySqlGamePersistence persistence = new MySqlGamePersistence();
             PGNUtilities.persistPGNFile(pgnFile, persistence);
         } catch (final Exception e) {
-            e.printStackTrace();
             JOptionPane.showMessageDialog(
                     Table.get().getGameFrame(),
                     "Error importing PGN file: " + e.getMessage(),
                     "Import Error",
                     JOptionPane.ERROR_MESSAGE
             );
+            throw new RuntimeException(e);
         }
     }
 
@@ -541,7 +541,7 @@ public final class Table extends Observable {
                 Table.get().getDebugPanel().redo();
                 Table.get().moveMadeUpdate(PlayerType.COMPUTER);
             } catch (final Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
     }
@@ -685,9 +685,6 @@ public final class Table extends Observable {
                         if (sourceTile == null) {
                             sourceTile = chessBoard.getPiece(tileId);
                             humanMovedPiece = sourceTile;
-                            if (humanMovedPiece == null) {
-                                sourceTile = null;
-                            }
                         } else {
                             final Move move = MoveFactory.createMove(chessBoard, sourceTile.getPiecePosition(),
                                     tileId);
@@ -776,7 +773,7 @@ public final class Table extends Observable {
                             add(new JLabel(new ImageIcon(ImageIO.read(new File("art/misc/green_dot.png")))));
                         }
                         catch (final IOException e) {
-                            e.printStackTrace();
+                            throw new RuntimeException(e);
                         }
                     }
                 }
@@ -795,26 +792,26 @@ public final class Table extends Observable {
             if(board.getPiece(this.tileId) != null) {
                 try{
                     final BufferedImage image = ImageIO.read(new File(pieceIconPath +
-                            board.getPiece(this.tileId).getPieceAllegiance().toString().substring(0, 1) + "" +
+                            board.getPiece(this.tileId).getPieceAllegiance().toString().substring(0, 1) +
                             board.getPiece(this.tileId).toString() +
                             ".gif"));
                     add(new JLabel(new ImageIcon(image)));
                 } catch(final IOException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
         }
 
         private void assignTileColor() {
-            if (BoardUtils.INSTANCE.FIRST_ROW.get(this.tileId) ||
-                    BoardUtils.INSTANCE.THIRD_ROW.get(this.tileId) ||
-                    BoardUtils.INSTANCE.FIFTH_ROW.get(this.tileId) ||
-                    BoardUtils.INSTANCE.SEVENTH_ROW.get(this.tileId)) {
+            if (BoardUtils.FIRST_ROW.get(this.tileId) ||
+                    BoardUtils.THIRD_ROW.get(this.tileId) ||
+                    BoardUtils.FIFTH_ROW.get(this.tileId) ||
+                    BoardUtils.SEVENTH_ROW.get(this.tileId)) {
                 setBackground(this.tileId % 2 == 0 ? lightTileColor : darkTileColor);
-            } else if(BoardUtils.INSTANCE.SECOND_ROW.get(this.tileId) ||
-                    BoardUtils.INSTANCE.FOURTH_ROW.get(this.tileId) ||
-                    BoardUtils.INSTANCE.SIXTH_ROW.get(this.tileId)  ||
-                    BoardUtils.INSTANCE.EIGHTH_ROW.get(this.tileId)) {
+            } else if(BoardUtils.SECOND_ROW.get(this.tileId) ||
+                    BoardUtils.FOURTH_ROW.get(this.tileId) ||
+                    BoardUtils.SIXTH_ROW.get(this.tileId)  ||
+                    BoardUtils.EIGHTH_ROW.get(this.tileId)) {
                 setBackground(this.tileId % 2 != 0 ? lightTileColor : darkTileColor);
             }
         }

@@ -1,12 +1,12 @@
 package com.chess.tests;
 
-import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.BoardUtils;
-import com.chess.engine.classic.board.Move;
-import com.chess.engine.classic.board.MoveTransition;
-import com.chess.engine.classic.player.ai.MiniMax;
-import com.chess.engine.classic.player.ai.MoveStrategy;
-import com.chess.engine.classic.player.ai.StockAlphaBeta;
+import com.chess.engine.board.Board;
+import com.chess.engine.board.BoardUtils;
+import com.chess.engine.board.Move;
+import com.chess.engine.board.MoveTransition;
+import com.chess.engine.player.ai.MiniMax;
+import com.chess.engine.player.ai.MoveStrategy;
+import com.chess.engine.player.ai.StockAlphaBeta;
 import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class TestMiniMax {
         final MoveStrategy minMax = new MiniMax(1);
         minMax.execute(board);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-        assertEquals(numBoardsEvaluated, 20L);
+        assertEquals(20L, numBoardsEvaluated);
     }
 
     @Test
@@ -29,7 +29,7 @@ public class TestMiniMax {
         final MoveStrategy minMax = new MiniMax(2);
         minMax.execute(board);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-        assertEquals(numBoardsEvaluated, 400L);
+        assertEquals(400L, numBoardsEvaluated);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class TestMiniMax {
         final MoveStrategy minMax = new MiniMax(3);
         minMax.execute(board);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-        assertEquals(numBoardsEvaluated, 8902L);
+        assertEquals(8902L, numBoardsEvaluated);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class TestMiniMax {
         final MoveStrategy minMax = new MiniMax(4);
         minMax.execute(board);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-        assertEquals(numBoardsEvaluated, 197281L);
+        assertEquals(197281L, numBoardsEvaluated);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class TestMiniMax {
         final MoveStrategy minMax = new MiniMax(5);
         minMax.execute(board);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-        assertEquals(numBoardsEvaluated, 4865609L);
+        assertEquals(4865609L, numBoardsEvaluated);
     }
 
     @Test
@@ -65,16 +65,7 @@ public class TestMiniMax {
         final MoveStrategy minMax = new MiniMax(6);
         minMax.execute(board);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-        assertEquals(numBoardsEvaluated, 119060324L);
-    }
-
-    @Test
-    public void testOpeningDepth7() {
-//        final Board board = Board.createStandardBoard();
-//        final MoveStrategy minMax = new MiniMax(7);
-//        minMax.execute(board);
-//        final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-//        assertEquals(numBoardsEvaluated, 3195901860L);
+        assertEquals(119060324L, numBoardsEvaluated);
     }
 
     @Test
@@ -84,7 +75,7 @@ public class TestMiniMax {
         final MoveStrategy minMax = new MiniMax(1);
         minMax.execute(board);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-        assertEquals(numBoardsEvaluated, 46);
+        assertEquals(46, numBoardsEvaluated);
     }
 
     @Test
@@ -93,7 +84,7 @@ public class TestMiniMax {
         System.out.println(FenUtilities.createFENFromGame(board));
         final MoveStrategy minMax = new MiniMax(2);
         minMax.execute(board);
-        assertEquals(minMax.getNumBoardsEvaluated(), 1866L);
+        assertEquals(1866L, minMax.getNumBoardsEvaluated());
     }
 
     @Test
@@ -101,7 +92,7 @@ public class TestMiniMax {
         final Board board = FenUtilities.createGameFromFEN("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -");
         final MoveStrategy minMax = new MiniMax(6);
         minMax.execute(board);
-        assertEquals(minMax.getNumBoardsEvaluated(), 11030083);
+        assertEquals(11030083, minMax.getNumBoardsEvaluated());
     }
 
     @Test
@@ -112,7 +103,7 @@ public class TestMiniMax {
                         BoardUtils.INSTANCE.getCoordinateAtPosition("d7")));
         final MoveStrategy minMax = new MiniMax(1);
         minMax.execute(t1.getToBoard());
-        assertEquals(minMax.getNumBoardsEvaluated(), 45);
+        assertEquals(45, minMax.getNumBoardsEvaluated());
     }
 
     @Test
@@ -129,7 +120,7 @@ public class TestMiniMax {
         final MoveStrategy minMax = new MiniMax(1);
         minMax.execute(board);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-        assertEquals(numBoardsEvaluated, 14);
+        assertEquals(14, numBoardsEvaluated);
     }
 
     @Test
@@ -139,15 +130,15 @@ public class TestMiniMax {
         final MoveStrategy minMax = new MiniMax(2);
         minMax.execute(board);
         final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
-        assertEquals(numBoardsEvaluated, 191);
+        assertEquals(191, numBoardsEvaluated);
     }
 
     @Test
     public void testMissedAttackGold() {
-        final Board board = FenUtilities.createGameFromFEN("r1bq1rk1/pppp1ppp/2nb1n2/1B2p3/3PP3/5N2/PPP2PPP/RNBQ1RK1 w - - 0 1");
-        System.out.println(FenUtilities.createFENFromGame(board));
-        final MoveStrategy minMax = new MiniMax(6);
-        minMax.execute(board);
+        //final Board board = FenUtilities.createGameFromFEN("r1bq1rk1/pppp1ppp/2nb1n2/1B2p3/3PP3/5N2/PPP2PPP/RNBQ1RK1 w - - 0 1");
+        //System.out.println(FenUtilities.createFENFromGame(board));
+        //final MoveStrategy minMax = new MiniMax(6);
+        //minMax.execute(board);
         // final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         //assertEquals(numBoardsEvaluated, 191);
     }

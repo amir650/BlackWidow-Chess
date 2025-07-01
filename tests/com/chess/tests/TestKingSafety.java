@@ -1,11 +1,11 @@
 package com.chess.tests;
 
-import com.chess.engine.classic.player.Player;
-import com.chess.engine.classic.player.ai.KingSafetyAnalyzer;
+import com.chess.engine.player.Player;
+import com.chess.engine.player.ai.KingSafetyAnalyzer;
 import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
-import com.chess.engine.classic.board.Board;
+import com.chess.engine.board.Board;
 
 
 import static org.junit.Assert.assertEquals;

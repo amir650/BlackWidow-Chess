@@ -1,9 +1,9 @@
 package com.chess.pgn;
 
-import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.Move;
-import com.chess.engine.classic.board.MoveTransition;
-import com.chess.engine.classic.player.Player;
+import com.chess.engine.board.Board;
+import com.chess.engine.board.Move;
+import com.chess.engine.board.MoveTransition;
+import com.chess.engine.player.Player;
 
 import java.io.*;
 import java.util.*;
@@ -31,8 +31,9 @@ public class PGNUtilities {
             StringBuilder gameTextBuilder = new StringBuilder();
 
             while ((line = br.readLine()) != null) {
-                if (line.isEmpty()) continue;
-
+                if (line.isEmpty()) {
+                    continue;
+                }
                 if (isTag(line)) {
                     handleTagLine(line, tagsBuilder);
                 } else if (isEndOfGame(line)) {
@@ -41,9 +42,7 @@ public class PGNUtilities {
                     Game lastGame = games.isEmpty() ? null : games.get(games.size() - 1);
                     if (lastGame != null && lastGame.isValid()) validCount++;
                     if (games.size() >= BATCH_SIZE) {
-                        if (!persistBatchAndPrompt(games, persistence, count, validCount, pgnFile.getName())) {
-                            break; // User chose not to continue
-                        }
+                        persistBatchAndPrompt(games, persistence, count, validCount, pgnFile.getName());
                     }
                     // Reset for next game
                     tagsBuilder = new PGNGameTags.TagsBuilder();
@@ -78,7 +77,7 @@ public class PGNUtilities {
         gameTextBuilder.append(line.replace(outcome, "")).append(" ");
         final String gameText = gameTextBuilder.toString().trim();
 
-        if (!gameText.isEmpty() && gameText.length() > 20) {
+        if (gameText.length() > 20) {
             tagsBuilder.addTag("Result", outcome);
             final Game game = createGame(tagsBuilder.build(), gameText);
             System.out.printf("Finished parsing game: %s\n", game);
@@ -90,7 +89,7 @@ public class PGNUtilities {
         }
     }
 
-    private static boolean persistBatchAndPrompt(final List<Game> games,
+    private static void persistBatchAndPrompt(final List<Game> games,
                                                  final MySqlGamePersistence persistence,
                                                  final int count,
                                                  final int validCount,
@@ -99,17 +98,6 @@ public class PGNUtilities {
         persistence.persistGames(games);
         System.out.println("\tDone persisting batch.");
         games.clear();
-        return true;
-//        // Prompt user if they want to continue or exit early
-//        System.out.print("Continue importing? (Y to continue, N to stop): ");
-//        Scanner scanner = new Scanner(System.in);
-//        String input = scanner.nextLine().trim().toUpperCase();
-//        if (!input.equals("Y")) {
-//            System.out.println("Import stopped early by user.");
-//            System.out.printf("Finished (early) building book from PGN: %s | Total games: %d, Valid: %d\n", fileName, count, validCount);
-//            return false;
-//        }
-//        return true;
     }
 
 
@@ -185,7 +173,7 @@ public class PGNUtilities {
 
     private static String removeParenthesis(final String gameText) {
         int depth = 0;
-        StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
         for (char c : gameText.toCharArray()) {
             if (c == '(' || c == '{') {
                 depth++;

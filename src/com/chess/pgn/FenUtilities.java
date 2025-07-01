@@ -1,11 +1,13 @@
 package com.chess.pgn;
 
-import com.chess.engine.classic.Alliance;
-import com.chess.engine.classic.board.Board;
-import com.chess.engine.classic.board.BoardUtils;
-import com.chess.engine.classic.pieces.*;
+import com.chess.engine.Alliance;
+import com.chess.engine.board.Board;
+import com.chess.engine.board.BoardUtils;
+import com.chess.engine.pieces.King;
+import com.chess.engine.pieces.Pawn;
+import com.chess.engine.pieces.PieceUtils;
 
-import static com.chess.engine.classic.board.Board.Builder;
+import static com.chess.engine.board.Board.Builder;
 
 public class FenUtilities {
 

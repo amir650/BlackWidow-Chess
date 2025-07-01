@@ -4,11 +4,12 @@ import java.util.List;
 import java.util.Objects;
 
 public class ValidGame implements Game {
+
     private final PGNGameTags tags;
     private final List<MoveRecord> moves;
 
-    public ValidGame(PGNGameTags tags,
-                     List<MoveRecord> moves) {
+    public ValidGame(final PGNGameTags tags,
+                     final List<MoveRecord> moves) {
         this.tags = tags;
         this.moves = moves;
     }
@@ -24,7 +25,7 @@ public class ValidGame implements Game {
     }
 
     @Override
-    public void saveGame(MySqlGamePersistence persistence) {
+    public void saveGame(final MySqlGamePersistence persistence) {
         try {
             persistence.saveValidGame(this);
         } catch (Exception e) {
