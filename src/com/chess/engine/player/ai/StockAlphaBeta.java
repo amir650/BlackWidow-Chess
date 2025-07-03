@@ -9,13 +9,17 @@ import com.chess.engine.player.Player;
 import java.util.*;
 
 import static com.chess.engine.board.BoardUtils.mvvlva;
+import static com.chess.engine.board.BoardUtils.scoreMove;
 import static com.chess.engine.board.Move.MoveFactory;
 
-public class StockAlphaBeta extends Observable implements MoveStrategy {
+public class StockAlphaBeta implements MoveStrategy {
 
     private final BoardEvaluator evaluator;
     private final int searchDepth;
     private long boardsEvaluated;
+
+    // List of AI progress listeners using functional interface
+    private final List<AIProgressListener> progressListeners = new ArrayList<>();
 
     // Add max quiescence depth constant
     private static final int MAX_QUIESCENCE_DEPTH = 2;
@@ -25,6 +29,12 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
             return m1.isCastlingMove() ? -1 : 1;
         }
         return Integer.compare(mvvlva(m2), mvvlva(m1));
+    };
+
+    private static final Comparator<Move> EXPENSIVE_MOVE_COMPARATOR = (m1, m2) -> {
+        final int score1 = scoreMove(m1);
+        final int score2 = scoreMove(m2);
+        return Integer.compare(score2, score1);
     };
 
     private enum MoveSorter {
@@ -45,7 +55,19 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
         this.boardsEvaluated = 0;
     }
 
+    // Methods for managing AI progress listeners using functional interfaces
+    public void addAIProgressListener(AIProgressListener listener) {
+        progressListeners.add(listener);
+    }
 
+    public void removeAIProgressListener(AIProgressListener listener) {
+        progressListeners.remove(listener);
+    }
+
+    // Method to notify all progress listeners
+    private void notifyProgressListeners(String progress) {
+        progressListeners.forEach(listener -> listener.onAIProgress(progress));
+    }
 
     @Override
     public String toString() {
@@ -66,6 +88,7 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
         System.out.println(board.currentPlayer() + " THINKING with depth = " + this.searchDepth);
         int moveCounter = 1;
         int numMoves = board.currentPlayer().getLegalMoves().size();
+
         for (final Move move : MoveSorter.STANDARD.sort(board.currentPlayer().getLegalMoves())) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             final StringBuilder s = new StringBuilder();
@@ -125,17 +148,20 @@ public class StockAlphaBeta extends Observable implements MoveStrategy {
                         .append(bestMove);
             }
             System.out.println(s);
-            setChanged();
-            notifyObservers(s.toString());
+
+            // Notify progress listeners instead of using Observer pattern
+            notifyProgressListeners(s.toString());
             moveCounter++;
         }
+
         final long executionTime = System.currentTimeMillis() - startTime;
         final String result = board.currentPlayer() + " SELECTS " + bestMove + " [#boards evaluated = " + this.boardsEvaluated +
                 " time taken = " + executionTime / 1000 + " rate = " + (1000 * ((double) this.boardsEvaluated / executionTime));
         System.out.printf("%s SELECTS %s [#boards evaluated = %d, time taken = %s, rate = %.1f]\n", board.currentPlayer(),
                 bestMove, this.boardsEvaluated, BoardUtils.humanReadableElapsedTime(executionTime), (1000 * ((double) this.boardsEvaluated / executionTime)));
-        setChanged();
-        notifyObservers(result);
+
+        // Notify final result to progress listeners
+        notifyProgressListeners(result);
         return bestMove;
     }
 

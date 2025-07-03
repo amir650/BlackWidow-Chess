@@ -227,8 +227,8 @@ public abstract class Move {
 
         @Override
         public String toString() {
-            Move decorated = this.decoratedMove; // The underlying pawn move or attack
-            String san = "";
+            final Move decorated = this.decoratedMove; // The underlying pawn move or attack
+            final String san;
             if (decorated.isAttack()) {
                 // For pawn captures, use file of from-square, 'x', and destination
                 String fromFile = BoardUtils.INSTANCE.getPositionAtCoordinate(decorated.getCurrentCoordinate()).substring(0,1);
@@ -240,7 +240,6 @@ public abstract class Move {
                 san = toSquare + "=" + this.promotionPiece.getPieceType();
             }
             return san;
-            //return disambiguation() + BoardUtils.INSTANCE.getPositionAtCoordinate(this.destinationCoordinate) + "=" + this.promotionPiece.getPieceType();
         }
 
     }

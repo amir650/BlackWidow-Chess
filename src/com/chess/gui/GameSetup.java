@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-class GameSetup extends JDialog {
+public class GameSetup extends JDialog {
 
     private PlayerType whitePlayerType;
     private PlayerType blackPlayerType;
@@ -56,6 +56,9 @@ class GameSetup extends JDialog {
                 whitePlayerType = whiteComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
                 blackPlayerType = blackComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
                 GameSetup.this.setVisible(false);
+
+                // *** ADDED: Notify Table that game setup has changed ***
+                Table.get().setupUpdate(Table.get().getGameSetup());
             }
         });
 

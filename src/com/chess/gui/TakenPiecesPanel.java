@@ -78,7 +78,7 @@ class TakenPiecesPanel extends JPanel {
                 this.southPanel.add(imageLabel);
             }
             catch (final IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
 
@@ -91,12 +91,10 @@ class TakenPiecesPanel extends JPanel {
                 final JLabel imageLabel = new JLabel(new ImageIcon(ic.getImage().getScaledInstance(
                         ic.getIconWidth() - 15, ic.getIconWidth() - 15, Image.SCALE_SMOOTH)));
                 this.northPanel.add(imageLabel);
-
             } catch (final IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
-        
         validate();
     }
 }
