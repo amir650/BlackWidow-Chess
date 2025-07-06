@@ -110,13 +110,20 @@ public abstract class Move {
         boolean fileNeeded = false;
         boolean rankNeeded = false;
 
-        for (final Move other : board.currentPlayer().getLegalMoves()) {
-            if (other == this) {
+        for (final Move move : board.currentPlayer().getLegalMoves()) {
+            if (move == this) {
                 continue;
             }
-            if (other.getMovedPiece().getPieceType() == movedPiece.getPieceType() &&
-                other.getDestinationCoordinate() == this.getDestinationCoordinate()) {
-                final String otherFrom = BoardUtils.INSTANCE.getPositionAtCoordinate(other.getCurrentCoordinate());
+            if (move.getMovedPiece().getPieceType() == movedPiece.getPieceType() &&
+                move.getDestinationCoordinate() == this.getDestinationCoordinate()) {
+
+                // NEW: Check if the other move is actually legal (doesn't leave king in check)
+                final MoveTransition otherTransition = board.currentPlayer().makeMove(move);
+                if (!otherTransition.getMoveStatus().isDone()) {
+                    continue; // Skip this move if it's not actually legal
+                }
+
+                final String otherFrom = BoardUtils.INSTANCE.getPositionAtCoordinate(move.getCurrentCoordinate());
                 final char otherFile = otherFrom.charAt(0);
                 final char otherRank = otherFrom.charAt(1);
                 if (fromFile != otherFile) {
@@ -231,12 +238,12 @@ public abstract class Move {
             final String san;
             if (decorated.isAttack()) {
                 // For pawn captures, use file of from-square, 'x', and destination
-                String fromFile = BoardUtils.INSTANCE.getPositionAtCoordinate(decorated.getCurrentCoordinate()).substring(0,1);
-                String toSquare = BoardUtils.INSTANCE.getPositionAtCoordinate(decorated.getDestinationCoordinate());
+                final String fromFile = BoardUtils.INSTANCE.getPositionAtCoordinate(decorated.getCurrentCoordinate()).substring(0,1);
+                final String toSquare = BoardUtils.INSTANCE.getPositionAtCoordinate(decorated.getDestinationCoordinate());
                 san = fromFile + "x" + toSquare + "=" + this.promotionPiece.getPieceType();
             } else {
                 // For pawn push, just use destination
-                String toSquare = BoardUtils.INSTANCE.getPositionAtCoordinate(decorated.getDestinationCoordinate());
+                final String toSquare = BoardUtils.INSTANCE.getPositionAtCoordinate(decorated.getDestinationCoordinate());
                 san = toSquare + "=" + this.promotionPiece.getPieceType();
             }
             return san;
@@ -458,7 +465,8 @@ public abstract class Move {
             newBoardConfig[this.castleRook.getPiecePosition()] = null;
             final Piece newKing = this.movedPiece.getMovedPiece(this);
             newBoardConfig[this.destinationCoordinate] = newKing;
-            final Piece newRook = this.castleRook.getMovedPiece(this.castleRook.getPieceAllegiance(), this.castleRookDestination);
+            final Move syntheticMove = new MajorMove(this.board, this.castleRook, this.castleRookDestination);
+            final Piece newRook = this.castleRook.getMovedPiece(syntheticMove);
             newBoardConfig[this.castleRookDestination] = newRook;
             final Builder builder = new Builder();
             return builder.setBoardConfiguration(newBoardConfig)

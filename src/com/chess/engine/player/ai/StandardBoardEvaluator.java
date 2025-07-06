@@ -14,14 +14,12 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     private static final int CHECK_MATE_BONUS = 10000;
     private static final int CHECK_BONUS = 45;
     private static final int CASTLE_BONUS = 35;
+    private static final int CASTLING_RIGHTS_BONUS = 15;
     private static final int MOBILITY_MULTIPLIER = 2;
     private static final int ATTACK_MULTIPLIER = 2;
     private static final int TWO_BISHOPS_BONUS = 25;
     private static final int CRAMPING_MULTIPLIER = 1;
-    private static final int COORDINATION_MULTIPLIER = 1;
-
-    // Cap checkmate bonus to prevent overflow
-    private static final int MAX_CHECKMATE_BONUS = 50000;
+    private static final int NO_BONUS = 0;
 
     private static final Map<GamePhase, List<ScalarFeature>> PHASE_FACTORS =
             Map.of(
@@ -37,8 +35,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
                             Feature.CHECK_AND_MATE,
                             Feature.MOBILITY,
                             Feature.ATTACKS,
-                            Feature.KING_SAFETY,
-                            Feature.PIECE_HARMONY
+                            Feature.KING_SAFETY
                     ),
                     GamePhase.ENDGAME, List.of(
                             Feature.MATERIAL,
@@ -55,8 +52,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
                             Feature.CASTLE,
                             Feature.MATERIAL,
                             Feature.PAWN_STRUCTURE,
-                            Feature.KING_SAFETY,
-                            Feature.PIECE_HARMONY
+                            Feature.KING_SAFETY
                             /*Feature.PIECE_SAFETY*/)
             );
 
@@ -110,7 +106,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
             return 100 * CRAMPING_MULTIPLIER;
         }
         final float ratio = (float) own / opp;
-        return ratio > 2.0f ? (int) ((ratio - 2.0f) * 5) * CRAMPING_MULTIPLIER : 0; // Higher threshold, lower multiplier
+        return ratio > 2.0f ? (int) ((ratio - 2.0f) * 5) * CRAMPING_MULTIPLIER : NO_BONUS;
     }
 
     private static int check_or_checkmate(final Player player,
@@ -119,7 +115,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     }
 
     private static int check(final Player player) {
-        return player.getOpponent().isInCheck() ? CHECK_BONUS : 0;
+        return player.getOpponent().isInCheck() ? CHECK_BONUS : NO_BONUS;
     }
 
     private static int depthBonus(final int depth) {
@@ -127,7 +123,12 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     }
 
     private static int castle(final Player player) {
-        return player.isCastled() ? CASTLE_BONUS : 0;
+        if (player.isCastled()) {
+            return CASTLE_BONUS;
+        } else if (player.hasCastlingRights()) {
+            return CASTLING_RIGHTS_BONUS;
+        }
+        return NO_BONUS;
     }
 
     private static int attacks(final Player player) {
@@ -158,7 +159,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
                 case PAWN: pawnCount++; break;
             }
         }
-        final int bishopBonus = (bishopCount == 2 ? TWO_BISHOPS_BONUS : 0);
+        final int bishopBonus = (bishopCount == 2 ? TWO_BISHOPS_BONUS : NO_BONUS);
         final int knightPairPenalty = knightCount >= 2 && pawnCount < 5 ? -10 : 0;
         return score + bishopBonus + knightPairPenalty;
     }
@@ -172,30 +173,6 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
         final int safety = KingSafetyAnalyzer.get().gptKingSafety(player);
         return tropism + safety;
     }
-
-    private static int pieceHarmony(final Player player) {
-        int score = 0;
-        final Board board = player.getBoard();
-        // Count developed pieces (not on starting rank)
-        int developedPieces = 0;
-        for (int piecePos : player.getActivePieces()) {
-            final Piece piece = board.getPiece(piecePos);
-            if (piece.getPieceType() == Piece.PieceType.PAWN) {
-                continue;
-            }
-            // Check if piece is developed (simple heuristic)
-            int rank = piecePos / 8;
-            boolean isWhite = piece.getPieceAllegiance().isWhite();
-            boolean isDeveloped = isWhite ? (rank > 0) : (rank < 7);
-            if (isDeveloped) {
-                developedPieces++;
-            }
-        }
-        // Small bonus for piece development
-        score = developedPieces * 5;
-        return score * COORDINATION_MULTIPLIER;
-    }
-
 
     private static int pieceSafety(final Player player) {
         int penalty = 0;
@@ -233,29 +210,30 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     }
 
     public String evaluationDetails(final Board board, final int depth) {
-        return
-                "White Mobility : "     + mobility(board.whitePlayer())        + "\n" +
-                        "White Cramping : "     + cramping(board.whitePlayer())        + "\n" +
-                        "White KingThreats : "  + check_or_checkmate(board.whitePlayer(), depth) + "\n" +
-                        "White Attacks : "      + attacks(board.whitePlayer())         + "\n" +
-                        "White Castle : "       + castle(board.whitePlayer())          + "\n" +
-                        "White Material : "     + material(board.whitePlayer())        + "\n" +
-                        "White Pawn Structure : " + pawnStructure(board.whitePlayer())     + "\n" +
-                        "White King Safety : "  + kingSafety(board.whitePlayer())      + "\n" +
-                        "White Piece Harmony : " + pieceHarmony(board.whitePlayer())    + "\n" +
-                        "White Piece Safety : "  + pieceSafety(board.whitePlayer())     + "\n" +
-                        "---------------------\n" +
-                        "Black Mobility : "     + mobility(board.blackPlayer())        + "\n" +
-                        "Black Cramping : "     + cramping(board.blackPlayer())        + "\n" +
-                        "Black KingThreats : "  + check_or_checkmate(board.blackPlayer(), depth) + "\n" +
-                        "Black Attacks : "      + attacks(board.blackPlayer())         + "\n" +
-                        "Black Castle : "       + castle(board.blackPlayer())          + "\n" +
-                        "Black Material : "     + material(board.blackPlayer())        + "\n" +
-                        "Black Pawn Structure : " + pawnStructure(board.blackPlayer())     + "\n" +
-                        "Black King Safety : "  + kingSafety(board.blackPlayer())      + "\n" +
-                        "Black Piece Harmony : " + pieceHarmony(board.blackPlayer())    + "\n" +
-                        "Black Piece Safety : "  + pieceSafety(board.blackPlayer())     + "\n\n" +
-                        "Final Score = "        + evaluate(board, depth);
+        final StringBuilder sb = new StringBuilder();
+        final Feature[] allFeatures = Feature.values();
+        // White player details
+        for (final Feature feature : allFeatures) {
+            sb.append("White ").append(formatFeatureName(feature))
+                    .append(" : ").append(feature.apply(board.whitePlayer(), depth))
+                    .append("\n");
+        }
+        sb.append("---------------------\n");
+        // Black player details
+        for (final Feature feature : allFeatures) {
+            sb.append("Black ").append(formatFeatureName(feature))
+                    .append(" : ").append(feature.apply(board.blackPlayer(), depth))
+                    .append("\n");
+        }
+        sb.append("\nFinal Score = ").append(evaluate(board, depth));
+        return sb.toString();
+    }
+
+    private static String formatFeatureName(final Feature feature) {
+        return feature.name()
+                      .replace("_", " ")
+                      .toLowerCase()
+                      .replaceFirst("^.", String.valueOf(feature.name().charAt(0)));
     }
 
     private enum GamePhase {
@@ -317,12 +295,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
                              final int d) {
                 return pieceSafety(p);
             }
-        }, PIECE_HARMONY {
-            public int apply(final Player p,
-                             final int d) {
-                return pieceHarmony(p);
-            }
-        }
+        };
     }
 
 }

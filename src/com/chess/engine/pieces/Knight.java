@@ -71,11 +71,6 @@ public final class Knight extends Piece {
     }
 
     @Override
-    public Knight getMovedPiece(final Alliance alliance, final int to) {
-        return PieceUtils.INSTANCE.getKnight(alliance, to, true);
-    }
-
-    @Override
     public String toString() {
         return this.pieceType.toString();
     }

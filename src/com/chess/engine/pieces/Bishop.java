@@ -82,11 +82,6 @@ public final class Bishop extends Piece {
     }
 
     @Override
-    public Bishop getMovedPiece(final Alliance alliance, final int to) {
-        return PieceUtils.INSTANCE.getBishop(alliance, to, true);
-    }
-
-    @Override
     public String toString() {
         return this.pieceType.toString();
     }

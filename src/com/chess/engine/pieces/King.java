@@ -109,12 +109,6 @@ public final class King extends Piece {
     }
 
     @Override
-    public King getMovedPiece(final Alliance alliance,
-                              final int to) {
-        return null;
-    }
-
-    @Override
     public boolean equals(final Object other) {
         if (this == other) {
             return true;

@@ -56,6 +56,13 @@ public class TestPieces {
     }
 
     @Test
+    public void testPromotionScenario() {
+        final Board board = FenUtilities.createGameFromFEN("r1bq1Bk1/pp2pp1p/2n3p1/2pn4/5P2/NP2PN2/P1PPp1PP/3RQRK1 b - - 0 1");
+        System.out.println(board);
+
+    }
+
+    @Test
     public void testLegalMoveAllAvailable() {
         final Board board = FenUtilities.createGameFromFEN("4k3/8/8/4n3/4N3/8/8/4K3 w - - 0 1\n");
         final Collection<Move> whiteLegals = board.whitePlayer().getLegalMoves();

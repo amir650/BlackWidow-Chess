@@ -49,8 +49,6 @@ public abstract class Piece {
 
     public abstract Piece getMovedPiece(Move move);
 
-    public abstract Piece getMovedPiece(Alliance alliance, int to);
-
     public abstract Collection<Move> calculateLegalMoves(final Board board);
 
     @Override

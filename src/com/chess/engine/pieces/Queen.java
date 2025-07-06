@@ -82,11 +82,6 @@ public final class Queen extends Piece {
     }
 
     @Override
-    public Queen getMovedPiece(final Alliance alliance, final int to) {
-        return PieceUtils.INSTANCE.getQueen(alliance, to, true);
-    }
-
-    @Override
     public String toString() {
         return this.pieceType.toString();
     }

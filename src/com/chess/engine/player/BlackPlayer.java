@@ -30,7 +30,7 @@ public final class BlackPlayer extends Player {
     protected Collection<Move> calculateKingCastles(final Collection<Move> playerLegals,
                                                     final Collection<Move> opponentLegals) {
 
-        if (!hasCastleOpportunities()) {
+        if (!hasCastlingRights()) {
             return Collections.emptyList();
         }
 

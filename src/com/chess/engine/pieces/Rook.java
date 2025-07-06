@@ -81,11 +81,6 @@ public final class Rook extends Piece {
     }
 
     @Override
-    public Rook getMovedPiece(final Alliance alliance, final int to) {
-        return PieceUtils.INSTANCE.getRook(alliance, to, true);
-    }
-
-    @Override
     public String toString() {
         return this.pieceType.toString();
     }

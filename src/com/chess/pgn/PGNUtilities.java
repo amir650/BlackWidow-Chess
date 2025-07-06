@@ -7,12 +7,14 @@ import com.chess.engine.player.Player;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PGNUtilities {
 
     private static final Pattern PGN_PATTERN = Pattern.compile("\\[(\\w+)\\s+\"(.*?)\"\\]$");
+    private static AtomicLong invalidCounter = new AtomicLong(0L);
 
     private PGNUtilities() {
         throw new RuntimeException("Not Instantiable!");
@@ -76,15 +78,16 @@ public class PGNUtilities {
         final String outcome = tokens[tokens.length - 1];
         gameTextBuilder.append(line.replace(outcome, "")).append(" ");
         final String gameText = gameTextBuilder.toString().trim();
-
         if (gameText.length() > 20) {
             tagsBuilder.addTag("Result", outcome);
             final Game game = createGame(tagsBuilder.build(), gameText);
-            System.out.printf("Finished parsing game: %s\n", game);
+            //System.out.printf("Finished parsing game: %s\n", game);
             if (game.isValid()) {
                 games.add(game);
             } else {
-                System.out.println("\tInvalid game: " +game);
+                invalidCounter.incrementAndGet();
+                System.out.println("\tInvalid game: " +game+ " counter = " +invalidCounter.get());
+                //System.out.println("\t\tgameText = " +gameText);
             }
         }
     }
@@ -150,7 +153,7 @@ public class PGNUtilities {
         String trimmedPGN = pgnText.replaceAll("[+#]", ""); // Remove check/mate markers
         for (Move move : board.currentPlayer().getLegalMoves()) {
             String moveString = move.toString().replaceAll("[+#]", "");
-            if (moveString.equalsIgnoreCase(trimmedPGN)) {
+            if (moveString.equals(trimmedPGN)) {
                 return move;
             }
         }
