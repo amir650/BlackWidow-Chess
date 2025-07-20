@@ -90,7 +90,6 @@ public abstract class Move {
         final Builder builder = new Builder();
         return builder.setBoardConfiguration(newBoardConfig)
                 .setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance())
-                .setMoveTransition(this)
                 .build();
     }
 
@@ -217,7 +216,6 @@ public abstract class Move {
 
             builder.setPiece(this.promotionPiece.getMovedPiece(this));
             builder.setMoveMaker(pawnMovedBoard.currentPlayer().getAlliance());
-            builder.setMoveTransition(this);
             return builder.build();
         }
 
@@ -382,7 +380,6 @@ public abstract class Move {
             // Add moved piece to destination
             builder.setPiece(this.movedPiece.getMovedPiece(this));
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
-            builder.setMoveTransition(this);
 
             return builder.build();
         }
@@ -395,6 +392,11 @@ public abstract class Move {
             builder.setEnPassantPawn((Pawn)this.getAttackedPiece());
             builder.setMoveMaker(this.board.currentPlayer().getAlliance());
             return builder.build();
+        }
+
+        @Override
+        public String toString() {
+            return "EP" + super.toString();
         }
 
     }
@@ -423,7 +425,6 @@ public abstract class Move {
             return builder.setBoardConfiguration(newBoardConfig)
                           .setEnPassantPawn(movedPawn)
                           .setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance())
-                          .setMoveTransition(this)
                           .build();
         }
 
@@ -471,7 +472,7 @@ public abstract class Move {
             final Builder builder = new Builder();
             return builder.setBoardConfiguration(newBoardConfig)
                           .setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance())
-                          .setMoveTransition(this).build();
+                          .build();
         }
 
         @Override
@@ -647,5 +648,20 @@ public abstract class Move {
             }
             return MoveUtils.NULL_MOVE;
         }
+
+        public static Move createPromotionMove(final Board board,
+                                               final int currentCoordinate,
+                                               final int destinationCoordinate,
+                                               final Piece.PieceType pieceType) {
+            for (final Move move : MoveUtils.getPromotionOnlyMoves(board.currentPlayer())) {
+                final PawnPromotion pawnPromotionMove = (PawnPromotion)move;
+                if (move.getCurrentCoordinate() == currentCoordinate &&
+                    move.getDestinationCoordinate() == destinationCoordinate && pawnPromotionMove.promotionPiece.getPieceType() == pieceType) {
+                    return move;
+                }
+            }
+            return MoveUtils.NULL_MOVE;
+        }
+
     }
 }

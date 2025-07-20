@@ -6,7 +6,7 @@ import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.MoveFactory;
 import com.chess.engine.board.MoveTransition;
 import com.chess.engine.player.ai.MoveStrategy;
-import com.chess.engine.player.ai.StockAlphaBeta;
+import com.chess.engine.player.ai.BlackWidowAI;
 import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
@@ -896,7 +896,7 @@ public class TestCheckmate {
     @Test
     public void testMateInTwoTest1() {
         final Board board = FenUtilities.createGameFromFEN("6k1/1b4pp/1B1Q4/4p1P1/p3q3/2P3r1/P1P2PP1/R5K1 w - - 1 0");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
+        final MoveStrategy alphaBeta = new BlackWidowAI(6);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("d6"), BoardUtils.INSTANCE.getCoordinateAtPosition("e6")));
@@ -905,19 +905,18 @@ public class TestCheckmate {
     @Test
     public void testMateInTwoTest2() {
         final Board board = FenUtilities.createGameFromFEN("3r3r/1Q5p/p3q2k/3NBp1B/3p3n/5P2/PP4PP/4R2K w - - 1 0");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
-        final Move bestMove = alphaBeta.execute(board);
-        assertEquals(
-                bestMove,
-                Move.MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("b7"),
-                        BoardUtils.INSTANCE.getCoordinateAtPosition("g7")));
+        final MoveStrategy alphaBeta = new BlackWidowAI(6);
+        final Move actual = alphaBeta.execute(board);
+        final Move expected = Move.MoveFactory.createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("b7"),
+                BoardUtils.INSTANCE.getCoordinateAtPosition("g7"));
+        assertEquals(expected, actual);
     }
 
 
     @Test
     public void testMateInFourTest1() {
         final Board board = FenUtilities.createGameFromFEN("7k/4r2B/1pb5/2P5/4p2Q/2q5/2P2R2/1K6 w - - 1 0");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(7);
+        final MoveStrategy alphaBeta = new BlackWidowAI(7);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("f2"), BoardUtils.INSTANCE.getCoordinateAtPosition("f8")));
@@ -926,7 +925,7 @@ public class TestCheckmate {
     @Test
     public void testMagnusBlackToMoveAndWinTest1() {
         final Board board = FenUtilities.createGameFromFEN("2rr2k1/pb3pp1/4q2p/2pn4/2Q1P3/P4P2/1P3BPP/2KR2NR b - - 0 1");
-        final MoveStrategy alphaBeta = new StockAlphaBeta(6);
+        final MoveStrategy alphaBeta = new BlackWidowAI(6);
         final Move bestMove = alphaBeta.execute(board);
         assertEquals(bestMove, Move.MoveFactory
                 .createMove(board, BoardUtils.INSTANCE.getCoordinateAtPosition("d5"), BoardUtils.INSTANCE.getCoordinateAtPosition("e3")));

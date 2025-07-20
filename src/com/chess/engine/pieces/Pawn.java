@@ -72,7 +72,6 @@ public final class Pawn
                     final Piece pieceOnCandidate = board.getEnPassantPawn();
                     if (this.pieceAlliance != pieceOnCandidate.getPieceAllegiance()) {
                         legalMoves.add(new PawnEnPassantAttack(board, this, candidateDestinationCoordinate, pieceOnCandidate));
-
                     }
                 }
             }

@@ -1,12 +1,15 @@
 package com.chess.gui;
 
-import com.chess.engine.board.*;
+import com.chess.engine.board.Board;
+import com.chess.engine.board.BoardUtils;
+import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.MoveFactory;
+import com.chess.engine.board.MoveTransition;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.Player;
 import com.chess.engine.player.ai.AIProgressListener;
 import com.chess.engine.player.ai.StandardBoardEvaluator;
-import com.chess.engine.player.ai.StockAlphaBeta;
+import com.chess.engine.player.ai.BlackWidowAI;
 import com.chess.pgn.FenUtilities;
 import com.chess.pgn.MySqlGamePersistence;
 import com.chess.pgn.PGNUtilities;
@@ -69,7 +72,7 @@ public final class Table {
         this.takenPiecesPanel = new TakenPiecesPanel();
         this.boardPanel = new BoardPanel();
         this.moveLog = new MoveLog();
-        this.eventManager.addGameEventListener(this::handleGameEvent);
+        this.eventManager.addGameEventListener(this::processAllGameEvents);
         this.eventManager.addAIProgressListener(this.debugPanel::updateProgress);
         this.gameSetup = new GameSetup(this.gameFrame, true);
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
@@ -129,7 +132,6 @@ public final class Table {
     }
 
     public void show() {
-        Table.get().getMoveLog().clear();
         Table.get().getGameHistoryPanel().redo(this.chessBoard, Table.get().getMoveLog());
         Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
         Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
@@ -137,46 +139,69 @@ public final class Table {
     }
 
     // Event handling method
-    private void handleGameEvent(GameEvent event) {
-        event.processEvent(this, event);
+    private void processAllGameEvents(final GameEvent event) {
+        event.process(this);
     }
 
-    void handleMoveMade() {
-        if (getGameSetup().isAIPlayer(getGameBoard().currentPlayer()) &&
-                !getGameBoard().currentPlayer().isInCheckMate() &&
-                !getGameBoard().currentPlayer().isInStaleMate()) {
-            System.out.println(getGameBoard().currentPlayer() + " is set to AI, thinking....");
-            this.eventManager.publishGameEvent(new GameEvent(GameEvent.Type.AI_THINKING, null));
-            AIThinkTank thinkTank = new AIThinkTank(new MySqlGamePersistence(), this.eventManager);
-            thinkTank.execute();
-        }
+    void handleMoveMade(final Move move,
+                        final PlayerType playerType) {
+        // Update UI components
+        this.show();
 
+        // Check for game end conditions
         if (getGameBoard().currentPlayer().isInCheckMate()) {
             String message = "Player " + getGameBoard().currentPlayer() + " is in checkmate!";
             JOptionPane.showMessageDialog(getBoardPanel(), "Game Over: " + message, "Game Over",
                     JOptionPane.INFORMATION_MESSAGE);
-            this.eventManager.publishGameEvent(new GameEvent(GameEvent.Type.GAME_OVER, message));
+            this.eventManager.publishGameEvent(new GameOverEvent(message, GameOverEvent.GameResult.CHECKMATE));
+            return;
         }
 
         if (getGameBoard().currentPlayer().isInStaleMate()) {
             String message = "Player " + getGameBoard().currentPlayer() + " is in stalemate!";
             JOptionPane.showMessageDialog(getBoardPanel(), "Game Over: " + message, "Game Over",
                     JOptionPane.INFORMATION_MESSAGE);
-            this.eventManager.publishGameEvent(new GameEvent(GameEvent.Type.GAME_OVER, message));
+            this.eventManager.publishGameEvent(new GameOverEvent(message, GameOverEvent.GameResult.STALEMATE));
+            return;
+        }
+
+        // Check if AI should make the next move
+        if (getGameSetup().isAIPlayer(getGameBoard().currentPlayer()) &&
+                !getGameBoard().currentPlayer().isInCheckMate() &&
+                !getGameBoard().currentPlayer().isInStaleMate()) {
+            System.out.println(getGameBoard().currentPlayer() + " is set to AI, thinking....");
+            this.eventManager.publishGameEvent(new AIThinkingEvent());
         }
     }
 
-    void handleGameSetupChanged(GameSetup gameSetup) {
+    void handleGameSetupChanged(final GameSetup gameSetup) {
         System.out.println("Game setup changed: " + gameSetup);
         // Check if current player is now AI and should start thinking
         if (gameSetup.isAIPlayer(getGameBoard().currentPlayer()) &&
                 !getGameBoard().currentPlayer().isInCheckMate() &&
                 !getGameBoard().currentPlayer().isInStaleMate()) {
             System.out.println(getGameBoard().currentPlayer() + " is set to AI, thinking....");
-            this.eventManager.publishGameEvent(new GameEvent(GameEvent.Type.AI_THINKING, null));
-            AIThinkTank thinkTank = new AIThinkTank(new MySqlGamePersistence(), this.eventManager);
-            thinkTank.execute();
+            this.eventManager.publishGameEvent(new AIThinkingEvent());
         }
+    }
+
+    void handleAIThinking() {
+        AIThinkTank thinkTank = new AIThinkTank(new MySqlGamePersistence(), this.eventManager);
+        thinkTank.execute();
+    }
+
+    void handleGameOver(final String message, final GameOverEvent.GameResult result) {
+        System.out.println("Game Over: " + message + " (" + result + ")");
+        // Additional game over handling logic can be added here
+        // For example: save game, reset board, show statistics, etc.
+    }
+
+    void handleNewGame() {
+        undoAllMoves();
+        this.chessBoard = Board.createStandardBoard();
+        this.computerMove = null;
+        this.show();
+        System.out.println("New game started");
     }
 
     private void populateMenuBar(final JMenuBar tableMenuBar) {
@@ -254,12 +279,8 @@ public final class Table {
         optionsMenu.setMnemonic(KeyEvent.VK_O);
 
         final JMenuItem resetMenuItem = new JMenuItem("New Game", KeyEvent.VK_P);
-        resetMenuItem.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                undoAllMoves();
-                Table.get().getGameFrame().repaint();
-            }
+        resetMenuItem.addActionListener(_ -> {
+            this.eventManager.publishGameEvent(new NewGameEvent());
         });
         optionsMenu.add(resetMenuItem);
 
@@ -270,19 +291,11 @@ public final class Table {
         });
         optionsMenu.add(evaluateBoardMenuItem);
 
-        final JMenuItem escapeAnalysis = new JMenuItem("Escape Analysis Score", KeyEvent.VK_S);
-        escapeAnalysis.addActionListener(_ -> {
-            final Move lastMove = this.moveLog.getMoves().get(this.moveLog.size() - 1);
-            if(lastMove != null) {
-                System.out.println(MoveUtils.exchangeScore(lastMove));
-            }
-
-        });
-        optionsMenu.add(escapeAnalysis);
 
         final JMenuItem legalMovesMenuItem = new JMenuItem("Current State", KeyEvent.VK_L);
         legalMovesMenuItem.addActionListener(_ -> {
             System.out.println(FenUtilities.createFENFromGame(this.chessBoard));
+            System.out.println("hash = " +this.chessBoard.hashCode());
             System.out.println(Arrays.toString(this.chessBoard.getWhitePieceCoordinates()));
             System.out.println(Arrays.toString(this.chessBoard.getBlackPieceCoordinates()));
             System.out.println(playerInfo(this.chessBoard.currentPlayer()));
@@ -292,17 +305,14 @@ public final class Table {
 
         final JMenuItem undoMoveMenuItem = new JMenuItem("Undo last move", KeyEvent.VK_M);
         undoMoveMenuItem.addActionListener(_ -> {
-            if(Table.get().getMoveLog().size() > 0) {
-                undoLastMove();
-            }
+            System.out.println("user initiated undo!");
+            undoLastMove();
         });
         optionsMenu.add(undoMoveMenuItem);
 
         final JMenuItem setupGameMenuItem = new JMenuItem("Setup Game", KeyEvent.VK_S);
         setupGameMenuItem.addActionListener(_ -> {
             Table.get().getGameSetup().promptUser();
-            // REMOVED: Table.get().setupUpdate(Table.get().getGameSetup());
-            // setupUpdate() is now only called from GameSetup OK button
         });
         optionsMenu.add(setupGameMenuItem);
 
@@ -480,25 +490,27 @@ public final class Table {
     }
 
     private void undoLastMove() {
-        final Move lastMove = Table.get().getMoveLog().removeMove(Table.get().getMoveLog().size() - 1);
-        this.chessBoard = this.chessBoard.currentPlayer().unMakeMove(lastMove).getToBoard();
-        this.computerMove = null;
-        final boolean removed = Table.get().getMoveLog().removeMove(lastMove);
-        if(removed) {
-            Table.get().getGameHistoryPanel().redo(this.chessBoard, Table.get().getMoveLog());
-            Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
-            Table.get().getBoardPanel().drawBoard(this.chessBoard);
-            Table.get().getDebugPanel().redo();
+        final MoveLog log = Table.get().getMoveLog();
+        if(!log.isEmpty()) {
+            final Move lastMove = Table.get().getMoveLog().removeMove(Table.get().getMoveLog().size() - 1);
+            this.chessBoard = this.chessBoard.currentPlayer().unMakeMove(lastMove).getToBoard();
+            this.computerMove = null;
+            if (lastMove != null) {
+                Table.get().getGameHistoryPanel().redo(this.chessBoard, Table.get().getMoveLog());
+                Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
+                Table.get().getBoardPanel().drawBoard(this.chessBoard);
+                Table.get().getDebugPanel().redo();
+            }
         }
     }
 
     // Updated methods using functional interface event system
-    public void moveMadeUpdate(final PlayerType playerType) {
-        this.eventManager.publishGameEvent(new GameEvent(GameEvent.Type.MOVE_MADE, playerType));
+    public void moveMadeUpdate(final PlayerType playerType, final Move move) {
+        this.eventManager.publishGameEvent(new MoveMadeEvent(move, playerType));
     }
 
     public void setupUpdate(final GameSetup gameSetup) {
-        this.eventManager.publishGameEvent(new GameEvent(GameEvent.Type.GAME_SETUP_CHANGED, gameSetup));
+        this.eventManager.publishGameEvent(new GameSetupChangedEvent(gameSetup));
     }
 
     public enum PlayerType {
@@ -511,7 +523,8 @@ public final class Table {
         private final MySqlGamePersistence persistence;
         private final GameEventManager eventManager;
 
-        private AIThinkTank(MySqlGamePersistence persistence, GameEventManager eventManager) {
+        private AIThinkTank(final MySqlGamePersistence persistence,
+                            final GameEventManager eventManager) {
             this.persistence = persistence;
             this.eventManager = eventManager;
         }
@@ -528,7 +541,7 @@ public final class Table {
                 bestMove = bookMove;
             }
             else {
-                final StockAlphaBeta strategy = new StockAlphaBeta(Table.get().getGameSetup().getSearchDepth());
+                final BlackWidowAI strategy = new BlackWidowAI(Table.get().getGameSetup().getSearchDepth(), true, 2, true);
                 // Add AI progress listener to the strategy
                 strategy.addAIProgressListener(eventManager::publishAIProgress);
                 bestMove = strategy.execute(Table.get().getGameBoard());
@@ -547,7 +560,7 @@ public final class Table {
                 Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
                 Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
                 Table.get().getDebugPanel().redo();
-                Table.get().moveMadeUpdate(PlayerType.COMPUTER);
+                Table.get().moveMadeUpdate(PlayerType.COMPUTER, bestMove);
             } catch (final Exception e) {
                 throw new RuntimeException(e);
             }
@@ -639,6 +652,10 @@ public final class Table {
             this.moves = new ArrayList<>();
         }
 
+        public boolean isEmpty() {
+            return this.moves.isEmpty();
+        }
+
         public List<Move> getMoves() {
             return this.moves;
         }
@@ -708,7 +725,9 @@ public final class Table {
                     invokeLater(() -> {
                         gameHistoryPanel.redo(chessBoard, moveLog);
                         takenPiecesPanel.redo(moveLog);
-                        Table.get().moveMadeUpdate(PlayerType.HUMAN);
+                        if (sourceTile == null) { // Move was completed
+                            Table.get().moveMadeUpdate(PlayerType.HUMAN, moveLog.getMoves().get(moveLog.size() - 1));
+                        }
                         boardPanel.drawBoard(chessBoard);
                         debugPanel.redo();
                     });
@@ -823,6 +842,7 @@ public final class Table {
         }
     }
 
+    // EVENT SYSTEM
     private static class GameEventManager {
 
         @FunctionalInterface
@@ -856,63 +876,124 @@ public final class Table {
 
     }
 
-    private static class GameEvent {
+    // Base Game Event Class
+    public abstract static class GameEvent {
 
         public enum Type {
-            MOVE_MADE {
-                @Override
-                void handleGameEvent(final Table table,
-                                     final GameEvent event) {
-                    //Table.PlayerType playerType = (Table.PlayerType) event.getData();
-                    table.handleMoveMade();
-                }
-            },
-            GAME_SETUP_CHANGED {
-                @Override
-                void handleGameEvent(final Table table,
-                                     final GameEvent event) {
-                    GameSetup gameSetup = (GameSetup) event.getData();
-                    table.handleGameSetupChanged(gameSetup);
-                }
-            },
-            AI_THINKING {
-                @Override
-                void handleGameEvent(final Table table,
-                                     final GameEvent event) {
-                    System.out.println("AI is thinking...");
-                }
-            },
-            GAME_OVER {
-                @Override
-                void handleGameEvent(final Table table,
-                                     final GameEvent event) {
-                    String gameOverMessage = (String) event.getData();
-                    System.out.println("Game Over: " + gameOverMessage);
-                }
-            };
-
-            abstract void handleGameEvent(Table table, GameEvent event);
-
+            MOVE_MADE,
+            GAME_SETUP_CHANGED,
+            AI_THINKING,
+            GAME_OVER,
+            NEW_GAME
         }
 
         private final Type type;
-        private final Object data;
 
-        public GameEvent(final Type type,
-                         final Object data) {
+        protected GameEvent(Type type) {
             this.type = type;
-            this.data = data;
         }
 
-        public Object getData() {
-            return data;
+        public Type getType() {
+            return type;
         }
 
-        public void processEvent(final Table table,
-                                 final GameEvent event) {
-            this.type.handleGameEvent(table, event);
-        }
-
+        public abstract void process(Table table);
     }
 
+    // Concrete event implementations
+    private static class MoveMadeEvent extends GameEvent {
+        private final Move move;
+        private final PlayerType playerType;
+
+        MoveMadeEvent(Move move, PlayerType playerType) {
+            super(Type.MOVE_MADE);
+            this.move = move;
+            this.playerType = playerType;
+        }
+
+        public Move getMove() {
+            return move;
+        }
+
+        public PlayerType getPlayerType() {
+            return playerType;
+        }
+
+        @Override
+        public void process(Table table) {
+            table.handleMoveMade(move, playerType);
+        }
+    }
+
+    private static class GameSetupChangedEvent extends GameEvent {
+        private final GameSetup gameSetup;
+
+        GameSetupChangedEvent(GameSetup gameSetup) {
+            super(Type.GAME_SETUP_CHANGED);
+            this.gameSetup = gameSetup;
+        }
+
+        public GameSetup getGameSetup() {
+            return gameSetup;
+        }
+
+        @Override
+        public void process(Table table) {
+            table.handleGameSetupChanged(gameSetup);
+        }
+    }
+
+    private static class AIThinkingEvent extends GameEvent {
+        AIThinkingEvent() {
+            super(Type.AI_THINKING);
+        }
+
+        @Override
+        public void process(Table table) {
+            table.handleAIThinking();
+        }
+    }
+
+    private static class GameOverEvent extends GameEvent {
+
+        public enum GameResult {
+            CHECKMATE,
+            STALEMATE,
+            RESIGNATION,
+            DRAW
+        }
+
+        private final String message;
+        private final GameResult result;
+
+        GameOverEvent(String message, GameResult result) {
+            super(Type.GAME_OVER);
+            this.message = message;
+            this.result = result;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public GameResult getResult() {
+            return result;
+        }
+
+        @Override
+        public void process(Table table) {
+            table.handleGameOver(message, result);
+        }
+    }
+
+    private static class NewGameEvent extends GameEvent {
+        NewGameEvent() {
+            super(Type.NEW_GAME);
+        }
+
+        @Override
+        public void process(Table table) {
+            table.handleNewGame();
+        }
+    }
 }

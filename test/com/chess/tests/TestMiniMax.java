@@ -6,7 +6,7 @@ import com.chess.engine.board.Move;
 import com.chess.engine.board.MoveTransition;
 import com.chess.engine.player.ai.MiniMax;
 import com.chess.engine.player.ai.MoveStrategy;
-import com.chess.engine.player.ai.StockAlphaBeta;
+import com.chess.engine.player.ai.BlackWidowAI;
 import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
@@ -147,7 +147,7 @@ public class TestMiniMax {
     public void testMissedAttackGold2() {
         final Board board = FenUtilities.createGameFromFEN("r1bq1rk1/pppp1ppp/2nb1n2/1B2p3/3PP3/5N2/PPP2PPP/RNBQ1RK1 w - - 0 1");
         System.out.println(FenUtilities.createFENFromGame(board));
-        final MoveStrategy minMax = new StockAlphaBeta(6);
+        final MoveStrategy minMax = new BlackWidowAI(6);
         minMax.execute(board);
         // final long numBoardsEvaluated = minMax.getNumBoardsEvaluated();
         //assertEquals(numBoardsEvaluated, 191);

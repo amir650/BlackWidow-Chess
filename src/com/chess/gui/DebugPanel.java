@@ -19,7 +19,6 @@ public class DebugPanel extends JPanel {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(600, 150));
         setBorder(BorderFactory.createTitledBorder("Debug Information"));
-
         this.debugMessages = new ArrayList<>();
         this.debugTextArea = new JTextArea();
         this.debugTextArea.setEditable(false);
@@ -29,23 +28,16 @@ public class DebugPanel extends JPanel {
         this.scrollPane = new JScrollPane(debugTextArea);
         this.scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         this.scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
         add(this.scrollPane, BorderLayout.CENTER);
-
         // Add control buttons
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-
-        JButton clearButton = new JButton("Clear");
+        final JPanel buttonPanel = new JPanel(new FlowLayout());
+        final JButton clearButton = new JButton("Clear");
         clearButton.addActionListener(e -> clearDebugInfo());
-
-        JButton saveButton = new JButton("Save Log");
+        final JButton saveButton = new JButton("Save Log");
         saveButton.addActionListener(e -> saveDebugLog());
-
         buttonPanel.add(clearButton);
         buttonPanel.add(saveButton);
-
         add(buttonPanel, BorderLayout.SOUTH);
-
         // Initialize with welcome message
         updateProgress("Debug panel initialized - ready for AI progress updates");
     }
@@ -133,61 +125,4 @@ public class DebugPanel extends JPanel {
         });
     }
 
-    // Method to add custom debug messages from other parts of the application
-    public void logMessage(final String message) {
-        updateDebugInfo(message);
-    }
-
-    // Method to add error messages
-    public void logError(final String error) {
-        SwingUtilities.invokeLater(() -> {
-            String errorMessage = String.format("[%tT] ERROR: %s%n",
-                    System.currentTimeMillis(), error);
-
-            debugMessages.add(errorMessage);
-
-            if (debugMessages.size() > MAX_DEBUG_MESSAGES) {
-                debugMessages.removeFirst();
-            }
-
-            debugTextArea.append(errorMessage);
-            debugTextArea.setCaretPosition(debugTextArea.getDocument().getLength());
-        });
-    }
-
-    // Method to add warning messages
-    public void logWarning(final String warning) {
-        SwingUtilities.invokeLater(() -> {
-            String warningMessage = String.format("[%tT] WARNING: %s%n",
-                    System.currentTimeMillis(), warning);
-
-            debugMessages.add(warningMessage);
-
-            if (debugMessages.size() > MAX_DEBUG_MESSAGES) {
-                debugMessages.removeFirst();
-            }
-
-            debugTextArea.append(warningMessage);
-            debugTextArea.setCaretPosition(debugTextArea.getDocument().getLength());
-        });
-    }
-
-    // Get all debug messages as a single string
-    public String getDebugLog() {
-        StringBuilder log = new StringBuilder();
-        for (String message : debugMessages) {
-            log.append(message);
-        }
-        return log.toString();
-    }
-
-    // Check if the debug panel has any messages
-    public boolean hasMessages() {
-        return !debugMessages.isEmpty();
-    }
-
-    // Get the number of debug messages
-    public int getMessageCount() {
-        return debugMessages.size();
-    }
 }

@@ -100,6 +100,8 @@ public class MySqlGamePersistence {
 
     public Move getNextBestMove(final Board board,
                                 final Player player) {
+        final long startTime = System.nanoTime();
+
         final String fen = FenUtilities.createFENFromGame(board);
         final String sql = "SELECT san, COUNT(*) AS times_played " +
                 "FROM moves " +
@@ -109,6 +111,7 @@ public class MySqlGamePersistence {
                 "ORDER BY times_played DESC " +
                 "LIMIT 1";
 
+        System.out.println("Issuing book move query ...");
         try (final PreparedStatement ps = dbConnection.prepareStatement(sql)) {
             ps.setString(1, fen);
             try (ResultSet rs = ps.executeQuery()) {
@@ -117,6 +120,10 @@ public class MySqlGamePersistence {
                     for (final Move move : player.getLegalMoves()) {
                         final String moveSan = move.toString();
                         if (moveSan.equals(bestSAN)) {
+                            final long endTime = System.nanoTime();
+                            final long durationMs = (endTime - startTime) / 1_000_000;
+                            System.out.printf("Book move lookup completed in %d ms (found: %s)%n",
+                                    durationMs, bestSAN);
                             return move;
                         }
                     }
@@ -125,6 +132,10 @@ public class MySqlGamePersistence {
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
+
+        final long endTime = System.nanoTime();
+        final long durationMs = (endTime - startTime) / 1_000_000;
+        System.out.printf("Book move lookup completed in %d ms (no move found)%n", durationMs);
 
         return Move.MoveFactory.getNullMove();
     }

@@ -13,8 +13,9 @@ import java.util.regex.Pattern;
 
 public class PGNUtilities {
 
-    private static final Pattern PGN_PATTERN = Pattern.compile("\\[(\\w+)\\s+\"(.*?)\"\\]$");
-    private static AtomicLong invalidCounter = new AtomicLong(0L);
+    private static final Pattern PGN_PATTERN = Pattern.compile("\\[(\\w+)\\s+\"(.*?)\"]$");
+    private static final AtomicLong invalidCounter = new AtomicLong(0L);
+    private static final int BATCH_SIZE = 10_000;
 
     private PGNUtilities() {
         throw new RuntimeException("Not Instantiable!");
@@ -24,7 +25,6 @@ public class PGNUtilities {
                                       final MySqlGamePersistence persistence) throws IOException {
         int count = 0;
         int validCount = 0;
-        final int BATCH_SIZE = 10000;
 
         try (final BufferedReader br = new BufferedReader(new FileReader(pgnFile))) {
             String line;
@@ -41,10 +41,15 @@ public class PGNUtilities {
                 } else if (isEndOfGame(line)) {
                     handleEndOfGameLine(line, tagsBuilder, gameTextBuilder, games);
                     count++;
-                    Game lastGame = games.isEmpty() ? null : games.get(games.size() - 1);
-                    if (lastGame != null && lastGame.isValid()) validCount++;
+                    Game lastGame = games.isEmpty() ? null : games.getLast();
+                    if (lastGame != null && lastGame.isValid()) {
+                        validCount++;
+                    }
                     if (games.size() >= BATCH_SIZE) {
-                        persistBatchAndPrompt(games, persistence, count, validCount, pgnFile.getName());
+                        System.out.printf("\tBatch persisting %d games... (total so far: %d, valid: %d)\n", games.size(), count, validCount);
+                        persistence.persistGames(games);
+                        System.out.println("\tDone persisting batch.");
+                        games.clear();
                     }
                     // Reset for next game
                     tagsBuilder = new PGNGameTags.TagsBuilder();
@@ -92,24 +97,12 @@ public class PGNUtilities {
         }
     }
 
-    private static void persistBatchAndPrompt(final List<Game> games,
-                                                 final MySqlGamePersistence persistence,
-                                                 final int count,
-                                                 final int validCount,
-                                                 final String fileName) {
-        System.out.printf("\tBatch persisting %d games... (total so far: %d, valid: %d)\n", games.size(), count, validCount);
-        persistence.persistGames(games);
-        System.out.println("\tDone persisting batch.");
-        games.clear();
-    }
-
-
     public static Game createGame(final PGNGameTags tags,
                                   final String gameText) {
         Board board = FenUtilities.createStandardBoard();
-        Player currentPlayer = board.currentPlayer();
         final List<MoveRecord> moveRecords = new ArrayList<>();
         int moveNumber = 1;
+        Player currentPlayer = board.currentPlayer();
         for (final String san : PGNUtilities.processMoveText(gameText)) {
             final String fenBefore = FenUtilities.createFENFromGame(board);
             final Move move = PGNUtilities.createMove(board, san);
@@ -121,7 +114,7 @@ public class PGNUtilities {
                 return new InvalidGame("bad fucking move!!", tags);
             }
             board = transition.getToBoard();
-            String fenAfter = FenUtilities.createFENFromGame(board);
+            final String fenAfter = FenUtilities.createFENFromGame(board);
             // Record the move: player is the currentPlayer before the move.
             moveRecords.add(new MoveRecord(moveNumber, currentPlayer.toString(), san, fenBefore, fenAfter));
             currentPlayer = board.currentPlayer();
@@ -131,16 +124,19 @@ public class PGNUtilities {
     }
 
     public static List<String> processMoveText(final String gameText) {
-        if (!gameText.startsWith("1.")) return Collections.emptyList();
-        String cleaned = removeParenthesis(gameText).replaceAll("\\$[0-9]+", "").replaceAll("[0-9]+\\s*\\.\\.\\.", "");
-        String[] rawTurns = cleaned.split("\\s*[0-9]+\\.");
-        List<String> result = new ArrayList<>();
-
-        for (String turn : rawTurns) {
-            String trimmed = turn.trim();
-            if (trimmed.isEmpty()) continue;
-            String[] tokens = trimmed.split("\\s+");
-            for (String move : tokens) {
+        if (!gameText.startsWith("1.")) {
+            return Collections.emptyList();
+        }
+        final String cleaned = removeParenthesis(gameText).replaceAll("\\$[0-9]+", "").replaceAll("[0-9]+\\s*\\.\\.\\.", "");
+        final String[] rawTurns = cleaned.split("\\s*[0-9]+\\.");
+        final List<String> result = new ArrayList<>();
+        for (final String turn : rawTurns) {
+            final String trimmed = turn.trim();
+            if (trimmed.isEmpty()) {
+                continue;
+            }
+            final String[] tokens = trimmed.split("\\s+");
+            for (final String move : tokens) {
                 if (!move.isEmpty() && !isGameEndToken(move)) {
                     result.add(move);
                 }
@@ -149,10 +145,11 @@ public class PGNUtilities {
         return result;
     }
 
-    public static Move createMove(final Board board, final String pgnText) {
-        String trimmedPGN = pgnText.replaceAll("[+#]", ""); // Remove check/mate markers
-        for (Move move : board.currentPlayer().getLegalMoves()) {
-            String moveString = move.toString().replaceAll("[+#]", "");
+    public static Move createMove(final Board board,
+                                  final String pgnText) {
+        final String trimmedPGN = pgnText.replaceAll("[+#]", ""); // Remove check/mate markers
+        for (final Move move : board.currentPlayer().getLegalMoves()) {
+            final String moveString = move.toString().replaceAll("[+#]", "");
             if (moveString.equals(trimmedPGN)) {
                 return move;
             }

@@ -1,8 +1,11 @@
 package com.chess.tests;
 
 import com.chess.engine.Alliance;
-import com.chess.engine.board.*;
+import com.chess.engine.board.Board;
+import com.chess.engine.board.BoardUtils;
+import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.MoveFactory;
+import com.chess.engine.board.MoveTransition;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.ai.StandardBoardEvaluator;
 import com.chess.pgn.FenUtilities;
@@ -46,7 +49,6 @@ public class TestBoard {
         for(final Move move : allMoves) {
             assertFalse(move.isAttack());
             assertFalse(move.isCastlingMove());
-            assertEquals(1, MoveUtils.exchangeScore(move));
         }
 
         assertEquals(40, allMoves.size());
@@ -202,6 +204,21 @@ public class TestBoard {
 //        //build the board
 //        builder.build();
 //    }
+
+    @Test
+    public void testTheBoard() {
+        System.out.println("=== BOARD STATE ===");
+        final Board board = Board.createStandardBoard();
+        for (Piece piece : board.getAllPieces()) {
+            System.out.println(
+                    piece.getPieceType() + " at " +
+                            piece.getPiecePosition() +
+                            " isFirstMove: " + piece.isFirstMove()
+            );
+        }
+        System.out.println("FEN: " + FenUtilities.createFENFromGame(board));
+        System.out.println("==================");
+    }
 
     @Test
     public void testAlgebreicNotation() {

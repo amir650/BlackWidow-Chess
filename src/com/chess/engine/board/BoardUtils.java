@@ -5,7 +5,6 @@ import com.chess.engine.pieces.Piece;
 
 import java.util.*;
 
-import static com.chess.engine.board.Move.MoveFactory;
 
 public enum  BoardUtils {
 
@@ -33,6 +32,132 @@ public enum  BoardUtils {
     public static final int START_TILE_INDEX = 0;
     public static final int NUM_TILES_PER_ROW = 8;
     public static final int NUM_TILES = 64;
+    // Pawn tables remain the same (8/10 rating)
+    public final static int[] WHITE_PAWN_PREFERRED_COORDINATES = {
+            0,  0,  0,  0,  0,  0,  0,  0,
+            90, 90, 90, 90, 90, 90, 90, 90,
+            30, 30, 40, 60, 60, 40, 30, 30,
+            10, 10, 20, 40, 40, 20, 10, 10,
+            5,  5, 10, 20, 20, 10,  5,  5,
+            0,  0,  0,-10,-10,  0,  0,  0,
+            5, -5,-10,  0,  0,-10, -5,  5,
+            0,  0,  0,  0,  0,  0,  0,  0
+    };
+    public final static int[] BLACK_PAWN_PREFERRED_COORDINATES = {
+            0,  0,  0,  0,  0,  0,  0,  0,
+            5, -5,-10,  0,  0,-10, -5,  5,
+            0,  0,  0,-10,-10,  0,  0,  0,
+            5,  5, 10, 20, 20, 10,  5,  5,
+            10, 10, 20, 40, 40, 20, 10, 10,
+            30, 30, 40, 60, 60, 40, 30, 30,
+            90, 90, 90, 90, 90, 90, 90, 90,
+            0,  0,  0,  0,  0,  0,  0,  0
+    };
+    // Knight tables remain the same (7/10 rating)
+    public final static int[] WHITE_KNIGHT_PREFERRED_COORDINATES = {
+            -50,-40,-30,-30,-30,-30,-40,-50,
+            -40,-20,  0,  5,  5,  0,-20,-40,
+            -30,  5, 10, 15, 15, 10,  5,-30,
+            -30,  5, 15, 20, 20, 15,  5,-30,
+            -30,  5, 15, 20, 20, 15,  5,-30,
+            -30,  5, 10, 15, 15, 10,  5,-30,
+            -40,-20,  0,  0,  0,  0,-20,-40,
+            -50,-40,-30,-30,-30,-30,-40,-50
+    };
+    public final static int[] BLACK_KNIGHT_PREFERRED_COORDINATES = {
+            -50,-40,-30,-30,-30,-30,-40,-50,
+            -40,-20,  0,  0,  0,  0,-20,-40,
+            -30,  5, 10, 15, 15, 10,  5,-30,
+            -30,  5, 15, 20, 20, 15,  5,-30,
+            -30,  5, 15, 20, 20, 15,  5,-30,
+            -30,  5, 10, 15, 15, 10,  5,-30,
+            -40,-20,  0,  5,  5,  0,-20,-40,
+            -50,-40,-30,-30,-30,-30,-40,-50,
+    };
+    // IMPROVED Bishop tables - favor long diagonals and fianchetto positions
+    public final static int[] WHITE_BISHOP_PREFERRED_COORDINATES = {
+            -20,-10,-10,-10,-10,-10,-10,-20,
+            -10,  5,  0,  0,  0,  0,  5,-10,
+            -10, 10, 10, 10, 10, 10, 10,-10,
+            -10,  0, 10, 15, 15, 10,  0,-10,
+            -10,  5, 10, 15, 15, 10,  5,-10,
+            -10,  0, 10, 10, 10, 10,  0,-10,
+            -10, 10,  5,  0,  0,  5, 10,-10,  // Fianchetto bonus
+            -20,-10,-10,-10,-10,-10,-10,-20
+    };
+    public final static int[] BLACK_BISHOP_PREFERRED_COORDINATES = {
+            -20,-10,-10,-10,-10,-10,-10,-20,
+            -10, 10,  5,  0,  0,  5, 10,-10,  // Fianchetto bonus
+            -10,  0, 10, 10, 10, 10,  0,-10,
+            -10,  5, 10, 15, 15, 10,  5,-10,
+            -10,  0, 10, 15, 15, 10,  0,-10,
+            -10, 10, 10, 10, 10, 10, 10,-10,
+            -10,  5,  0,  0,  0,  0,  5,-10,
+            -20,-10,-10,-10,-10,-10,-10,-20
+    };
+    // IMPROVED Rook tables - favor central files and 7th rank
+    public final static int[] WHITE_ROOK_PREFERRED_COORDINATES = {
+            0,  0,  0,  5,  5,  0,  0,  0,   // Back rank connection bonus
+            5, 10, 10, 10, 10, 10, 10,  5,
+            -5,  0,  0,  0,  0,  0,  0, -5,
+            -5,  0,  0,  0,  0,  0,  0, -5,
+            -5,  0,  0,  0,  0,  0,  0, -5,
+            -5,  0,  0,  5,  5,  0,  0, -5,   // Central files bonus
+            5, 20, 20, 25, 25, 20, 20,  5,   // 7th rank extra strong
+            0,  0,  5, 10, 10,  5,  0,  0    // d/e files preferred
+    };
+    public final static int[] BLACK_ROOK_PREFERRED_COORDINATES = {
+            0,  0,  5, 10, 10,  5,  0,  0,   // d/e files preferred
+            5, 20, 20, 25, 25, 20, 20,  5,   // 2nd rank extra strong
+            -5,  0,  0,  5,  5,  0,  0, -5,   // Central files bonus
+            -5,  0,  0,  0,  0,  0,  0, -5,
+            -5,  0,  0,  0,  0,  0,  0, -5,
+            -5,  0,  0,  0,  0,  0,  0, -5,
+            5, 10, 10, 10, 10, 10, 10,  5,
+            0,  0,  0,  5,  5,  0,  0,  0    // Back rank connection bonus
+    };
+    // IMPROVED Queen tables - asymmetric, favors kingside and mobility
+    public final static int[] WHITE_QUEEN_PREFERRED_COORDINATES = {
+            -20,-10,-10, -5, -5,-10,-10,-20,
+            -10,  0,  0,  0,  0,  5,  0,-10,  // Slight kingside preference
+            -10,  0,  5,  5,  5,  5,  5,-10,
+            -5,  0,  5,  5,  5,  5,  0, -5,
+            0,  0,  5,  5,  5,  5,  0, -5,
+            -10,  5,  5,  5,  5,  5,  0,-10,
+            -10,  0,  5,  0,  0,  0,  0,-10,
+            -20,-10,-10, -5, -5,-10,-10,-20
+    };
+    public final static int[] BLACK_QUEEN_PREFERRED_COORDINATES = {
+            -20,-10,-10, -5, -5,-10,-10,-20,
+            -10,  0,  5,  0,  0,  0,  0,-10,
+            -10,  5,  5,  5,  5,  5,  0,-10,
+            0,  0,  5,  5,  5,  5,  0, -5,
+            -5,  0,  5,  5,  5,  5,  0, -5,
+            -10,  0,  5,  5,  5,  5,  5,-10,
+            -10,  0,  0,  0,  0,  5,  0,-10,  // Slight kingside preference
+            -20,-10,-10, -5, -5,-10,-10,-20
+    };
+    // IMPROVED King tables - balanced for safety and endgame activity
+    public final static int[] WHITE_KING_PREFERRED_COORDINATES = {
+            -30,-40,-40,-50,-50,-40,-40,-30,
+            -30,-40,-40,-50,-50,-40,-40,-30,
+            -30,-40,-40,-50,-50,-40,-40,-30,
+            -30,-40,-40,-50,-50,-40,-40,-30,
+            -20,-30,-30,-40,-40,-30,-30,-20,
+            -10,-20,-20,-20,-20,-20,-20,-10,
+            20, 20,  0,  0,  0,  0, 20, 20,   // Castling positions
+            20, 30, 10,  0,  0, 10, 30, 20    // g1/b1 strongly preferred
+    };
+    public final static int[] BLACK_KING_PREFERRED_COORDINATES = {
+            20, 30, 10,  0,  0, 10, 30, 20,   // g8/b8 strongly preferred
+            20, 20,  0,  0,  0,  0, 20, 20,   // Castling positions
+            -10,-20,-20,-20,-20,-20,-20,-10,
+            -20,-30,-30,-40,-40,-30,-30,-20,
+            -30,-40,-40,-50,-50,-40,-40,-30,
+            -30,-40,-40,-50,-50,-40,-40,-30,
+            -30,-40,-40,-50,-50,-40,-40,-30,
+            -30,-40,-40,-50,-50,-40,-40,-30
+    };
 
     private static List<Boolean> initColumn(int columnNumber) {
         final Boolean[] column = new Boolean[NUM_TILES];
@@ -100,12 +225,6 @@ public enum  BoardUtils {
         return board.whitePlayer().isInCheck() || board.blackPlayer().isInCheck();
     }
 
-    public static boolean kingThreat(final Move move) {
-        final Board board = move.getBoard();
-        final MoveTransition transition = board.currentPlayer().makeMove(move);
-        return transition.getToBoard().currentPlayer().isInCheck();
-    }
-
     public static boolean isKingPawnTrap(final Board board,
                                          final King king,
                                          final int frontTile) {
@@ -115,75 +234,18 @@ public enum  BoardUtils {
                piece.getPieceAllegiance() != king.getPieceAllegiance();
     }
 
-    public static int scoreMove(final Move move) {
-        int score = 0;
-
-        // MVV-LVA heuristic
-        if (move.isAttack()) {
-            int victim = move.getAttackedPiece().getPieceValue();
-            int attacker = move.getMovedPiece().getPieceValue();
-            score += (victim * 10) - attacker;
-        }
-
-        // King threats
-        if (BoardUtils.kingThreat(move)) {
-            score += 500;
-        }
-
-        // Castling (slightly lower priority than attack)
-        if (move.isCastlingMove()) {
-            score += 300;
-        }
-
-        // Promotion bonus
-        if (move instanceof Move.PawnPromotion) {
-            score += 800;
-        }
-
-        // Central square bonus
-        int dest = move.getDestinationCoordinate();
-        if (BoardUtils.INSTANCE.isCenterSquare(dest)) {
-            score += 100;
-        } else if (BoardUtils.INSTANCE.isExtendedCenterSquare(dest)) {
-            score += 25;
-        }
-
-        return score;
-    }
-
     public static int mvvlva(final Move move) {
         if (!move.isAttack()) {
             return 0;
         }
-        int victimValue = move.getAttackedPiece().getPieceValue();
-        int attackerValue = move.getMovedPiece().getPieceValue();
-        return (victimValue * 10) - attackerValue;
-    }
-
-    public static List<Move> lastNMoves(final Board board, int N) {
-        final List<Move> moveHistory = new ArrayList<>();
-        Move currentMove = board.getTransitionMove();
-        int i = 0;
-        while(currentMove != MoveFactory.getNullMove() && i < N) {
-            moveHistory.add(currentMove);
-            currentMove = currentMove.getBoard().getTransitionMove();
-            i++;
-        }
-        return Collections.unmodifiableList(moveHistory);
+        final int victimValue = move.getAttackedPiece().getPieceValue();
+        final int attackerValue = move.getMovedPiece().getPieceValue();
+        return (victimValue * 10) - attackerValue + (move.getMovedPiece().getPieceType() == Piece.PieceType.PAWN ? 10 : 0);
     }
 
     public static boolean isEndGame(final Board board) {
         return board.currentPlayer().isInCheckMate() ||
                board.currentPlayer().isInStaleMate();
-    }
-
-    public boolean isCenterSquare(int coord) {
-        return coord == 27 || coord == 28 || coord == 35 || coord == 36; // d4, e4, d5, e5
-    }
-
-    public boolean isExtendedCenterSquare(int coord) {
-        return coord >= 18 && coord <= 21 || coord >= 26 && coord <= 29 ||
-                coord >= 34 && coord <= 37 || coord >= 42 && coord <= 45;
     }
 
     public static String humanReadableElapsedTime(long millis) {

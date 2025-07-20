@@ -5,7 +5,7 @@ import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.MoveTransition;
 import com.chess.engine.player.ai.MoveStrategy;
-import com.chess.engine.player.ai.StockAlphaBeta;
+import com.chess.engine.player.ai.BlackWidowAI;
 import com.chess.pgn.FenUtilities;
 import org.junit.Test;
 
@@ -296,7 +296,7 @@ public class TestCastling {
                                 BoardUtils.INSTANCE.getCoordinateAtPosition("c3")));
         assertTrue(t11.getMoveStatus().isDone());
 
-        final MoveStrategy moveStrategy = new StockAlphaBeta(6);
+        final MoveStrategy moveStrategy = new BlackWidowAI(6);
 
         moveStrategy.execute(t11.getToBoard());
     }
@@ -399,7 +399,7 @@ public class TestCastling {
         System.out.println("Final board before search:");
         System.out.println(t11.getToBoard());
         System.out.println(FenUtilities.createFENFromGame(t11.getToBoard()));
-        final MoveStrategy moveStrategy = new StockAlphaBeta(6);
+        final MoveStrategy moveStrategy = new BlackWidowAI(6);
 
         moveStrategy.execute(t11.getToBoard());
     }
@@ -407,7 +407,7 @@ public class TestCastling {
     @Test
     public void testIslateBug() {
         final Board board = FenUtilities.createGameFromFEN("rn2kbnr/pppq1ppp/4p3/3pP3/Q7/2NP4/PP1P1PPP/R1B1K1NR b KQkq - 0 1");
-        final MoveStrategy moveStrategy = new StockAlphaBeta(6);
+        final MoveStrategy moveStrategy = new BlackWidowAI(6);
         moveStrategy.execute(board);
     }
 

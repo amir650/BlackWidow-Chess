@@ -23,28 +23,29 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
 
     private static final Map<GamePhase, List<ScalarFeature>> PHASE_FACTORS =
             Map.of(
-                    GamePhase.OPENING, List.of(
+                    GamePhase.OPENING,
+                        List.of(
                             Feature.MATERIAL,
                             Feature.CHECK_AND_MATE,
                             Feature.MOBILITY,
                             Feature.PAWN_STRUCTURE,
                             Feature.CASTLE
-                    ),
-                    GamePhase.MIDDLEGAME, List.of(
+                        ),
+                        GamePhase.MIDDLEGAME, List.of(
                             Feature.MATERIAL,
                             Feature.CHECK_AND_MATE,
                             Feature.MOBILITY,
                             Feature.ATTACKS,
                             Feature.KING_SAFETY
-                    ),
-                    GamePhase.ENDGAME, List.of(
+                        ),
+                        GamePhase.ENDGAME, List.of(
                             Feature.MATERIAL,
                             Feature.CHECK_AND_MATE,
                             Feature.KING_SAFETY,
                             Feature.CRAMPING,
                             Feature.PIECE_SAFETY
-                    ),
-                    GamePhase.DEBUG, List.of(
+                        ),
+                        GamePhase.DEBUG, List.of(
                             Feature.MOBILITY,
                             Feature.CRAMPING,
                             Feature.CHECK_AND_MATE,
@@ -53,7 +54,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
                             Feature.MATERIAL,
                             Feature.PAWN_STRUCTURE,
                             Feature.KING_SAFETY
-                            /*Feature.PIECE_SAFETY*/)
+                        )
             );
 
     private static final StandardBoardEvaluator INSTANCE = new StandardBoardEvaluator();
@@ -179,34 +180,42 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
         final Board board = player.getBoard();
         for (final int pos : player.getActivePieces()) {
             final Piece piece = board.getPiece(pos);
-            // Find smallest attacker value
-            int smallestAttackerValue = Integer.MAX_VALUE;
+            // Find cheapest attacker
+            int cheapestAttacker = Integer.MAX_VALUE;
+            boolean isAttacked = false;
             for (final Move move : player.getOpponent().getLegalMoves()) {
                 if (move.getDestinationCoordinate() == pos && move.isAttack()) {
-                    smallestAttackerValue = Math.min(smallestAttackerValue,
-                            move.getMovedPiece().getPieceValue());
+                    isAttacked = true;
+                    cheapestAttacker = Math.min(cheapestAttacker, move.getMovedPiece().getPieceValue());
                 }
             }
-            // If no attackers, piece is safe
-            if (smallestAttackerValue == Integer.MAX_VALUE) {
-                continue;
+            if (!isAttacked) {
+                continue; // Piece is safe
             }
-            // Count defenders (excluding the piece itself)
+            // Count defenders and find cheapest defender
             int defenders = 0;
+            int cheapestDefender = Integer.MAX_VALUE;
             for (Move move : player.getLegalMoves()) {
                 if (move.getDestinationCoordinate() == pos &&
                         move.getMovedPiece().getPiecePosition() != pos) {
                     defenders++;
+                    cheapestDefender = Math.min(cheapestDefender, move.getMovedPiece().getPieceValue());
                 }
             }
 
-            // If undefended or attacker is worth less than the piece
-            if (defenders == 0 || smallestAttackerValue < piece.getPieceValue()) {
-                // Penalty is what we'd lose in the exchange
-                penalty += piece.getPieceValue() - smallestAttackerValue;
+            // Apply penalty based on exchange outcome
+            if (defenders == 0) {
+                // Hanging piece - full penalty
+                penalty += piece.getPieceValue();
+            } else if (cheapestAttacker < piece.getPieceValue()) {
+                // Unfavorable exchange likely
+                final int exchangeValue = piece.getPieceValue() - cheapestDefender;
+                if (exchangeValue > 0) {
+                    penalty += exchangeValue;
+                }
             }
         }
-        return -penalty / 5;
+        return -penalty;
     }
 
     public String evaluationDetails(final Board board, final int depth) {

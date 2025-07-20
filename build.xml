@@ -7,7 +7,7 @@
     <property name="resources.dir" value="art" />
     <property name="dist.dir" value="dist" />
     <property name="manifest.file" value="${jar.dir}/MANIFEST.MF" />
-    <property name="main.class" value="com.chess.BlackWidow" />
+    <property name="main.class" value="BlackWidow" />
 
     <path id="master-classpath">
         <fileset dir="${lib.dir}/">

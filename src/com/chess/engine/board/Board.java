@@ -1,7 +1,6 @@
 package com.chess.engine.board;
 
 import com.chess.engine.Alliance;
-import com.chess.engine.board.Move.MoveFactory;
 import com.chess.engine.pieces.King;
 import com.chess.engine.pieces.Pawn;
 import com.chess.engine.pieces.Piece;
@@ -23,7 +22,6 @@ public final class Board {
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
     private final Pawn enPassantPawn;
-    private final Move transitionMove;
 
     private static final Board STANDARD_BOARD = createStandardBoardImpl();
 
@@ -37,7 +35,37 @@ public final class Board {
         this.whitePlayer = new WhitePlayer(this, establishKing(this.whitePieceCoordinates, this.boardPieces), whiteStandardMoves, blackStandardMoves);
         this.blackPlayer = new BlackPlayer(this, establishKing(this.blackPieceCoordinates, this.boardPieces), whiteStandardMoves, blackStandardMoves);
         this.currentPlayer = builder.nextMoveMaker.choosePlayerByAlliance(this.whitePlayer, this.blackPlayer);
-        this.transitionMove = builder.transitionMove != null ? builder.transitionMove : MoveFactory.getNullMove();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final Board other = (Board) obj;
+        return Arrays.equals(this.boardPieces, other.boardPieces) &&
+                this.currentPlayer.getAlliance() == other.currentPlayer.getAlliance() &&
+                Objects.equals(this.enPassantPawn, other.enPassantPawn) &&
+                this.whitePlayer.isKingSideCastleCapable() == other.whitePlayer.isKingSideCastleCapable() &&
+                this.whitePlayer.isQueenSideCastleCapable() == other.whitePlayer.isQueenSideCastleCapable() &&
+                this.blackPlayer.isKingSideCastleCapable() == other.blackPlayer.isKingSideCastleCapable() &&
+                this.blackPlayer.isQueenSideCastleCapable() == other.blackPlayer.isQueenSideCastleCapable();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                Arrays.hashCode(this.boardPieces),
+                this.currentPlayer.getAlliance(),
+                this.enPassantPawn,
+                this.whitePlayer.isKingSideCastleCapable(),
+                this.whitePlayer.isQueenSideCastleCapable(),
+                this.blackPlayer.isKingSideCastleCapable(),
+                this.blackPlayer.isQueenSideCastleCapable()
+        );
     }
 
     @Override
@@ -120,10 +148,6 @@ public final class Board {
         return this.enPassantPawn;
     }
 
-    public Move getTransitionMove() {
-        return this.transitionMove;
-    }
-
     public static Board createStandardBoard() {
         return STANDARD_BOARD;
     }
@@ -182,15 +206,15 @@ public final class Board {
 
     private static int[] calculateActiveIndexes(final Piece[] boardConfig,
                                                 final Alliance alliance) {
-        final int[] temp = new int[boardConfig.length];
+        final int[] result = new int[boardConfig.length];
         int count = 0;
         for (int idx = 0; idx < boardConfig.length; idx++) {
             final Piece piece = boardConfig[idx];
             if (piece != null && piece.getPieceAllegiance() == alliance) {
-                temp[count++] = idx;
+                result[count++] = idx;
             }
         }
-        return Arrays.copyOf(temp, count);
+        return Arrays.copyOf(result, count);
     }
 
     public static class Builder {
@@ -198,7 +222,6 @@ public final class Board {
         Piece[] boardPieces;
         Alliance nextMoveMaker;
         Pawn enPassantPawn;
-        Move transitionMove;
 
         public Builder() {
             this.boardPieces = new Piece[BoardUtils.NUM_TILES];
@@ -221,11 +244,6 @@ public final class Board {
 
         public Builder setEnPassantPawn(final Pawn enPassantPawn) {
             this.enPassantPawn = enPassantPawn;
-            return this;
-        }
-
-        public Builder setMoveTransition(final Move transitionMove) {
-            this.transitionMove = transitionMove;
             return this;
         }
 
