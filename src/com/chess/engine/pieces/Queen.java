@@ -30,7 +30,7 @@ public final class Queen extends Piece {
                 final MoveUtils.Line line = new MoveUtils.Line();
                 while (BoardUtils.isValidTileCoordinate(destination)) {
                     if (isFirstColumnExclusion(destination, offset) ||
-                            isEightColumnExclusion(destination, offset)) {
+                        isEighthColumnExclusion(destination, offset)) {
                         break;
                     }
                     destination += offset;
@@ -92,8 +92,8 @@ public final class Queen extends Piece {
                 || (offset == -1) || (offset == 7));
     }
 
-    private static boolean isEightColumnExclusion(final int position,
-                                                  final int offset) {
+    private static boolean isEighthColumnExclusion(final int position,
+                                                   final int offset) {
         return BoardUtils.EIGHTH_COLUMN.get(position) && ((offset == -7)
                 || (offset == 1) || (offset == 9));
     }

@@ -541,7 +541,7 @@ public final class Table {
                 bestMove = bookMove;
             }
             else {
-                final BlackWidowAI strategy = new BlackWidowAI(Table.get().getGameSetup().getSearchDepth(), true, 2, true);
+                final BlackWidowAI strategy = new BlackWidowAI(Table.get().getGameSetup().getSearchDepth(), true, 0, false);
                 // Add AI progress listener to the strategy
                 strategy.addAIProgressListener(eventManager::publishAIProgress);
                 bestMove = strategy.execute(Table.get().getGameBoard());
