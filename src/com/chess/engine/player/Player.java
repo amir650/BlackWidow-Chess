@@ -39,11 +39,11 @@ public abstract class Player {
     }
 
     public boolean isInCheckMate() {
-       return this.isInCheck && isTrapped();
+       return this.isInCheck && this.isTrapped();
     }
 
     public boolean isInStaleMate() {
-        return !this.isInCheck && isTrapped();
+        return !this.isInCheck && this.isTrapped();
     }
 
     public boolean isCastled() {

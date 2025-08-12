@@ -66,7 +66,7 @@ public final class MiniMax implements MoveStrategy {
                     bestMove = move;
                 }
             } else {
-                System.out.println("\t" + toString() + " can't execute move (" +moveCounter+ "/" +numMoves+ ") " + move);
+                System.out.println("\t" + this + " can't execute move (" +moveCounter+ "/" +numMoves+ ") " + move);
             }
             moveCounter++;
         }
