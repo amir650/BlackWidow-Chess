@@ -18,6 +18,8 @@ public class GameSetup extends JDialog {
     private static final String HUMAN_TEXT = "Human";
     private static final String COMPUTER_TEXT = "Computer";
 
+    private boolean chess960 = false;
+
     GameSetup(final JFrame frame,
               final boolean modal) {
         super(frame, modal);
@@ -26,6 +28,7 @@ public class GameSetup extends JDialog {
         final JRadioButton whiteComputerButton = new JRadioButton(COMPUTER_TEXT);
         final JRadioButton blackHumanButton = new JRadioButton(HUMAN_TEXT);
         final JRadioButton blackComputerButton = new JRadioButton(COMPUTER_TEXT);
+        final JRadioButton chess960Button = new JRadioButton("Chess960: OFF");
         whiteHumanButton.setActionCommand(HUMAN_TEXT);
         final ButtonGroup whiteGroup = new ButtonGroup();
         whiteGroup.add(whiteHumanButton);
@@ -44,6 +47,9 @@ public class GameSetup extends JDialog {
         myPanel.add(new JLabel("Black"));
         myPanel.add(blackHumanButton);
         myPanel.add(blackComputerButton);
+
+        myPanel.add(new JLabel("Chess960 Mode"));
+        myPanel.add(chess960Button);
 
         myPanel.add(new JLabel("Search"));
         this.searchDepthSpinner = addLabeledSpinner(myPanel, "Search Depth", new SpinnerNumberModel(6, 0, Integer.MAX_VALUE, 1));
@@ -69,6 +75,17 @@ public class GameSetup extends JDialog {
             }
         });
 
+        chess960Button.addActionListener(e -> {
+
+            chess960 = !chess960;
+
+            if (chess960) {
+                chess960Button.setText("Chess960: ON");
+            } else {
+                chess960Button.setText("Chess960: OFF");
+            }
+        });
+
         myPanel.add(cancelButton);
         myPanel.add(okButton);
 
@@ -83,7 +100,7 @@ public class GameSetup extends JDialog {
     }
 
     boolean isAIPlayer(final Player player) {
-        if(player.getAlliance() == Alliance.WHITE) {
+        if (player.getAlliance() == Alliance.WHITE) {
             return getWhitePlayerType() == PlayerType.COMPUTER;
         }
         return getBlackPlayerType() == PlayerType.COMPUTER;
@@ -109,6 +126,10 @@ public class GameSetup extends JDialog {
     }
 
     int getSearchDepth() {
-        return (Integer)this.searchDepthSpinner.getValue();
+        return (Integer) this.searchDepthSpinner.getValue();
+    }
+
+    public boolean isChess960() {
+        return chess960;
     }
 }

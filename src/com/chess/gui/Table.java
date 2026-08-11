@@ -10,6 +10,7 @@ import com.chess.engine.player.Player;
 import com.chess.engine.player.ai.AIProgressListener;
 import com.chess.engine.player.ai.StandardBoardEvaluator;
 import com.chess.engine.player.ai.BlackWidowAI;
+import com.chess.pgn.Chess960;
 import com.chess.pgn.FenUtilities;
 import com.chess.pgn.MySqlGamePersistence;
 import com.chess.pgn.PGNUtilities;
@@ -62,7 +63,6 @@ public final class Table {
         populateMenuBar(tableMenuBar);
         this.gameFrame.setJMenuBar(tableMenuBar);
         this.gameFrame.setLayout(new BorderLayout());
-        this.chessBoard = Board.createStandardBoard();
         this.boardDirection = BoardDirection.NORMAL;
         this.highlightLegalMoves = false;
         this.useBook = false;
@@ -70,12 +70,19 @@ public final class Table {
         this.gameHistoryPanel = new GameHistoryPanel();
         this.debugPanel = new DebugPanel();
         this.takenPiecesPanel = new TakenPiecesPanel();
+        this.gameSetup = new GameSetup(this.gameFrame, true);
+        if (this.gameSetup.isChess960()) {
+            Chess960 chess960Board = new Chess960();
+            this.chessBoard = chess960Board.placePieces();
+        } else {
+            this.chessBoard = Board.createStandardBoard();
+        }
         this.boardPanel = new BoardPanel();
         this.moveLog = new MoveLog();
         this.eventManager.addGameEventListener(this::processAllGameEvents);
         this.eventManager.addAIProgressListener(this.debugPanel::updateProgress);
-        this.gameSetup = new GameSetup(this.gameFrame, true);
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
+
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST);
         this.gameFrame.add(debugPanel, BorderLayout.SOUTH);
@@ -175,12 +182,31 @@ public final class Table {
     }
 
     void handleGameSetupChanged(final GameSetup gameSetup) {
-        System.out.println("Game setup changed: " + gameSetup);
-        // Check if current player is now AI and should start thinking
+        System.out.println("Game setup changed");
+
+        // Start a new board using the selected game mode
+        undoAllMoves();
+
+        if (gameSetup.isChess960()) {
+            Chess960 chess960 = new Chess960();
+            this.chessBoard = chess960.placePieces();
+            System.out.println("Chess960 mode selected!");
+        } else {
+            this.chessBoard = Board.createStandardBoard();
+            System.out.println("Normal Chess mode selected!");
+        }
+
+        this.computerMove = null;
+        this.show();
+
+        // Check if AI should make the first move
         if (gameSetup.isAIPlayer(getGameBoard().currentPlayer()) &&
                 !getGameBoard().currentPlayer().isInCheckMate() &&
                 !getGameBoard().currentPlayer().isInStaleMate()) {
-            System.out.println(getGameBoard().currentPlayer() + " is set to AI, thinking....");
+
+            System.out.println(getGameBoard().currentPlayer() +
+                    " is set to AI, thinking....");
+
             this.eventManager.publishGameEvent(new AIThinkingEvent());
         }
     }
@@ -198,10 +224,18 @@ public final class Table {
 
     void handleNewGame() {
         undoAllMoves();
-        this.chessBoard = Board.createStandardBoard();
+
+        if (this.gameSetup.isChess960()) {
+            Chess960 chess960 = new Chess960();
+            this.chessBoard = chess960.placePieces();
+            System.out.println("New Chess960 game started");
+        } else {
+            this.chessBoard = Board.createStandardBoard();
+            System.out.println("New standard chess game started");
+        }
+
         this.computerMove = null;
         this.show();
-        System.out.println("New game started");
     }
 
     private void populateMenuBar(final JMenuBar tableMenuBar) {
@@ -235,7 +269,7 @@ public final class Table {
         final JMenuItem openFEN = new JMenuItem("Load FEN File", KeyEvent.VK_F);
         openFEN.addActionListener(_ -> {
             String fenString = JOptionPane.showInputDialog("Input FEN");
-            if(fenString != null) {
+            if (fenString != null) {
                 undoAllMoves();
                 this.chessBoard = FenUtilities.createGameFromFEN(fenString);
                 Table.get().getBoardPanel().drawBoard(this.chessBoard);
@@ -251,6 +285,7 @@ public final class Table {
                 public String getDescription() {
                     return ".pgn";
                 }
+
                 @Override
                 public boolean accept(final File file) {
                     return file.isDirectory() || file.getName().toLowerCase().endsWith("pgn");
@@ -295,7 +330,7 @@ public final class Table {
         final JMenuItem legalMovesMenuItem = new JMenuItem("Current State", KeyEvent.VK_L);
         legalMovesMenuItem.addActionListener(_ -> {
             System.out.println(FenUtilities.createFENFromGame(this.chessBoard));
-            System.out.println("hash = " +this.chessBoard.hashCode());
+            System.out.println("hash = " + this.chessBoard.hashCode());
             System.out.println(Arrays.toString(this.chessBoard.getWhitePieceCoordinates()));
             System.out.println(Arrays.toString(this.chessBoard.getBlackPieceCoordinates()));
             System.out.println(playerInfo(this.chessBoard.currentPlayer()));
@@ -439,9 +474,9 @@ public final class Table {
     }
 
     private static String playerInfo(final Player player) {
-        return ("Player is: " +player.getAlliance() + "\nlegal moves (" +player.getLegalMoves().size()+ ") = " +player.getLegalMoves() + "\ninCheck = " +
-                player.isInCheck() + "\nisInCheckMate = " +player.isInCheckMate() +
-                "\nisCastled = " +player.isCastled())+ "\n";
+        return ("Player is: " + player.getAlliance() + "\nlegal moves (" + player.getLegalMoves().size() + ") = " + player.getLegalMoves() + "\ninCheck = " +
+                player.isInCheck() + "\nisInCheckMate = " + player.isInCheckMate() +
+                "\nisCastled = " + player.isCastled()) + "\n";
     }
 
     private void updateGameBoard(final Board board) {
@@ -453,7 +488,7 @@ public final class Table {
     }
 
     private void undoAllMoves() {
-        for(int i = Table.get().getMoveLog().size() - 1; i >= 0; i--) {
+        for (int i = Table.get().getMoveLog().size() - 1; i >= 0; i--) {
             final Move lastMove = Table.get().getMoveLog().removeMove(Table.get().getMoveLog().size() - 1);
             this.chessBoard = this.chessBoard.currentPlayer().unMakeMove(lastMove).getToBoard();
         }
@@ -491,7 +526,7 @@ public final class Table {
 
     private void undoLastMove() {
         final MoveLog log = Table.get().getMoveLog();
-        if(!log.isEmpty()) {
+        if (!log.isEmpty()) {
             final Move lastMove = Table.get().getMoveLog().removeMove(Table.get().getMoveLog().size() - 1);
             this.chessBoard = this.chessBoard.currentPlayer().unMakeMove(lastMove).getToBoard();
             this.computerMove = null;
@@ -539,8 +574,7 @@ public final class Table {
                     : MoveFactory.getNullMove();
             if (Table.get().getUseBook() && bookMove != MoveFactory.getNullMove()) {
                 bestMove = bookMove;
-            }
-            else {
+            } else {
                 final BlackWidowAI strategy = new BlackWidowAI(Table.get().getGameSetup().getSearchDepth(), true, 0, false);
                 // Add AI progress listener to the strategy
                 strategy.addAIProgressListener(eventManager::publishAIProgress);
@@ -572,7 +606,7 @@ public final class Table {
         final List<TilePanel> boardTiles;
 
         BoardPanel() {
-            super(new GridLayout(8,8));
+            super(new GridLayout(8, 8));
             this.boardTiles = new ArrayList<>();
             for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
                 final TilePanel tilePanel = new TilePanel(this, i);
@@ -640,6 +674,7 @@ public final class Table {
         };
 
         abstract List<TilePanel> traverse(final List<TilePanel> boardTiles);
+
         abstract BoardDirection opposite();
 
     }
@@ -698,7 +733,7 @@ public final class Table {
                 @Override
                 public void mouseClicked(final MouseEvent event) {
 
-                    if(Table.get().getGameSetup().isAIPlayer(Table.get().getGameBoard().currentPlayer()) ||
+                    if (Table.get().getGameSetup().isAIPlayer(Table.get().getGameBoard().currentPlayer()) ||
                             BoardUtils.isEndGame(Table.get().getGameBoard())) {
                         return;
                     }
@@ -771,7 +806,7 @@ public final class Table {
         }
 
         private void highlightTileBorder(final Board board) {
-            if(humanMovedPiece != null &&
+            if (humanMovedPiece != null &&
                     humanMovedPiece.getPieceAllegiance() == board.currentPlayer().getAlliance() &&
                     humanMovedPiece.getPiecePosition() == this.tileId) {
                 setBorder(BorderFactory.createLineBorder(Color.cyan));
@@ -781,10 +816,10 @@ public final class Table {
         }
 
         private void highlightAIMove() {
-            if(computerMove != null) {
-                if(this.tileId == computerMove.getCurrentCoordinate()) {
+            if (computerMove != null) {
+                if (this.tileId == computerMove.getCurrentCoordinate()) {
                     setBackground(Color.pink);
-                } else if(this.tileId == computerMove.getDestinationCoordinate()) {
+                } else if (this.tileId == computerMove.getDestinationCoordinate()) {
                     setBackground(Color.red);
                 }
             }
@@ -796,8 +831,7 @@ public final class Table {
                     if (move.getDestinationCoordinate() == this.tileId) {
                         try {
                             add(new JLabel(new ImageIcon(ImageIO.read(new File("art/misc/green_dot.png")))));
-                        }
-                        catch (final IOException e) {
+                        } catch (final IOException e) {
                             throw new RuntimeException(e);
                         }
                     }
@@ -806,7 +840,7 @@ public final class Table {
         }
 
         private Collection<Move> pieceLegalMoves(final Board board) {
-            if(humanMovedPiece != null && humanMovedPiece.getPieceAllegiance() == board.currentPlayer().getAlliance()) {
+            if (humanMovedPiece != null && humanMovedPiece.getPieceAllegiance() == board.currentPlayer().getAlliance()) {
                 return humanMovedPiece.calculateLegalMoves(board);
             }
             return Collections.emptyList();
@@ -814,14 +848,14 @@ public final class Table {
 
         private void assignTilePieceIcon(final Board board) {
             this.removeAll();
-            if(board.getPiece(this.tileId) != null) {
+            if (board.getPiece(this.tileId) != null) {
                 try {
                     final BufferedImage image = ImageIO.read(new File(pieceIconPath +
                             board.getPiece(this.tileId).getPieceAllegiance().toString().charAt(0) +
                             board.getPiece(this.tileId).toString() +
                             ".gif"));
                     add(new JLabel(new ImageIcon(image)));
-                } catch(final IOException e) {
+                } catch (final IOException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -833,9 +867,9 @@ public final class Table {
                     BoardUtils.FIFTH_ROW.get(this.tileId) ||
                     BoardUtils.SEVENTH_ROW.get(this.tileId)) {
                 setBackground(this.tileId % 2 == 0 ? lightTileColor : darkTileColor);
-            } else if(BoardUtils.SECOND_ROW.get(this.tileId) ||
+            } else if (BoardUtils.SECOND_ROW.get(this.tileId) ||
                     BoardUtils.FOURTH_ROW.get(this.tileId) ||
-                    BoardUtils.SIXTH_ROW.get(this.tileId)  ||
+                    BoardUtils.SIXTH_ROW.get(this.tileId) ||
                     BoardUtils.EIGHTH_ROW.get(this.tileId)) {
                 setBackground(this.tileId % 2 != 0 ? lightTileColor : darkTileColor);
             }
