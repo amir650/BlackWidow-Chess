@@ -67,7 +67,9 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
 
     @Override
     public int evaluate(final Board board, final int depth) {
-        return score(board.whitePlayer(), depth) - score(board.blackPlayer(), depth);
+        return board.currentPlayer().isInStaleMate() 
+            ? 0 
+            : score(board.whitePlayer(), depth) - score(board.blackPlayer(), depth);
     }
 
     private static int score(final Player player,
